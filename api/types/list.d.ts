@@ -47,7 +47,8 @@ export interface UserListMovie {
     title: string;
 
     /**
-     * The file path for the backdrop. See https://developers.themoviedb.org/3/getting-started/images
+     * The file path for the backdrop.
+     * See https://developers.themoviedb.org/3/getting-started/images.
      */
     backdrop_path: string | null;
 

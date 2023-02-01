@@ -1,3 +1,5 @@
+// Adapted from: https://github.com/blakejoy/tmdb-ts/blob/master/src/types/tv-shows.ts
+
 /**
  * The details of a TV show.
  */
