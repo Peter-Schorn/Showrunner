@@ -85,7 +85,7 @@ class TMDB {
      */
     async getList(listID, options) {
         return await this._get(
-            `/3/list/${listID}`,
+            `/3/list/${listID}`,  // path
             options  // query params
         );
     }
