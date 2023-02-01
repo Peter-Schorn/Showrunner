@@ -5,6 +5,8 @@ const axios = require("axios").default;
  * @typedef { import("./types").TVShowDetails } TVShowDetails
  * @typedef { import("./types").UserList } UserList
  * @typedef { import("./types").ListSortBy } ListSortBy
+ *
+ * @typedef { "GET" | "POST" | "PUT" | "DELETE" } HTTPMethod
  */
 
 
@@ -112,11 +114,10 @@ class TMDB {
     /**
      * Makes an HTTP request to the TMDB API.
      *
-     * @param {string} method the http method
+     * @param {HTTPMethod} method the http method
      * @param {string} path the path of the endpoint, which will be appended to
      * `TMDB.apiBase`.
-     * @param {Object.<string, string | number | null | undefined> | null | undefined} [queryParams] the query parameters for
-     * the endpoint
+     * @param {Object.<string, string | number | null | undefined> | null | undefined} [queryParams] the query parameters for the endpoint
      * @param {Object | null | undefined} [body] the body of the request
      * @returns {Promise<any>} the response body from the server
      */
