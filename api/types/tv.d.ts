@@ -1,3 +1,6 @@
+/**
+ * The details of a TV show.
+ */
 export interface TVShowDetails {
     backdrop_path: string;
     created_by: CreatedBy[];
@@ -10,6 +13,7 @@ export interface TVShowDetails {
     languages: string[];
     last_air_date: string;
     last_episode_to_air: LastEpisodeToAir;
+    /** The name of the show. */
     name: string;
     next_episode_to_air?: any;
     networks: Network[];
