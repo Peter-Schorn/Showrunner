@@ -24,11 +24,7 @@ export interface UserList {
     total_pages: number;
     description: string;
     /** The person who created the list. */
-    created_by: {
-        gravatar_hash: string;
-        name: string;
-        username: string;
-    };
+    created_by: string | null | undefined;
     iso_3166_1: string;
     average_rating: number;
     runtime: number;
