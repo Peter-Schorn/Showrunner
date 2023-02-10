@@ -11,6 +11,7 @@ const axios = require("axios").default;
  * @typedef { import("./types").TVShowContentRatings } TVShowContentRatings
  * @typedef { import("./types").TVShowImages } TVShowImages
  * @typedef { import("./types").TVShowRecommendations } TVShowRecommendations
+ * @typedef { import("./types").TVShowReviews } TVShowReviews
  *
  * @typedef { "GET" | "POST" | "PUT" | "DELETE" } HTTPMethod
  */
@@ -212,8 +213,8 @@ exports.default = class TMDB {
      * } | null | undefined} [options] the options for this endpoint:
      *   language: an ISO 639-1 language code;
      *   page: the index of the page to return;
-     * @returns {Promise<TVShowRecommendations>} the recommendations for the
-     * tv show
+     * @returns {Promise<TVShowRecommendations>} the recommendations for the tv
+     * show
      */
      async tvShowRecommendations(id, options) {
          return await this._get(
@@ -221,6 +222,28 @@ exports.default = class TMDB {
              options  // query params
          );
      }
+
+     /**
+     * Get the reviews for a tv show.
+     *
+     * https://developers.themoviedb.org/3/tv/get-tv-reviews
+     *
+     * @param {string | number} id the tv show id
+     * @param {{
+     *     language?: string | null | undefined,
+     *     page?: number | null | undefined
+     * } | null | undefined} [options] the options for this endpoint:
+     *   language: an ISO 639-1 language code;
+     *   page: the index of the page to return;
+     * @returns {Promise<TVShowReviews>} the recommendations for the tv show
+     */
+     async tvShowReviews(id, options) {
+         return await this._get(
+             `/3/tv/${id}/reviews`,  // path
+             options  // query params
+         );
+     }
+
 
     /**
      * Gets a user's list by id. Private lists can only be accessed by their
