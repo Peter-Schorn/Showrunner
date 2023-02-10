@@ -335,3 +335,50 @@ export interface TVShowAlternativeTitlesResult {
     iso_3166_1: string;
     type: string;
 }
+
+export interface TVShowChanges {
+    changes: TVShowChange[];
+}
+
+export interface TVShowChange {
+    key: string;
+    items: TVShowChangeItem[];
+}
+
+export interface TVShowChangeItem {
+    id: string;
+    action: string;
+    time: string;
+}
+
+export interface TVShowContentRatings {
+    id: string;
+    results: TVShowContentRating[];
+}
+
+export interface TVShowContentRating {
+
+    /**
+     * The language for this content rating in ISO 3166-1 format. E.g., "US".
+     */
+    iso_3166_1: string;
+
+    /**
+     * A human-readable rating (in the language specified by `iso_3166_1`), such
+     * as "TV-MA", or "18+".
+     */
+    rating: string;
+
+}
+
+export interface TVShowExternalIDs {
+    imdb_id: string;
+    freebase_mid: string;
+    freebase_id: string;
+    tvdb_id: number;
+    tvrage_id: number;
+    facebook_id: string;
+    instagram_id: string;
+    twitter_id: string;
+    id: number;
+}

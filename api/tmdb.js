@@ -7,6 +7,8 @@ const axios = require("axios").default;
  * @typedef { import("./types").UserList } UserList
  * @typedef { import("./types").ListSortBy } ListSortBy
  * @typedef { import("./types").TVShowAlternativeTitles } TVShowAlternativeTitles
+ * @typedef { import("./types").TVShowChanges } TVShowChanges
+ * @typedef { import("./types").TVShowContentRatings } TVShowContentRatings
  *
  * @typedef { "GET" | "POST" | "PUT" | "DELETE" } HTTPMethod
  */
@@ -66,7 +68,7 @@ class TMDB {
     async tvShowDetails(id, language) {
         return await this._get(
             `/3/tv/${id}`,  // path
-            { language: language }  // query params
+            { language }  // query params
         );
     }
 
@@ -106,7 +108,77 @@ class TMDB {
     async tvShowAlternativeTitles(id, language) {
         return await this._get(
             `/3/tv/${id}/alternative_titles`,  // path
-            { language: language }  // query params
+            { language }  // query params
+        );
+    }
+
+    /**
+     * Get the changes for a tv show. By default only the last 24 hours are
+     * returned.
+     *
+     * You can query up to 14 days in a single query by using the start_date
+     * and end_date query parameters.
+     *
+     * TV show changes are different than movie changes in that there are some
+     * edits on seasons and episodes that will create a change entry at the show
+     * level. These can be found under the season and episode keys. These keys
+     * will contain a `series_id` and `episode_id`. You can use the season
+     * changes and episode changes methods to look these up individually.
+     *
+     *
+     * https://developers.themoviedb.org/3/tv/get-tv-changes
+     *
+     * @param {string | number} id the tv show id
+     * @param {{
+     *     start_date?: string | null | undefined,
+     *     end_date?: string | null | undefined,
+     *     page?: number | null | undefined
+     * } | null | undefined} [options] the options for this endpoint:
+     *   language: an ISO 639-1 language code;
+     *   session_id: the session id;
+     *   guest_session_id: the guest session id
+     * @returns {Promise<TVShowChanges>} the tv show changes
+     */
+    async tvShowChanges(id, options) {
+        return await this._get(
+            `/3/tv/${id}/changes`,  // path
+            options  // query params
+        );
+    }
+
+    /**
+     * Get the list of content ratings (certifications) that have been added to
+     * a tv show.
+     *
+     * https://developers.themoviedb.org/3/tv/get-tv-content-ratings
+     *
+     * @param {string | number} id the tv show id
+     * @param {String | null | undefined} [language] an ISO 639-1 language code
+     * @returns {Promise<TVShowContentRatings>} The content ratings for the tv
+     * show in various languages
+     */
+    async tvShowContentRatings(id, language) {
+        return await this._get(
+            `/3/tv/${id}/content_ratings`,  // path
+            { language }  // query params
+        );
+    }
+
+    /**
+     * Get the list of content ratings (certifications) that have been added to
+     * a tv show.
+     *
+     * https://developers.themoviedb.org/3/tv/get-tv-content-ratings
+     *
+     * @param {string | number} id the tv show id
+     * @param {String | null | undefined} [language] an ISO 639-1 language code
+     * @returns {Promise<TVShowContentRatings>} The content ratings for the tv
+     * show in various languages
+     */
+    async tvShowExternalIDs(id, language) {
+        return await this._get(
+            `/3/tv/${id}/external_ids`,  // path
+            { language }  // query params
         );
     }
 
