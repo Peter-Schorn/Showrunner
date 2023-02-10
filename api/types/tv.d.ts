@@ -373,3 +373,42 @@ export interface TVShowExternalIDs {
     twitter_id: string;
     id: number;
 }
+
+export interface TVShowImages {
+    backdrops: TVShowBackdrop[];
+    id: number;
+    posters: TVShowBackdrop[];
+}
+
+export interface TVShowBackdrop {
+    aspect_ratio: number;
+    file_path: string;
+    height: number;
+    iso_639_1: string | null;
+    vote_average: number;
+    vote_count: number;
+    width: number;
+}
+
+export interface TVShowRecommendations {
+    page: number;
+    results: TVShowRecommendationsResult[];
+    total_pages: number;
+    total_results: number;
+}
+
+export interface TVShowRecommendationsResult {
+    backdrop_path: string;
+    first_air_date: string;
+    genre_ids: number[];
+    id: number;
+    original_language: string;
+    original_name: string;
+    overview: string;
+    origin_country: string[];
+    poster_path: string;
+    popularity: number;
+    name: string;
+    vote_average: number;
+    vote_count: number;
+}

@@ -27,13 +27,23 @@ const petersShowsListID = 8238485;
 //     console.log(`list.created_by: "${list.created_by}"`);
 // });
 
-tmdb.tvShowAccountStates(petersShowsListID).then((accountStates) => {
-    console.log("received tv show account states:");
-    console.log(accountStates);
-})
-.catch((error) => {
-    // console.error("received error:", error.message);
-    // console.error("received error:", error.toJSON());
-    console.log("received error from tvShowAccountStates:")
-    console.log(error);
+// tmdb.tvShowAccountStates(petersShowsListID).then((accountStates) => {
+//     console.log("received tv show account states:");
+//     console.log(accountStates);
+// })
+// .catch((error) => {
+//     // console.error("received error:", error.message);
+//     // console.error("received error:", error.toJSON());
+//     console.log("received error from tvShowAccountStates:")
+//     console.log(error);
+// });
+
+// tmdb.tvShowImages(breakingBadTVShowID).then((images) => {
+//     console.log("received images for tv show");
+//     console.log(images.backdrops[0].file_path);
+// });
+
+tmdb.tvShowRecommendations(breakingBadTVShowID).then((results) => {
+    console.log("\n--- received results ---\n");
+    console.log(results);
 });

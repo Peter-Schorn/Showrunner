@@ -9,6 +9,8 @@ const axios = require("axios").default;
  * @typedef { import("./types").TVShowAlternativeTitles } TVShowAlternativeTitles
  * @typedef { import("./types").TVShowChanges } TVShowChanges
  * @typedef { import("./types").TVShowContentRatings } TVShowContentRatings
+ * @typedef { import("./types").TVShowImages } TVShowImages
+ * @typedef { import("./types").TVShowRecommendations } TVShowRecommendations
  *
  * @typedef { "GET" | "POST" | "PUT" | "DELETE" } HTTPMethod
  */
@@ -19,7 +21,7 @@ const axios = require("axios").default;
  *
  * https://developers.themoviedb.org/3/getting-started/introduction
  */
-class TMDB {
+exports.default = class TMDB {
 
     static apiBase = "https://api.themoviedb.org";
 
@@ -61,8 +63,8 @@ class TMDB {
      *
      * https://developers.themoviedb.org/3/tv/get-tv-details
      *
-     * @param {String | Number} id the tv show id
-     * @param {String | null | undefined} [language] an ISO 639-1 language code
+     * @param {string | Number} id the tv show id
+     * @param {string | null | undefined} [language] an ISO 639-1 language code
      * @returns {Promise<TVShowDetails>} the details of a TMDB tv show
      */
     async tvShowDetails(id, language) {
@@ -102,7 +104,7 @@ class TMDB {
      * https://developers.themoviedb.org/3/tv/get-tv-alternative-titles
      *
      * @param {string | number} id the tv show id
-     * @param {String | null | undefined} [language] an ISO 639-1 language code
+     * @param {string | null | undefined} [language] an ISO 639-1 language code
      * @returns {Promise<TVShowAlternativeTitles>} the alternative titles for a tv show
      */
     async tvShowAlternativeTitles(id, language) {
@@ -153,8 +155,8 @@ class TMDB {
      * https://developers.themoviedb.org/3/tv/get-tv-content-ratings
      *
      * @param {string | number} id the tv show id
-     * @param {String | null | undefined} [language] an ISO 639-1 language code
-     * @returns {Promise<TVShowContentRatings>} The content ratings for the tv
+     * @param {string | null | undefined} [language] an ISO 639-1 language code
+     * @returns {Promise<TVShowContentRatings>} the content ratings for the tv
      * show in various languages
      */
     async tvShowContentRatings(id, language) {
@@ -171,8 +173,8 @@ class TMDB {
      * https://developers.themoviedb.org/3/tv/get-tv-content-ratings
      *
      * @param {string | number} id the tv show id
-     * @param {String | null | undefined} [language] an ISO 639-1 language code
-     * @returns {Promise<TVShowContentRatings>} The content ratings for the tv
+     * @param {string | null | undefined} [language] an ISO 639-1 language code
+     * @returns {Promise<TVShowContentRatings>} the content ratings for the tv
      * show in various languages
      */
     async tvShowExternalIDs(id, language) {
@@ -181,6 +183,44 @@ class TMDB {
             { language }  // query params
         );
     }
+
+    /**
+     * Get the images that belong to a TV show.
+     *
+     * https://developers.themoviedb.org/3/tv/get-tv-images
+     *
+     * @param {string | number} id the tv show id
+     * @param {string | null | undefined} [language] an ISO 639-1 language code
+     * @returns {Promise<TVShowImages>} the images for the tv show
+     */
+    async tvShowImages(id, language) {
+        return await this._get(
+            `/3/tv/${id}/images`,  // path
+            { language }  // query params
+        );
+    }
+
+    /**
+     * Get the list of recommendations for a tv show.
+     *
+     * https://developers.themoviedb.org/3/tv/get-tv-recommendations
+     *
+     * @param {string | number} id the tv show id
+     * @param {{
+     *     language?: string | null | undefined,
+     *     page?: number | null | undefined
+     * } | null | undefined} [options] the options for this endpoint:
+     *   language: an ISO 639-1 language code;
+     *   page: the index of the page to return;
+     * @returns {Promise<TVShowRecommendations>} the recommendations for the
+     * tv show
+     */
+     async tvShowRecommendations(id, options) {
+         return await this._get(
+             `/3/tv/${id}/recommendations`,  // path
+             options  // query params
+         );
+     }
 
     /**
      * Gets a user's list by id. Private lists can only be accessed by their
@@ -262,5 +302,3 @@ class TMDB {
     }
 
 }
-
-exports.default = TMDB;
