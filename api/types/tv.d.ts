@@ -313,3 +313,14 @@ export interface SpokenLanguage {
     iso_639_1: string;
     name: string;
 }
+
+// =======
+
+export interface TVShowAccountStates {
+    id: number;
+    favorite: boolean;
+    watchlist: boolean
+    rated: {
+        value: number;
+    } | boolean
+}

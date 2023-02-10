@@ -3,6 +3,7 @@ const axios = require("axios").default;
 // https://www.typescriptlang.org/docs/handbook/jsdoc-supported-types.html
 /**
  * @typedef { import("./types").TVShowDetails } TVShowDetails
+ * @typedef { import("./types").TVShowAccountStates } TVShowAccountStates
  * @typedef { import("./types").UserList } UserList
  * @typedef { import("./types").ListSortBy } ListSortBy
  *
@@ -69,6 +70,30 @@ class TMDB {
     }
 
     /**
+     * Get the rating for a tv show, as well as whether or not it belongs on
+     * your favorites and/or watchlist.
+     *
+     * https://developers.themoviedb.org/3/tv/get-tv-account-states
+     *
+     * @param {string | number} id the tv show id
+     * @param {{
+     *     language?: string | null | undefined,
+     *     session_id?: string | null | undefined,
+     *     guest_session_id?: string | null | undefined
+     * } | null | undefined} [options] the options for this endpoint:
+     *   language: an ISO 639-1 language code;
+     *   session_id: the session id;
+     *   guest_session_id: the guest session id
+     * @returns {Promise<TVShowAccountStates>} the information for the tv show
+     */
+    async tvShowAccountStates(id, options) {
+        return await this._get(
+            `/3/tv/${id}/account_states`,  // path
+            options  // query params
+        );
+    }
+
+    /**
      * Gets a user's list by id. Private lists can only be accessed by their
      * owners.
      *
@@ -123,21 +148,28 @@ class TMDB {
      */
     async _apiRequest(method, path, queryParams, body) {
 
-        // https://axios-http.com/docs/req_config
-        const response = await this.httpClient.request({
-            method: method,
-            baseURL: TMDB.apiBase,
-            url: path,
-            headers: {
-                "Authorization": `Bearer ${this.apiKey}`,
-                "Content-Type": "application/json;charset=utf-8"
-            },
-            // "params that are null or undefined are not rendered in the URL."
-            params: queryParams,
-            data: body
-        });
+        try {
 
-        return response.data;
+            // https://axios-http.com/docs/req_config
+            const response = await this.httpClient.request({
+                method: method,
+                baseURL: TMDB.apiBase,
+                url: path,
+                headers: {
+                    "Authorization": `Bearer ${this.apiKey}`,
+                    "Content-Type": "application/json;charset=utf-8"
+                },
+                // "params that are null or undefined are not rendered in the URL."
+                params: queryParams,
+                data: body
+            });
+
+            return response.data;
+
+        } catch (error) {
+            throw error?.response?.data ?? error;
+        }
+
     }
 
 }

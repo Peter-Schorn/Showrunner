@@ -17,12 +17,23 @@ const breakingBadTVShowID = 1396;
 // https://www.themoviedb.org/list/8238485
 const petersShowsListID = 8238485;
 
-tmdb.tvShowDetails(breakingBadTVShowID).then((show) => {
-    console.log(`show.name: "${show.name}"`);
-});
+// tmdb.tvShowDetails(breakingBadTVShowID).then((show) => {
+//     console.log(`show.name: "${show.name}"`);
+// });
 
-tmdb.getList(petersShowsListID).then((list) => {
-    console.log();
-    console.log(`list.name: "${list.name}"`);
-    console.log(`list.created_by: "${list.created_by}"`);
+// tmdb.getList(petersShowsListID).then((list) => {
+//     console.log();
+//     console.log(`list.name: "${list.name}"`);
+//     console.log(`list.created_by: "${list.created_by}"`);
+// });
+
+tmdb.tvShowAccountStates(petersShowsListID).then((accountStates) => {
+    console.log("received tv show account states:");
+    console.log(accountStates);
+})
+.catch((error) => {
+    // console.error("received error:", error.message);
+    // console.error("received error:", error.toJSON());
+    console.log("received error from tvShowAccountStates:")
+    console.log(error);
 });
