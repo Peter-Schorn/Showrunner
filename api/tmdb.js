@@ -6,6 +6,7 @@ const axios = require("axios").default;
  * @typedef { import("./types").TVShowAccountStates } TVShowAccountStates
  * @typedef { import("./types").UserList } UserList
  * @typedef { import("./types").ListSortBy } ListSortBy
+ * @typedef { import("./types").TVShowAlternativeTitles } TVShowAlternativeTitles
  *
  * @typedef { "GET" | "POST" | "PUT" | "DELETE" } HTTPMethod
  */
@@ -90,6 +91,22 @@ class TMDB {
         return await this._get(
             `/3/tv/${id}/account_states`,  // path
             options  // query params
+        );
+    }
+
+    /**
+     * Get the alternative titles for a tv show.
+     *
+     * https://developers.themoviedb.org/3/tv/get-tv-alternative-titles
+     *
+     * @param {string | number} id the tv show id
+     * @param {String | null | undefined} [language] an ISO 639-1 language code
+     * @returns {Promise<TVShowAlternativeTitles>} the alternative titles for a tv show
+     */
+    async tvShowAlternativeTitles(id, language) {
+        return await this._get(
+            `/3/tv/${id}/alternative_titles`,  // path
+            { language: language }  // query params
         );
     }
 

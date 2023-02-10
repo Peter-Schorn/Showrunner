@@ -324,3 +324,14 @@ export interface TVShowAccountStates {
         value: number;
     } | boolean
 }
+
+export interface TVShowAlternativeTitles {
+    id: number;
+    results: TVShowAlternativeTitlesResult[];
+}
+
+export interface TVShowAlternativeTitlesResult {
+    title: string;
+    iso_3166_1: string;
+    type: string;
+}
