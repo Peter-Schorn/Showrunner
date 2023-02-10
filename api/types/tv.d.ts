@@ -100,15 +100,6 @@ export interface TVShowItem {
     original_value: any;
 }
 
-export interface TVShowChange {
-    key: string;
-    items: TVShowItem[];
-}
-
-export interface TVShowChanges {
-    changes: TVShowChange[];
-}
-
 export interface Network {
     id: number;
     logo_path: string;
