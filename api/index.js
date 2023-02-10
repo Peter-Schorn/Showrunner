@@ -43,7 +43,7 @@ const petersShowsListID = 8238485;
 //     console.log(images.backdrops[0].file_path);
 // });
 
-tmdb.tvShowRecommendations(breakingBadTVShowID).then((results) => {
+tmdb.tvShowReviews(breakingBadTVShowID).then((results) => {
     console.log("\n--- received results ---\n");
     console.log(results);
 });

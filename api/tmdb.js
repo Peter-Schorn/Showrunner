@@ -12,6 +12,7 @@ const axios = require("axios").default;
  * @typedef { import("./types").TVShowImages } TVShowImages
  * @typedef { import("./types").TVShowRecommendations } TVShowRecommendations
  * @typedef { import("./types").TVShowReviews } TVShowReviews
+ * @typedef { import("./types").SimilarTVShows } SimilarTVShows
  *
  * @typedef { "GET" | "POST" | "PUT" | "DELETE" } HTTPMethod
  */
@@ -206,6 +207,8 @@ exports.default = class TMDB {
      *
      * https://developers.themoviedb.org/3/tv/get-tv-recommendations
      *
+     * See also `TMDB.tvShowSimilarShows(id, options)`.
+     *
      * @param {string | number} id the tv show id
      * @param {{
      *     language?: string | null | undefined,
@@ -216,14 +219,37 @@ exports.default = class TMDB {
      * @returns {Promise<TVShowRecommendations>} the recommendations for the tv
      * show
      */
-     async tvShowRecommendations(id, options) {
-         return await this._get(
-             `/3/tv/${id}/recommendations`,  // path
-             options  // query params
-         );
-     }
+    async tvShowRecommendations(id, options) {
+        return await this._get(
+            `/3/tv/${id}/recommendations`,  // path
+            options  // query params
+        );
+    }
 
      /**
+      * Get the similar shows for a tv show.
+      *
+      * https://developers.themoviedb.org/3/tv/get-similar-tv-shows
+      *
+      * See also `TMDB.tvShowRecommendations(id, options)`.
+      *
+      * @param {string | number} id the tv show id
+      * @param {{
+      *     language?: string | null | undefined,
+      *     page?: number | null | undefined
+      * } | null | undefined} [options] the options for this endpoint:
+      *   language: an ISO 639-1 language code;
+      *   page: the index of the page to return;
+      * @returns {Promise<SimilarTVShows>} similar tv shows
+      */
+    async tvShowSimilarShows(id, options) {
+        return await this._get(
+            `/3/tv/${id}/similar`,  // path
+            options  // query params
+        );
+    }
+
+    /**
      * Get the reviews for a tv show.
      *
      * https://developers.themoviedb.org/3/tv/get-tv-reviews
@@ -237,12 +263,12 @@ exports.default = class TMDB {
      *   page: the index of the page to return;
      * @returns {Promise<TVShowReviews>} the recommendations for the tv show
      */
-     async tvShowReviews(id, options) {
-         return await this._get(
-             `/3/tv/${id}/reviews`,  // path
-             options  // query params
-         );
-     }
+    async tvShowReviews(id, options) {
+        return await this._get(
+            `/3/tv/${id}/reviews`,  // path
+            options  // query params
+        );
+    }
 
 
     /**

@@ -133,6 +133,12 @@ export interface ScreenedTheatrically {
     results: ScreenedTheatricallyResult[];
 }
 
+export interface SimilarTVShows {
+    page: number;
+    results: SimilarTVShow[];
+    total_pages: number;
+    total_results: number;
+}
 
 export interface SimilarTVShow {
     backdrop_path: string;
@@ -148,13 +154,6 @@ export interface SimilarTVShow {
     name: string;
     vote_average: number;
     vote_count: number;
-}
-
-export interface SimilarTVShows {
-    page: number;
-    results: SimilarTVShow[];
-    total_pages: number;
-    total_results: number;
 }
 
 export interface LatestTVShows {
