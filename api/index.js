@@ -51,3 +51,25 @@ const petersShowsListID = 8238485;
 //     console.log("\n--- received results ---\n");
 //     console.log(results.results["TW"].flatrate);
 // });
+
+tmdb.createRequestToken()
+    .then((refreshTokenInfo) => {
+        console.log(refreshTokenInfo);
+        return tmdb.createAccessToken(refreshTokenInfo.request_token)
+    })
+    .then((accessTokenInfo) => {
+        console.log(accessTokenInfo);
+        return tmdb.createSession(accessTokenInfo.access_token);
+    })
+    .then((sessionInfo) => {
+        console.log(sessionInfo);
+        return tmdb.rateTVShow(breakingBadTVShowID, 6.5, sessionInfo.session_id)
+    })
+    .then((response) => {
+        console.log("received response:");
+        console.log(response);
+    })
+    .catch((error) => {
+        console.error("received error");
+        console.error(error);
+    });

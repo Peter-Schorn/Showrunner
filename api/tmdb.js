@@ -370,11 +370,11 @@ exports.default = class TMDB {
      * `https://www.themoviedb.org/auth/access?request_token={request_token}`
      *
      * Once a user has approved your request, they'll either be directed to the
-     * /auth/access/approve page on TMDb or redirected to the redirect_to path
-     * you specified when you made the request token.
+     * /auth/access/approve page on TMDb or redirected to the `callbackURL` you
+     * specified when you made the request token.
      *
-     * Finally, call `TMDB.createAccessToken(requestToken)` with the approved refresh token in
-     * order to complete the authorization process.
+     * Next, call `TMDB.createAccessToken(requestToken)` with the approved
+     * refresh token to get the access token.
      *
      * @param {string | null | undefined} [callbackURL] the URL to redirect to
      * after the user approves the request
@@ -385,9 +385,10 @@ exports.default = class TMDB {
         return await this._apiRequest(
             "POST",
             "/4/auth/request_token",
+            null,  // query params
             {
                 "redirect_to": callbackURL
-            }
+            }  // body
         );
     }
 
