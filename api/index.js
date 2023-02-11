@@ -17,9 +17,13 @@ const breakingBadTVShowID = 1396;
 // https://www.themoviedb.org/list/8238485
 const petersShowsListID = 8238485;
 
-// tmdb.tvShowDetails(breakingBadTVShowID).then((show) => {
-//     console.log(`show.name: "${show.name}"`);
-// });
+// tmdb.tvShowDetails(breakingBadTVShowID)
+//     .then((show) => {
+//         console.log(`tmdb.tvShowDetails callback: show.name: "${show.name}"`);
+//     })
+//     .catch((myError) => {
+//         console.error(myError);
+//     });
 
 // tmdb.getList(petersShowsListID).then((list) => {
 //     console.log();

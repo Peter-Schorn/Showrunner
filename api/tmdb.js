@@ -14,6 +14,10 @@ const axios = require("axios").default;
  * @typedef { import("./types").TVShowReviews } TVShowReviews
  * @typedef { import("./types").SimilarTVShows } SimilarTVShows
  * @typedef { import("./types").WatchProviders } WatchProviders
+ * @typedef { import("./types").RequestTokenInfoV4 } RequestTokenInfoV4
+ * @typedef { import("./types").AccessTokenInfoV4 } AccessTokenInfoV4
+ * @typedef { import("./types").SessionResponse } SessionResponse
+ * @typedef { import("./types").TMDBGeneralResponse } TMDBGeneralResponse
  *
  * @typedef { "GET" | "POST" | "PUT" | "DELETE" } HTTPMethod
  */
@@ -49,8 +53,12 @@ exports.default = class TMDB {
             const fullURL = `${request?.baseURL ?? ""}${request?.url}`;
             const methodString = request?.method?.toUpperCase() ?? "GET";
             let message = `${prefix} ${methodString} to ${fullURL}`;
-            if (request?.data) {
-                message += ` with body:\n${request.data}`;
+            const data = request?.data;
+            if (data) {
+                const dataString = typeof data === "object" ?
+                        JSON.stringify(data) :
+                        data;
+                message += ` with body:\n${dataString}`;
             }
             console.log(message);
 
@@ -298,6 +306,27 @@ exports.default = class TMDB {
         );
     }
 
+
+    /**
+     * Rate a tv show.
+     *
+     * A session id is required
+     *
+     * @param {string | number} id the id of the tv show
+     * @param {number} rating the rating (must be in the range [0.5, 10])
+     * @param {string} sessionID the session id
+     * @returns {Promise<TMDBGeneralResponse>} a response indicating whether or
+     * not the request succeeded
+     */
+    async rateTVShow(id, rating, sessionID) {
+        return this._apiRequest(
+            "POST",
+            `/3/tv/${id}/rating`,
+            { session_id: sessionID },
+            { value: rating }
+        )
+    }
+
     /**
      * Gets a user's list by id. Private lists can only be accessed by their
      * owners.
@@ -322,9 +351,89 @@ exports.default = class TMDB {
         );
     }
 
-    // MARK: Authorization
+    // MARK: User Authorization
 
-    // (todo)
+
+    /**
+     * Creates the request token, the first step in the authorization process.
+     *
+     * https://developers.themoviedb.org/4/auth/create-request-token
+     *
+     * You can think of a request token as a temporary token that is waiting for
+     * the TMDb user to authorize on your behalf. It serves no other purpose and
+     * cannot be used for authenticating requests. Unused request tokens will
+     * automatically expire after 15 minutes.
+     *
+     * In order for a user to approve your request token, you'll want to direct
+     * the user to the website:
+     *
+     * `https://www.themoviedb.org/auth/access?request_token={request_token}`
+     *
+     * Once a user has approved your request, they'll either be directed to the
+     * /auth/access/approve page on TMDb or redirected to the redirect_to path
+     * you specified when you made the request token.
+     *
+     * Finally, call `TMDB.createAccessToken(requestToken)` with the approved refresh token in
+     * order to complete the authorization process.
+     *
+     * @param {string | null | undefined} [callbackURL] the URL to redirect to
+     * after the user approves the request
+     * @returns {Promise<RequestTokenInfoV4>} the request token, along with
+     * other metadata
+     */
+    async createRequestToken(callbackURL) {
+        return await this._apiRequest(
+            "POST",
+            "/4/auth/request_token",
+            {
+                "redirect_to": callbackURL
+            }
+        );
+    }
+
+    /**
+     * Creates the access token, the second step in the authorization flow.
+     *
+     * This method will finish the user authentication flow and issue an
+     * official user access token. The next step is to create a session using
+     * `TMDB.createSession(accessToken)`.
+     *
+     * https://developers.themoviedb.org/4/auth/create-access-token
+     *
+     * @param {string} requestToken the refresh token, which **must have been
+     * approved by the user**
+     * @returns {Promise<AccessTokenInfoV4>} the access token, along with
+     * other metadata
+     */
+    async createAccessToken(requestToken) {
+        return await this._apiRequest(
+            "POST",
+            "/4/auth/access_token",
+            {
+                "request_token": requestToken
+            }
+        );
+    }
+
+    /**
+     * Creates a session from an access token.
+     *
+     * This is the final step in the authorization process.
+     *
+     * https://developers.themoviedb.org/3/authentication/create-session-from-v4-access-token
+     *
+     * @param {string} accessToken the access token
+     * @returns {Promise<SessionResponse>} the session info
+     */
+    async createSession(accessToken) {
+        return await this._apiRequest(
+            "POST",
+            "/3/authentication/session/convert/4",
+            {
+                "access_token": accessToken
+            }
+        );
+    }
 
     // MARK: HTTP Request Methods
 
