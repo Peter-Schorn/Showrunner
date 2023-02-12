@@ -1,5 +1,6 @@
 // allows access to .env file
 require('dotenv').config();
+const TMDB = require("./api").default;
 
 const express = require('express');
 const app = express();
@@ -10,6 +11,24 @@ app.use(express.static('public'));
 
 
 // console.log(process.env);
+
+const apiKey = process.env.TMDB_API_KEY_V4;
+const tmdb = new TMDB(apiKey);
+
+// --- example of calling the api ---
+//
+// https://www.themoviedb.org/tv/1396-breaking-bad
+// const breakingBadTVShowID = 1396;
+//
+// tmdb.tvShowDetails(breakingBadTVShowID)
+//     .then((show) => {
+//         console.log(
+//             `tmdb.tvShowDetails callback: show.name: "${show.name}"`
+//         );
+//     })
+//     .catch((error) => {
+//         console.error("error from TMDB:", error);
+//     });
 
 // Route handlers
 
