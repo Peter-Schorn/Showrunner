@@ -18,6 +18,8 @@ const axios = require("axios").default;
  * @typedef { import("./types").AccessTokenInfoV4 } AccessTokenInfoV4
  * @typedef { import("./types").SessionResponse } SessionResponse
  * @typedef { import("./types").TMDBGeneralResponse } TMDBGeneralResponse
+ * @typedef { import("./types").CreateListBody } CreateListBody
+ * @typedef { import("./types").CreateListResponse } CreateListResponse
  *
  * @typedef { "GET" | "POST" | "PUT" | "DELETE" } HTTPMethod
  */
@@ -67,7 +69,10 @@ exports.default = class TMDB {
 
     }
 
-    // MARK: Endpoints
+    // MARK: - Endpoints -
+
+
+    // MARK: TV Shows
 
     /**
      * Get the primary information about a tv show.
@@ -327,6 +332,8 @@ exports.default = class TMDB {
         )
     }
 
+    // MARK: Lists
+
     /**
      * Gets a user's list by id. Private lists can only be accessed by their
      * owners.
@@ -348,6 +355,24 @@ exports.default = class TMDB {
         return await this._get(
             `/3/list/${listID}`,  // path
             options  // query params
+        );
+    }
+
+    /**
+     * Create a list for the user.
+     *
+     * https://developers.themoviedb.org/3/lists/create-list
+     *
+     * @param {string} sessionID the session id
+     * @param {CreateListBody} body the options for creating the list
+     * @returns {Promise<CreateListResponse>} the response from creating the list
+     */
+    async createList(sessionID, body) {
+        return await this._apiRequest(
+            "POST",
+            "/3/list",
+            { session_id: sessionID },
+            body
         );
     }
 
@@ -476,6 +501,7 @@ exports.default = class TMDB {
                 },
                 // "params that are null or undefined are not rendered in the URL."
                 params: queryParams,
+                // the body is omitted if it is null or undefined
                 data: body
             });
 

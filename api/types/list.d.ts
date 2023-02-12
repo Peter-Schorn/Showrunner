@@ -85,3 +85,26 @@ export interface UserListTVShow {
  * How to sort a user's list.
  */
 export type ListSortBy = "original_order.asc" | "original_order.desc" | "release_date.asc" | "release_date.desc" | "title.asc" | "title.desc" | "vote_average.asc" | "vote_average.desc";
+
+/**
+ * The object sent in the body of the request to create a user list.
+ *
+ * https://developers.themoviedb.org/3/lists/create-list
+ */
+export interface CreateListBody {
+    name: string;
+    description: string;
+    language: string;
+}
+
+/**
+ * The response object from the request to create a user list.
+ *
+ * https://developers.themoviedb.org/3/lists/create-list
+ */
+export interface CreateListResponse {
+    status_message: string;
+    success: boolean;
+    status_code: number;
+    list_id: number;
+}
