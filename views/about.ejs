@@ -1,9 +1,61 @@
-<%- include('./partials/header.ejs', {title: 'PAGE TITLE HERE'}) %>
+
+<%- include('../partials/header.ejs', {title: 'About Page'}) %>
+<%- include('../partials/navbar.ejs') %>
+
+<!-- <div class="center-element" style="display: flex; align-items: center; justify-content: center; height: 100vh;"></div> -->
+
+<div class="center-element my-5" style="display: flex; align-items: center; justify-content: center;">
+  <h1>About Team Showrunners</h1> <!-- placeholder - discuss with team -->
+</div>
+
+<!-- <h2 class="text-center">Some text about who we are and what we do</h2> -->
+
+<div class="row mx-5">
+  <div class="column">
+    <div class="card d-flex justify-content-center align-items-center" style="margin-left: 10vw; margin-right: 10vw">
+      <!-- <img src="" alt="Showrunner" style="width:100%"> -->
+      <div class="container">
+        <h2>Our Mission</h2>
+        <p class="title">The Team</p>
+        <p>With the rise of streaming services, we recognized that there is a challenge in tracking new tv season release dates, and wanted to make it easier for people to find out when a person's favorite show is airing a new season. Starting as a coding class project in ACC's fullstack developer bootcamp, we decided to take the challenge of buliding an app together to tackle this issue.</p>
+        <p></p>
+        <!-- <p><button class="button">Contact</button></p> -->
+      </div>
+    </div>
+  </div>
+
+  <div class="column">
+    <div class="card d-flex justify-content-center align-items-center" style="margin: 5vh 10vw 5vh 10vw">
+      <img src="" alt="" style="width:100%">
+      <div class="container">
+        <h2>The Team</h2>
+        <p>Aeridy, Joel, Kevin and Peter</p>
+        <p>The site handlers</p>
+        <p></p>
+        <!-- <p><button class="button">Contact</button></p> -->
+      </div>
+    </div>
+  </div>
+
+  <div class="column">
+    <div class="card d-flex justify-content-center align-items-center" style="margin-left: 10vw; margin-right: 10vw">
+      <div class="container">
+        <h2>The Stack</h2>
+        <ul>
+          <li>HTML with Express</li>
+          <li>Bootstrap</li>
+          <li>CSS</li>
+          <li>Mongo</li>
+        </ul>
+        <p></p>
+        <!-- <p><button class="button">Contact</button></p> -->
+      </div>
+    </div>
+  </div>
+</div>
 
 
 
 
 
-
-
-<%- include('./partials/footer.ejs') %>
+<%- include('../partials/footer.ejs') %>
