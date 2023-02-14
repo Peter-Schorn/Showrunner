@@ -100,15 +100,6 @@ export interface TVShowItem {
     original_value: any;
 }
 
-export interface TVShowChange {
-    key: string;
-    items: TVShowItem[];
-}
-
-export interface TVShowChanges {
-    changes: TVShowChange[];
-}
-
 export interface Network {
     id: number;
     logo_path: string;
@@ -142,6 +133,12 @@ export interface ScreenedTheatrically {
     results: ScreenedTheatricallyResult[];
 }
 
+export interface SimilarTVShows {
+    page: number;
+    results: SimilarTVShow[];
+    total_pages: number;
+    total_results: number;
+}
 
 export interface SimilarTVShow {
     backdrop_path: string;
@@ -157,13 +154,6 @@ export interface SimilarTVShow {
     name: string;
     vote_average: number;
     vote_count: number;
-}
-
-export interface SimilarTVShows {
-    page: number;
-    results: SimilarTVShow[];
-    total_pages: number;
-    total_results: number;
 }
 
 export interface LatestTVShows {
@@ -312,4 +302,137 @@ export interface ProductionCountry {
 export interface SpokenLanguage {
     iso_639_1: string;
     name: string;
+}
+
+// =======
+
+export interface TVShowAccountStates {
+    id: number;
+    favorite: boolean;
+    watchlist: boolean
+    rated: {
+        value: number;
+    } | boolean
+}
+
+export interface TVShowAlternativeTitles {
+    id: number;
+    results: TVShowAlternativeTitlesResult[];
+}
+
+export interface TVShowAlternativeTitlesResult {
+    title: string;
+    iso_3166_1: string;
+    type: string;
+}
+
+export interface TVShowChanges {
+    changes: TVShowChange[];
+}
+
+export interface TVShowChange {
+    key: string;
+    items: TVShowChangeItem[];
+}
+
+export interface TVShowChangeItem {
+    id: string;
+    action: string;
+    time: string;
+}
+
+export interface TVShowContentRatings {
+    id: string;
+    results: TVShowContentRating[];
+}
+
+export interface TVShowContentRating {
+
+    /**
+     * The language for this content rating in ISO 3166-1 format. E.g., "US".
+     */
+    iso_3166_1: string;
+
+    /**
+     * A human-readable rating (in the language specified by `iso_3166_1`), such
+     * as "TV-MA", or "18+".
+     */
+    rating: string;
+
+}
+
+export interface TVShowExternalIDs {
+    imdb_id: string;
+    freebase_mid: string;
+    freebase_id: string;
+    tvdb_id: number;
+    tvrage_id: number;
+    facebook_id: string;
+    instagram_id: string;
+    twitter_id: string;
+    id: number;
+}
+
+export interface TVShowImages {
+    backdrops: TVShowBackdrop[];
+    id: number;
+    posters: TVShowBackdrop[];
+}
+
+export interface TVShowBackdrop {
+    aspect_ratio: number;
+    file_path: string;
+    height: number;
+    iso_639_1: string | null;
+    vote_average: number;
+    vote_count: number;
+    width: number;
+}
+
+export interface TVShowRecommendations {
+    page: number;
+    results: TVShowRecommendationsResult[];
+    total_pages: number;
+    total_results: number;
+}
+
+export interface TVShowRecommendationsResult {
+    backdrop_path: string;
+    first_air_date: string;
+    genre_ids: number[];
+    id: number;
+    original_language: string;
+    original_name: string;
+    overview: string;
+    origin_country: string[];
+    poster_path: string;
+    popularity: number;
+    name: string;
+    vote_average: number;
+    vote_count: number;
+}
+
+export interface TVShowReviews {
+    id: number;
+    page: number;
+    results: TVShowReview[];
+    total_pages: number;
+    total_results: number;
+}
+
+export interface TVShowReview {
+    author: string;
+    author_details: AuthorDetails;
+    content: string;
+    created_at: string;
+    id: string;
+    updated_at: string;
+    url: string;
+}
+
+export interface AuthorDetails {
+    name: string;
+    username: string;
+    avatar_path: string | null;
+    rating: number;
 }
