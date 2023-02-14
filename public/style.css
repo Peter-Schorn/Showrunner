@@ -1,0 +1,15 @@
+body {
+  background-color: #666666; /*This is how it appears on the mockup*/
+  color: white;
+
+}
+
+.card {
+  color:black
+}
+
+nav:has(*) {
+  color: white;
+  background-color:#1155CC 
+}
+
