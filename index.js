@@ -1,7 +1,6 @@
 // allows access to .env file
-// APIrequire('dotenv').config();
+// require('dotenv').config();
 const TMDB = require("./api").TMDB;
-
 const express = require('express');
 const app = express();
 const port = process.env.PORT || 3000;
