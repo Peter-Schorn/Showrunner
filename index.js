@@ -1,5 +1,5 @@
 // allows access to .env file
-// require('dotenv').config();
+// APIrequire('dotenv').config();
 const TMDB = require("./api").TMDB;
 
 const express = require('express');
