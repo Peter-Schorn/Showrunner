@@ -110,6 +110,36 @@ exports.default = class TMDB {
     }
 
     /**
+     * Get a list of the current popular TV shows on TMDB. This list updates daily.
+     *
+     * https://developers.themoviedb.org/3/tv/get-popular-tv-shows
+     *
+     * Example:
+     * ```
+     * tmdb.tvShowPopular({ page: 2 })
+     *     .then((result) => {
+     *         console.log(result);
+     *     })
+     *     .catch((error) => {
+     *         console.error(error);
+     *     });
+     * ```
+     *
+     * @param {{
+     *     page?: number | null | undefined,
+     *     language?: string | null | undefined
+     * }} [options] the options: page: the page to return (default: 1);
+     * language: an ISO 63901 language code
+     * @returns {Promise<TVShowsResponse>}
+     */
+    async tvShowPopular(options) {
+        return await this._get(
+            "/3/tv/popular",
+            options
+        );
+    }
+
+    /**
      * Get the rating for a tv show, as well as whether or not it belongs on
      * your favorites and/or watchlist.
      *

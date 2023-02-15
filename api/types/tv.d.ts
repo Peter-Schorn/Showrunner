@@ -250,8 +250,9 @@ export interface PopularTVShowResult {
 }
 
 /**
- * Also used for search tv shows response:
+ * Used for popular tv shows and search tv shows response:
  *
+ * https://developers.themoviedb.org/3/tv/get-popular-tv-shows
  * https://developers.themoviedb.org/3/search/search-tv-shows
  */
 export interface TVShowsResponse {
