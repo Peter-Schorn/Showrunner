@@ -1,5 +1,5 @@
 // allows access to .env file
-require('dotenv').config();
+// require('dotenv').config();
 const TMDB = require("./api").TMDB;
 
 const express = require('express');
@@ -13,8 +13,8 @@ app.set('view engine', 'ejs');
 
 // console.log(process.env);
 
-const apiKey = process.env.TMDB_API_KEY_V4;
-const tmdb = new TMDB(apiKey);
+// const apiKey = process.env.TMDB_API_KEY_V4;
+// const tmdb = new TMDB(apiKey);
 
 // --- example of calling the api ---
 //
@@ -39,7 +39,7 @@ app.get('/', (req, res)=>{
 
 // ABOUT PAGE
 app.get('/about', (req, res) => {
-  res.render('about.ejs');
+    res.render('about.ejs');
 })
 
 app.get('/home', (req, res) => {
