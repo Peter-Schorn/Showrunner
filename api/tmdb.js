@@ -130,7 +130,8 @@ exports.default = class TMDB {
      *     language?: string | null | undefined
      * }} [options] the options: page: the page to return (default: 1);
      * language: an ISO 63901 language code
-     * @returns {Promise<TVShowsResponse>}
+     * @returns {Promise<TVShowsResponse>} an object containing a list of the
+     * most popular tv shows
      */
     async tvShowPopular(options) {
         return await this._get(
@@ -138,6 +139,37 @@ exports.default = class TMDB {
             options
         );
     }
+
+    /**
+     * Get a list of the top rated TV shows on TMDB.
+     *
+     * https://developers.themoviedb.org/3/tv/get-top-rated-tv
+     *
+     * Example:
+     * ```
+     * tmdb.tvShowTopRated({ language: "es" })  // spanish
+     *     .then((result) => {
+     *         console.log(result);
+     *     })
+     *     .catch((error) => {
+     *         console.error(error);
+     *     });
+     * ```
+     *
+     * @param {{
+    *     page?: number | null | undefined,
+    *     language?: string | null | undefined
+    * }} [options] the options: page: the page to return (default: 1);
+    * language: an ISO 63901 language code
+    * @returns {Promise<TVShowsResponse>} an object containing a list of the
+    * most top rated tv shows
+    */
+   async tvShowTopRated(options) {
+       return await this._get(
+           "/3/tv/top_rated",
+           options
+       );
+   }
 
     /**
      * Get the rating for a tv show, as well as whether or not it belongs on
