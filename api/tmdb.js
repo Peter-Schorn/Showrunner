@@ -60,8 +60,8 @@ exports.default = class TMDB {
             const data = request?.data;
             if (data) {
                 const dataString = typeof data === "object" ?
-                        JSON.stringify(data) :
-                        data;
+                    JSON.stringify(data) :
+                    data;
                 message += ` with body:\n${dataString}`;
             }
             console.log(message);
@@ -98,7 +98,7 @@ exports.default = class TMDB {
      *     });
      * ```
      *
-     * @param {string | Number} id the tv show id
+     * @param {string |  number} id the tv show id
      * @param {string | null | undefined} [language] an ISO 639-1 language code
      * @returns {Promise<TVShowDetails>} the details of a TMDB tv show
      */
@@ -164,12 +164,12 @@ exports.default = class TMDB {
     * @returns {Promise<TVShowsResponse>} an object containing a list of the
     * most top rated tv shows
     */
-   async tvShowTopRated(options) {
-       return await this._get(
-           "/3/tv/top_rated",
-           options
-       );
-   }
+    async tvShowTopRated(options) {
+        return await this._get(
+            "/3/tv/top_rated",
+            options
+        );
+    }
 
     /**
      * Get the rating for a tv show, as well as whether or not it belongs on
@@ -321,22 +321,22 @@ exports.default = class TMDB {
         );
     }
 
-     /**
-      * Get the similar shows for a tv show.
-      *
-      * https://developers.themoviedb.org/3/tv/get-similar-tv-shows
-      *
-      * See also `TMDB.tvShowRecommendations(id, options)`.
-      *
-      * @param {string | number} id the tv show id
-      * @param {{
-      *     language?: string | null | undefined,
-      *     page?: number | null | undefined
-      * } | null | undefined} [options] the options for this endpoint:
-      *   language: an ISO 639-1 language code;
-      *   page: the index of the page to return;
-      * @returns {Promise<SimilarTVShows>} similar tv shows
-      */
+    /**
+     * Get the similar shows for a tv show.
+     *
+     * https://developers.themoviedb.org/3/tv/get-similar-tv-shows
+     *
+     * See also `TMDB.tvShowRecommendations(id, options)`.
+     *
+     * @param {string | number} id the tv show id
+     * @param {{
+     *     language?: string | null | undefined,
+     *     page?: number | null | undefined
+     * } | null | undefined} [options] the options for this endpoint:
+     *   language: an ISO 639-1 language code;
+     *   page: the index of the page to return;
+     * @returns {Promise<SimilarTVShows>} similar tv shows
+     */
     async tvShowSimilarShows(id, options) {
         return await this._get(
             `/3/tv/${id}/similar`,  // path
@@ -410,7 +410,7 @@ exports.default = class TMDB {
             `/3/tv/${id}/rating`,
             { session_id: sessionID },
             { value: rating }
-        )
+        );
     }
 
     // MARK: Search
@@ -450,9 +450,9 @@ exports.default = class TMDB {
      *
      * https://developers.themoviedb.org/3/lists/get-list-details
      *
-     * @param {string | Number} listID the list id
+     * @param {string | number } listID the list id
      * @param {{
-     *     page?: Number | null | undefined,
+     *     page?:  number | null | undefined,
      *     sortBy?: ListSortBy | null | undefined,
      *     language?: string | null | undefined
      * } | null | undefined} [options] the options for this endpoint:
@@ -483,6 +483,60 @@ exports.default = class TMDB {
             "/3/list",
             { session_id: sessionID },
             body
+        );
+    }
+
+    /**
+     * Clear all of the items from a list.
+     *
+     * https://developers.themoviedb.org/3/lists/clear-list
+     *
+     * @param {string | number} listID
+     * @param {{
+     *     session_id: string,
+     *     confirm: boolean
+     * }} options the options: `session_id`, `confirm`
+     */
+    async clearList(listID, options) {
+        return await this._apiRequest(
+            "POST",
+            `/3/list/${listID}/clear`,
+            options
+        );
+    }
+
+    /**
+     * Delete a list.
+     *
+     * https://developers.themoviedb.org/3/lists/delete-list
+     *
+     * @param {string | number} listID the list id
+     * @param {string} session_id the session id
+    * @returns {Promise<TMDBGeneralResponse>} whether or not the list was
+    * successfully deleted
+    */
+    async deleteList(listID, session_id) {
+        return await this._apiRequest(
+            "POST",
+            `/3/list/${listID}`,
+            { session_id }
+        );
+    }
+
+    /**
+     * Remove items from a list.
+     *
+     * https://developers.themoviedb.org/4/list/remove-items
+     *
+     * @param {string} listID the id of the list to remove items from
+     * @param {Object} items the items to remove from the list
+     */
+    async removeItemsFromList(listID, items) {
+        return await this._apiRequest(
+            "DELETE",
+            `/4/list/${listID}/items`,
+            null,
+            items
         );
     }
 
