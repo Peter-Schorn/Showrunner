@@ -23,6 +23,10 @@ const axios = require("axios").default;
  * @typedef { import("./types").TVSearchOptions } TVSearchOptions
  * @typedef { import("./types").TVShowsResponse } TVShowsResponse
  *
+ *
+ *
+ * @typedef { import("./types").UpdateListRequest } UpdateListRequest
+ *
  * @typedef { "GET" | "POST" | "PUT" | "DELETE" } HTTPMethod
  */
 
@@ -487,6 +491,26 @@ exports.default = class TMDB {
     }
 
     /**
+     * Update the details of a list.
+     *
+     * You must be the owner of the list and therefore have a valid user access
+     * token in order to edit it.
+     *
+     * https://developers.themoviedb.org/4/list/update-list
+     *
+     * @param {string | number} listID the id of the list to update
+     * @param {UpdateListRequest} options the options for updating the list
+     */
+    async updateList(listID, options) {
+        return await this._apiRequest(
+            "PUT",
+            `/4/list/${listID}`,
+            null,  // query params
+            options
+        );
+    }
+
+    /**
      * Clear all of the items from a list.
      *
      * https://developers.themoviedb.org/3/lists/clear-list
@@ -517,7 +541,7 @@ exports.default = class TMDB {
     */
     async deleteList(listID, session_id) {
         return await this._apiRequest(
-            "POST",
+            "DELETE",
             `/3/list/${listID}`,
             { session_id }
         );
@@ -528,7 +552,7 @@ exports.default = class TMDB {
      *
      * https://developers.themoviedb.org/4/list/remove-items
      *
-     * @param {string} listID the id of the list to remove items from
+     * @param {string | number} listID the id of the list to remove items from
      * @param {Object} items the items to remove from the list
      */
     async removeItemsFromList(listID, items) {

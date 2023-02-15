@@ -61,6 +61,18 @@ const tmdb = new TMDB(apiKey);
 //         console.error("error from TMDB:", error);
 //     });
 
+// // https://www.themoviedb.org/list/8238485
+// const petersShows = 8238485;
+
+// tmdb.updateList(petersShows, {
+//     description: "programmatically created description"
+// })
+// .then((result) => {
+//     console.log(result);
+// })
+// .catch((error) => {
+//     console.error(error);
+// });
 
 // Route handlers
 

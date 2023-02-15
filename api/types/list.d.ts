@@ -108,3 +108,10 @@ export interface CreateListResponse {
     status_code: number;
     list_id: number;
 }
+
+export interface UpdateListRequest {
+    description?: string | null | undefined;
+    name?: string | null | undefined;
+    public?: boolean | null | undefined;
+    sort_by?: string | null | undefined;
+}
