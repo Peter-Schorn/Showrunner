@@ -1,19 +1,50 @@
 // allows access to .env file
-// require('dotenv').config();
-const TMDB = require("./api").TMDB;
+require('dotenv').config();
+
 const express = require('express');
 const app = express();
 const port = process.env.PORT || 3000;
-const logger = require('morgan');
-app.use(logger('dev'));
+
+const TMDB = require("./api").TMDB;
 app.use(express.static('public'));
 app.set('view engine', 'ejs');
 
+const logger = require('morgan');
+app.use(logger('dev'));
 
 // console.log(process.env);
 
-// const apiKey = process.env.TMDB_API_KEY_V4;
-// const tmdb = new TMDB(apiKey);
+// DB CONNECTION
+
+const mongoose = require('mongoose');
+mongoose.set('strictQuery', false);
+
+// get connection variables from .env file
+const {URI, DB, DB_USER, DB_PASS} = process.env;
+
+// url to connect to database
+
+let url = `${URI}/${DB}`;
+
+// connection options
+
+let connectionObject = {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    authSource: "admin",
+    user: DB_USER,
+    pass: DB_PASS,
+};
+
+// build connection
+
+mongoose.connect(url, connectionObject)
+.then(()=> console.log(`Connected to ${DB} database`))
+.catch(error=> console.log(`Error connecting to ${DB} database: ${error}`))
+
+
+const apiKey = process.env.TMDB_API_KEY_V4;
+const tmdb = new TMDB(apiKey);
 
 // --- example of calling the api ---
 //
