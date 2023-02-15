@@ -20,6 +20,8 @@ const axios = require("axios").default;
  * @typedef { import("./types").TMDBGeneralResponse } TMDBGeneralResponse
  * @typedef { import("./types").CreateListBody } CreateListBody
  * @typedef { import("./types").CreateListResponse } CreateListResponse
+ * @typedef { import("./types").TVSearchOptions } TVSearchOptions
+ * @typedef { import("./types").TVShowsResponse } TVShowsResponse
  *
  * @typedef { "GET" | "POST" | "PUT" | "DELETE" } HTTPMethod
  */
@@ -78,6 +80,23 @@ exports.default = class TMDB {
      * Get the primary information about a tv show.
      *
      * https://developers.themoviedb.org/3/tv/get-tv-details
+     *
+     * Example:
+     *
+     * ```
+     * // https://www.themoviedb.org/tv/1396-breaking-bad
+     * const breakingBadTVShowID = 1396;
+     *
+     * tmdb.tvShowDetails(breakingBadTVShowID)
+     *     .then((show) => {
+     *         console.log(
+     *             `tmdb.tvShowDetails callback: show.name: "${show.name}"`
+     *         );
+     *     })
+     *     .catch((error) => {
+     *         console.error("error from TMDB:", error);
+     *     });
+     * ```
      *
      * @param {string | Number} id the tv show id
      * @param {string | null | undefined} [language] an ISO 639-1 language code
@@ -332,6 +351,35 @@ exports.default = class TMDB {
         )
     }
 
+    // MARK: Search
+
+    /**
+     * Search for tv shows.
+     *
+     * https://developers.themoviedb.org/3/search/search-tv-shows
+     *
+     * Example:
+     *
+     * ```
+     * tmdb.searchTVShows({ query: "Wire The", include_adult: true })
+     *     .then((result) => {
+     *         console.log(`name of first show: "${result.results[0].name}"`);
+     *     })
+     *     .catch((error) => {
+     *         console.error(error);
+     *     });
+     * ```
+     *
+     * @param {TVSearchOptions} options the options for the search: `query`,
+     * `page`, `language`, `include_adult`, and `first_air_date_year`
+     *
+     * @returns {Promise<TVShowsResponse>} an object containing the tv shows
+     * that match the query
+     */
+    async searchTVShows(options) {
+        return await this._get("/3/search/tv", options);
+    }
+
     // MARK: Lists
 
     /**
@@ -468,7 +516,7 @@ exports.default = class TMDB {
      *
      * @param {string} path the path of the endpoint, which will be appended to
      * `TMDB.apiBase`.
-     * @param {Object.<string, string | number | null | undefined> | null | undefined} [queryParams] the query parameters for
+     * @param {Object | null | undefined} [queryParams] the query parameters for
      * the endpoint
      * @returns {Promise<any>} the response body from the server
      */
@@ -482,7 +530,7 @@ exports.default = class TMDB {
      * @param {HTTPMethod} method the http method
      * @param {string} path the path of the endpoint, which will be appended to
      * `TMDB.apiBase`.
-     * @param {Object.<string, string | number | null | undefined> | null | undefined} [queryParams] the query parameters for the endpoint
+     * @param {Object | null | undefined} [queryParams] the query parameters for the endpoint
      * @param {Object | null | undefined} [body] the body of the request
      * @returns {Promise<any>} the response body from the server
      */

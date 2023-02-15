@@ -233,7 +233,6 @@ export interface TVShowsAiringToday {
     total_pages: number;
 }
 
-
 export interface PopularTVShowResult {
     poster_path: string;
     popularity: number;
@@ -250,7 +249,12 @@ export interface PopularTVShowResult {
     original_name: string;
 }
 
-export interface PopularTVShows {
+/**
+ * Also used for search tv shows response:
+ *
+ * https://developers.themoviedb.org/3/search/search-tv-shows
+ */
+export interface TVShowsResponse {
     page: number;
     results: PopularTVShowResult[];
     total_results: number;
