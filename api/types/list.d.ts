@@ -93,8 +93,8 @@ export type ListSortBy = "original_order.asc" | "original_order.desc" | "release
  */
 export interface CreateListBody {
     name: string;
-    description: string;
-    language: string;
+    description?: string;
+    language?: string;
 }
 
 /**
@@ -114,4 +114,13 @@ export interface UpdateListRequest {
     name?: string | null | undefined;
     public?: boolean | null | undefined;
     sort_by?: string | null | undefined;
+}
+
+export interface TMDBListItem {
+    media_type: string;
+    media_id: string | number;
+}
+
+export interface RemoveFromListRequest {
+    items: TMDBListItem[];
 }
