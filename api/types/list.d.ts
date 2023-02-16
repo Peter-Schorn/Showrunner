@@ -121,6 +121,13 @@ export interface TMDBListItem {
     media_id: string | number;
 }
 
-export interface RemoveFromListRequest {
+/**
+ * Used in the request to add items to a list, and in the requests to remove
+ * items from a list.
+ *
+ * https://developers.themoviedb.org/4/list/add-items
+ * https://developers.themoviedb.org/4/list/remove-items
+ */
+export interface ModifyListRequest {
     items: TMDBListItem[];
 }

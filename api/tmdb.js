@@ -23,7 +23,7 @@ const axios = require("axios").default;
  * @typedef { import("./types").TVSearchOptions } TVSearchOptions
  * @typedef { import("./types").TVShowsResponse } TVShowsResponse
  * @typedef { import("./types").UpdateListRequest } UpdateListRequest
- * @typedef { import("./types").RemoveFromListRequest } RemoveFromListRequest
+ * @typedef { import("./types").ModifyListRequest } ModifyListRequest
  *
  * @typedef { "GET" | "POST" | "PUT" | "DELETE" } HTTPMethod
  */
@@ -583,6 +583,51 @@ exports.default = class TMDB {
     }
 
     /**
+     * Add items to a list.
+     *
+     * Requires a user access token, which can be retrieved from
+     * `TMDB.createAccessToken`.
+     *
+     * https://developers.themoviedb.org/4/list/add-items
+     *
+     * For example:
+     * ```
+     * tmdb.addItemsToList(myListID, accessToken, {
+     *     items: [
+     *         {
+     *             "media_type": "tv",
+     *             "media_id": theWireID
+     *         },
+     *         {
+     *             "media_type": "movie",
+     *             "media_id": inceptionMovieID
+     *         }
+     *     ]
+     * })
+     * .then((result) => {
+     *     console.log(result);
+     * })
+     * .catch((error) => {
+     *     console.error(error);
+     * });
+     * ```
+     *
+     * @param {string | number} listID the id of the list to add items to
+     * @param {ModifyListRequest} items the items to add to the list
+     */
+    async addItemsToList(listID, accessToken, items) {
+        return await this._apiRequest(
+            "POST",
+            `/4/list/${listID}/items`,
+            null,
+            items,
+            {
+                "Authorization": `Bearer ${accessToken}`
+            }
+        );
+    }
+
+    /**
      * Remove items from a list.
      *
      * Requires a user access token, which can be retrieved from
@@ -613,8 +658,7 @@ exports.default = class TMDB {
      * ```
      *
      * @param {string | number} listID the id of the list to remove items from
-     *
-     * @param {RemoveFromListRequest} items the items to remove from the list
+     * @param {ModifyListRequest} items the items to remove from the list
      */
     async removeItemsFromList(listID, accessToken, items) {
         return await this._apiRequest(
