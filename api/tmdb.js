@@ -44,8 +44,10 @@ exports.default = class TMDB {
      * Creates an instance of TMDB.
      *
      * @param {string} apiKey the API key
+     * @param {boolean} enableLogging whether or not to log the http requests
+     * to the TMDB api; default: true
      */
-    constructor(apiKey) {
+    constructor(apiKey, enableLogging=true) {
 
         if (!apiKey) {
             throw new Error(`apiKey cannot be '${apiKey}'`);
@@ -53,25 +55,29 @@ exports.default = class TMDB {
         this.apiKey = apiKey;
         this.httpClient = axios.create();
 
-        // log all http requests
-        // https://axios-http.com/docs/interceptors
-        this.httpClient.interceptors.request.use((request) => {
-            const date = new Date().toUTCString();
-            const prefix = `[TMDB: ${date}]`;
-            const fullURL = `${request?.baseURL ?? ""}${request?.url}`;
-            const methodString = request?.method?.toUpperCase() ?? "GET";
-            let message = `${prefix} ${methodString} to ${fullURL}`;
-            const data = request?.data;
-            if (data) {
-                const dataString = typeof data === "object" ?
-                    JSON.stringify(data) :
-                    data;
-                message += ` with body:\n${dataString}`;
-            }
-            console.log(message);
+        if (enableLogging) {
 
-            return request;
-        });
+            // log all http requests
+            // https://axios-http.com/docs/interceptors
+            this.httpClient.interceptors.request.use((request) => {
+                const date = new Date().toUTCString();
+                const prefix = `[TMDB: ${date}]`;
+                const fullURL = `${request?.baseURL ?? ""}${request?.url}`;
+                const methodString = request?.method?.toUpperCase() ?? "GET";
+                let message = `${prefix} ${methodString} to ${fullURL}`;
+                const data = request?.data;
+                if (data) {
+                    const dataString = typeof data === "object" ?
+                        JSON.stringify(data) :
+                        data;
+                    message += ` with body:\n${dataString}`;
+                }
+                console.log(message);
+
+                return request;
+            });
+
+        }
 
     }
 
@@ -499,14 +505,18 @@ exports.default = class TMDB {
      * https://developers.themoviedb.org/4/list/update-list
      *
      * @param {string | number} listID the id of the list to update
+     * @param {string | number} accessToken the user access token
      * @param {UpdateListRequest} options the options for updating the list
      */
-    async updateList(listID, options) {
+    async updateList(listID, accessToken, options) {
         return await this._apiRequest(
             "PUT",
             `/4/list/${listID}`,
             null,  // query params
-            options
+            options,
+            {
+                "Authorization": `Bearer ${accessToken}`,
+            }
         );
     }
 
@@ -584,7 +594,7 @@ exports.default = class TMDB {
      *
      * Once a user has approved your request, they'll either be directed to the
      * /auth/access/approve page on TMDb or redirected to the `callbackURL` you
-     * specified when you made the request token.
+     * specified in this method.
      *
      * Next, call `TMDB.createAccessToken(requestToken)` with the approved
      * refresh token to get the access token.
@@ -672,21 +682,33 @@ exports.default = class TMDB {
      * `TMDB.apiBase`.
      * @param {Object | null | undefined} [queryParams] the query parameters for the endpoint
      * @param {Object | null | undefined} [body] the body of the request
+     * @param {Object | null | undefined} [headers] additional headers to use,
+     * which, if present, will overwrite any default headers
      * @returns {Promise<any>} the response body from the server
      */
-    async _apiRequest(method, path, queryParams, body) {
+    async _apiRequest(method, path, queryParams, body, headers) {
 
         try {
+
+            let fullHeaders = {
+                "Authorization": `Bearer ${this.apiKey}`,
+                "Content-Type": "application/json;charset=utf-8"
+            }
+
+            if (typeof headers === "object") {
+                // Allow the passed in headers to overwrite the default headers
+                // above, not the other way around. Keys already present in
+                // `headers` will NOT have their values overwritten by the
+                // values of the same keys in `fullHeaders`.
+                fullHeaders = Object.assign(fullHeaders, headers);
+            }
 
             // https://axios-http.com/docs/req_config
             const response = await this.httpClient.request({
                 method: method,
                 baseURL: TMDB.apiBase,
                 url: path,
-                headers: {
-                    "Authorization": `Bearer ${this.apiKey}`,
-                    "Content-Type": "application/json;charset=utf-8"
-                },
+                headers: fullHeaders,
                 // "params that are null or undefined are not rendered in the URL."
                 params: queryParams,
                 // the body is omitted if it is null or undefined
