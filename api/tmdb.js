@@ -29,6 +29,7 @@ const axios = require("axios").default;
  * @typedef { import("./types").AccountDetails } AccountDetails
  * @typedef { import("./types").AccountLists } AccountLists
  * @typedef { import("./types").AccountListsOptions } AccountListsOptions
+ * @typedef { import("./types").TMDBConfigurationDetails } TMDBConfigurationDetails
  */
 
 /**
@@ -718,6 +719,73 @@ exports.default = class TMDB {
                 "Authorization": `Bearer ${accessToken}`
             }
         );
+    }
+
+    // MARK: Configuration
+
+    /**
+     * Get the system wide configuration information.
+     *
+     * https://developers.themoviedb.org/3/configuration/get-api-configuration
+     *
+     * Some elements of the API require some knowledge of this configuration
+     * data. The purpose of this is to try and keep the actual API responses as
+     * light as possible. It is recommended you cache this data within your
+     * application and check for updates every few days.
+     *
+     * This method currently holds the data relevant to building image URLs as
+     * well as the change key map.
+     *
+     * To build an image URL, you will need 3 pieces of data. The `base_url`,
+     * `size` and `file_path`. Simply combine them all and you will have a fully
+     * qualified URL. Here’s an example URL:
+     * ```
+     * "https://image.tmdb.org/t/p/w500/8uO0gUM8aNqYLs1OsTBQiXu0fEv.jpg"
+     * ```
+     * The configuration method also contains the list of change keys which can
+     * be useful if you are building an app that consumes data from the change
+     * feed.
+     *
+     * Sample response:
+     * ```
+     * {
+     *   images: {
+     *     base_url: 'http://image.tmdb.org/t/p/',
+     *     secure_base_url: 'https://image.tmdb.org/t/p/',
+     *     backdrop_sizes: [ 'w300', 'w780', 'w1280', 'original' ],
+     *     logo_sizes: [ 'w45', 'w92', 'w154', 'w185', 'w300', 'w500', 'original' ],
+     *     poster_sizes: [ 'w92', 'w154', 'w185', 'w342', 'w500', 'w780', 'original' ],
+     *     profile_sizes: [ 'w45', 'w185', 'h632', 'original' ],
+     *     still_sizes: [ 'w92', 'w185', 'w300', 'original' ]
+     *   },
+     *   change_keys: [
+     *     'adult',                'air_date',         'also_known_as',
+     *     'alternative_titles',   'biography',        'birthday',
+     *     'budget',               'cast',             'certifications',
+     *     'character_names',      'created_by',       'crew',
+     *     'deathday',             'episode',          'episode_number',
+     *     'episode_run_time',     'freebase_id',      'freebase_mid',
+     *     'general',              'genres',           'guest_stars',
+     *     'homepage',             'images',           'imdb_id',
+     *     'languages',            'name',             'network',
+     *     'origin_country',       'original_name',    'original_title',
+     *     'overview',             'parts',            'place_of_birth',
+     *     'plot_keywords',        'production_code',  'production_companies',
+     *     'production_countries', 'releases',         'revenue',
+     *     'runtime',              'season',           'season_number',
+     *     'season_regular',       'spoken_languages', 'status',
+     *     'tagline',              'title',            'translations',
+     *     'tvdb_id',              'tvrage_id',        'type',
+     *     'video',                'videos'
+     *   ]
+     * }
+     * ```
+     *
+     * @returns {Promise<TMDBConfigurationDetails>} the configuration details;
+     * see sample response
+     */
+    async configurationDetails() {
+        return await this._get("/3/configuration");
     }
 
     // MARK: User Authentication
