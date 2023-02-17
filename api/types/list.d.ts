@@ -131,3 +131,35 @@ export interface TMDBListItem {
 export interface ModifyListRequest {
     items: TMDBListItem[];
 }
+
+/**
+ * The response from the endpoint for clearing a user's list.
+ *
+ * https://developers.themoviedb.org/4/list/clear-list
+ */
+export interface ClearListResponse {
+    items_deleted: number;
+    status_message: string;
+    id: number;
+    status_code: number;
+    success: boolean;
+}
+
+/**
+ * Returned from the endpoints for adding and removing items from a user's list
+ *
+ * https://developers.themoviedb.org/4/list/add-items
+ * https://developers.themoviedb.org/4/list/remove-items
+ */
+export interface ModifyListItemsResponse {
+    status_message: string;
+    status_code: number;
+    success: boolean;
+    results: ModifyListItemsResult[];
+}
+
+export interface ModifyListItemsResult {
+    media_type: string;
+    media_id: number;
+    success: boolean;
+}

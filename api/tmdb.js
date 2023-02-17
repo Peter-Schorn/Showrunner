@@ -30,6 +30,8 @@ const axios = require("axios").default;
  * @typedef { import("./types").AccountLists } AccountLists
  * @typedef { import("./types").AccountListsOptions } AccountListsOptions
  * @typedef { import("./types").TMDBConfigurationDetails } TMDBConfigurationDetails
+ * @typedef { import("./types").ClearListResponse } ClearListResponse
+ * @typedef { import("./types").ModifyListItemsResponse } ModifyListItemsResponse
  */
 
 /**
@@ -572,6 +574,8 @@ exports.default = class TMDB {
      * @param {string | number} listID the id of the list to update
      * @param {string} accessToken the user access token
      * @param {UpdateListRequest} options the options for updating the list
+     * @returns {Promise<TMDBGeneralResponse>} an object that indicates whether
+     * or not the list was updated successfully
      */
     async updateList(listID, accessToken, options) {
         return await this._apiRequest(
@@ -595,6 +599,8 @@ exports.default = class TMDB {
      *
      * @param {string | number} listID the list id
      * @param {string} sessionID the session id
+     * @returns {Promise<ClearListResponse>} an object that indicates whether or
+     * not the list was cleared and how many items were removed
      */
     async clearList(listID, sessionID) {
         return await this._apiRequest(
@@ -663,6 +669,9 @@ exports.default = class TMDB {
      *
      * @param {string | number} listID the id of the list to add items to
      * @param {ModifyListRequest} items the items to add to the list
+     * @returns {Promise<ModifyListItemsResponse>} an object that indicates
+     * whether or not the items were added successfully and which items were
+     * added
      */
     async addItemsToList(listID, accessToken, items) {
         return await this._apiRequest(
@@ -708,6 +717,9 @@ exports.default = class TMDB {
      *
      * @param {string | number} listID the id of the list to remove items from
      * @param {ModifyListRequest} items the items to remove from the list
+     * @returns {Promise<ModifyListItemsResponse>} an object that indicates
+     * whether or not the items were removed successfully and which items were
+     * removed
      */
     async removeItemsFromList(listID, accessToken, items) {
         return await this._apiRequest(
