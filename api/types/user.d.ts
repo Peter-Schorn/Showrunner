@@ -18,7 +18,6 @@ export interface AccountDetails {
 }
 
 export interface AccountListsOptions {
-    language?: string | null | undefined;
     page?: number | null | undefined;
 }
 
@@ -38,4 +37,16 @@ export interface AccountList {
     list_type: string;
     name: string;
     poster_path: string | null;
+    featured: number;
+    revenue: string;
+    public: number;
+    name: string;
+    updated_at: string;
+    sort_by: number;
+    backdrop_path: string;
+    runtime: number;
+    average_rating: number;
+    iso_3166_1: string;
+    adult: number;
+    number_of_items: number;
 }
