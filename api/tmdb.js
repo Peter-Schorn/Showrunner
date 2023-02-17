@@ -24,8 +24,8 @@ const axios = require("axios").default;
  * @typedef { import("./types").TVShowsResponse } TVShowsResponse
  * @typedef { import("./types").UpdateListRequest } UpdateListRequest
  * @typedef { import("./types").ModifyListRequest } ModifyListRequest
- *
- * @typedef { "GET" | "POST" | "PUT" | "DELETE" } HTTPMethod
+ * @typedef { import("./types").AccountDetails } AccountDetails
+ * @typedef { import("./types").HTTPMethod } HTTPMethod
  */
 
 
@@ -450,7 +450,29 @@ exports.default = class TMDB {
         return await this._get("/3/search/tv", options);
     }
 
+    // MARK: Account
+
+    /**
+     * Get the details of a user account.
+     *
+     * https://developers.themoviedb.org/3/account/get-account-details
+     *
+     * @param {string} sessionID the session id
+     * @returns {Promise<AccountDetails>} the account details
+     */
+    async accountDetails(sessionID) {
+        return await this._get(
+            "/3/account",
+            { session_id: sessionID }
+        );
+    }
+
+    async accountLists() {
+
+    }
+
     // MARK: Lists
+
 
     /**
      * Gets a user's list by id. Private lists can only be accessed by their

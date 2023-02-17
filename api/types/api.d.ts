@@ -4,3 +4,5 @@ export interface TMDBGeneralResponse {
     status_message: string;
     success?: boolean | null | undefined;
 }
+
+export type HTTPMethod = "GET" | "POST" | "PUT" | "DELETE";
