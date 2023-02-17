@@ -488,20 +488,20 @@ exports.default = class TMDB {
      *
      * @param {string} accountID the account id, which can be retrieved from
      * `TMDB.accountDetails`
-     * @param {string} sessionID the session id
      * @param {AccountListsOptions} [options] the options: language: an ISO
      * 639-1 language
      * @returns {Promise<AccountLists>}
      */
-    async accountLists(accountID, sessionID, options) {
+    async accountLists(accountID, options) {
         return await this._get(
-            `/3/account/${accountID}/lists`,
-            Object.assign({ session_id: sessionID }, options)
+            `/4/account/${accountID}/lists`,
+            options
         );
     }
 
-    // MARK: Lists
+    // async accountWatchlist
 
+    // MARK: Lists
 
     /**
      * Gets a user's list by id. Private lists can only be accessed by their
