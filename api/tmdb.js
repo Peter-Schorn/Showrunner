@@ -59,27 +59,7 @@ exports.default = class TMDB {
         this.httpClient = axios.create();
 
         if (enableLogging) {
-
-            // log all http requests
-            // https://axios-http.com/docs/interceptors
-            this.httpClient.interceptors.request.use((request) => {
-                const date = new Date().toUTCString();
-                const prefix = `[TMDB: ${date}]`;
-                const fullURL = `${request?.baseURL ?? ""}${request?.url}`;
-                const methodString = request?.method?.toUpperCase() ?? "GET";
-                let message = `${prefix} ${methodString} to ${fullURL}`;
-                const data = request?.data;
-                if (data) {
-                    const dataString = typeof data === "object" ?
-                        JSON.stringify(data) :
-                        data;
-                    message += ` with body:\n${dataString}`;
-                }
-                console.log(message);
-
-                return request;
-            });
-
+            this.configureLogging();
         }
 
     }
@@ -522,7 +502,7 @@ exports.default = class TMDB {
      */
     async getList(listID, options) {
         return await this._get(
-            `/3/list/${listID}`,  // path
+            `/4/list/${listID}`,  // path
             options  // query params
         );
     }
@@ -530,17 +510,16 @@ exports.default = class TMDB {
     /**
      * Create a list for the user.
      *
-     * A session id is required, which can be retrieved from
-     * `TMDB.createSession`.
+     * Requires a user access token, which can be retrieved from
+     * `TMDB.createAccessToken`.
      *
      * https://developers.themoviedb.org/3/lists/create-list
      *
      * For example:
      * ```
-     * tmdb.createList(sessionID, {
+     * tmdb.createList(accessToken, {
      *     name: "programmatically created list",
-     *     description: "The description for my new list.",
-     *     language: "en"
+     *     description: "The description for my new list."
      * })
      * .then((result) => {
      *     console.log(result);
@@ -550,16 +529,22 @@ exports.default = class TMDB {
      * });
      * ```
      *
-     * @param {string} sessionID the session id
+     * @param {string} accessToken the access token
      * @param {CreateListBody} body the options for creating the list
      * @returns {Promise<CreateListResponse>} the response from creating the list
      */
-    async createList(sessionID, body) {
+    async createList(accessToken, body) {
+        if (!body.iso_639_1) {
+            // this field is required; the api will return an error if it is
+            // omitted, so use english as a default
+            body.iso_639_1 = "en";
+        }
         return await this._apiRequest(
             "POST",
-            "/3/list",
-            { session_id: sessionID },
-            body
+            "/4/list",
+            null,
+            body,
+            TMDB._authorizationHeaderFromAccessToken(accessToken)
         );
     }
 
@@ -583,9 +568,7 @@ exports.default = class TMDB {
             `/4/list/${listID}`,
             null,  // query params
             options,
-            {
-                "Authorization": `Bearer ${accessToken}`
-            }
+            TMDB._authorizationHeaderFromAccessToken(accessToken)
         );
     }
 
@@ -616,8 +599,8 @@ exports.default = class TMDB {
     /**
      * Delete a list.
      *
-     * A session id is required, which can be retrieved from
-     * `TMDB.createSession`.
+     * Requires a user access token, which can be retrieved from
+     * `TMDB.createAccessToken`.
      *
      * https://developers.themoviedb.org/3/lists/delete-list
      *
@@ -625,15 +608,18 @@ exports.default = class TMDB {
      * successfully deleted.
      *
      * @param {string | number} listID the list id
-     * @param {string} sessionID the session id
-     * @returns {Promise<TMDBGeneralResponse>} whether or not the list was
-     * successfully deleted
+     * @param {string} accessToken the user access token
+     * @returns {Promise<TMDBGeneralResponse>} an object that indicates whether
+     * or not the list was successfully deleted
      */
-    async deleteList(listID, sessionID) {
+    async deleteList(listID, accessToken) {
         return await this._apiRequest(
             "DELETE",
-            `/3/list/${listID}`,
-            { session_id: sessionID }
+            `/4/list/${listID}`,
+            null,
+            null,
+            // headers:
+            TMDB._authorizationHeaderFromAccessToken(accessToken)
         );
     }
 
@@ -668,6 +654,7 @@ exports.default = class TMDB {
      * ```
      *
      * @param {string | number} listID the id of the list to add items to
+     * @param {string} accessToken the user access token
      * @param {ModifyListRequest} items the items to add to the list
      * @returns {Promise<ModifyListItemsResponse>} an object that indicates
      * whether or not the items were added successfully and which items were
@@ -679,9 +666,7 @@ exports.default = class TMDB {
             `/4/list/${listID}/items`,
             null,
             items,
-            {
-                "Authorization": `Bearer ${accessToken}`
-            }
+            TMDB._authorizationHeaderFromAccessToken(accessToken)
         );
     }
 
@@ -716,6 +701,7 @@ exports.default = class TMDB {
      * ```
      *
      * @param {string | number} listID the id of the list to remove items from
+     * @param {string} accessToken the user access token
      * @param {ModifyListRequest} items the items to remove from the list
      * @returns {Promise<ModifyListItemsResponse>} an object that indicates
      * whether or not the items were removed successfully and which items were
@@ -727,9 +713,7 @@ exports.default = class TMDB {
             `/4/list/${listID}/items`,
             null,
             items,
-            {
-                "Authorization": `Bearer ${accessToken}`
-            }
+            TMDB._authorizationHeaderFromAccessToken(accessToken)
         );
     }
 
@@ -946,5 +930,45 @@ exports.default = class TMDB {
         }
 
     }
+
+    // MARK: Other
+
+    configureLogging() {
+        // log all http requests
+        // https://axios-http.com/docs/interceptors
+        this.httpClient.interceptors.request.use((request) => {
+            const date = new Date().toUTCString();
+            const prefix = `[TMDB: ${date}]`;
+            const fullURL = `${request?.baseURL ?? ""}${request?.url}`;
+            const methodString = request?.method?.toUpperCase() ?? "GET";
+            const headersString = request?.headers;
+            let message = `${prefix} ${methodString} to ${fullURL}` +
+                `with headers:\n${headersString}\n`;
+            const data = request?.data;
+            if (data) {
+                const dataString = typeof data === "object" ?
+                    JSON.stringify(data) :
+                    data;
+                message += `with body:\n${dataString}`;
+            }
+            console.log(message);
+
+            return request;
+        });
+    }
+
+    /**
+     * Creates the authorization header from the user access token.
+     *
+     * @param {string} accessToken the access token
+     * @returns {Object<string, string | null | undefined>} the authorization
+     * header
+     */
+    static _authorizationHeaderFromAccessToken(accessToken) {
+        return {
+            "Authorization": `Bearer ${accessToken}`
+        };
+    }
+
 
 }

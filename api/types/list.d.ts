@@ -24,13 +24,19 @@ export interface UserList {
     total_pages: number;
     description: string;
     /** The person who created the list. */
-    created_by: string | null | undefined;
+    created_by: ListCreatedByUser | null | undefined;
     iso_3166_1: string;
     average_rating: number;
     runtime: number;
     /** The name of the list. */
     name: string;
     comments?: any;
+}
+
+export interface ListCreatedByUser {
+    gravatar_hash: string;
+    name: string;
+    username: string;
 }
 
 export interface UserListMovie {
@@ -92,9 +98,11 @@ export type ListSortBy = "original_order.asc" | "original_order.desc" | "release
  * https://developers.themoviedb.org/3/lists/create-list
  */
 export interface CreateListBody {
-    name: string;
-    description?: string;
-    language?: string;
+    name?: string | null | undefined;
+    description?: string | null | undefined;
+    public?: boolean | null | undefined;
+    iso_639_1?: string | null | undefined;
+    iso_3166_1?: string | null | undefined;
 }
 
 /**
@@ -106,7 +114,7 @@ export interface CreateListResponse {
     status_message: string;
     success: boolean;
     status_code: number;
-    list_id: number;
+    id: number;
 }
 
 export interface UpdateListRequest {
