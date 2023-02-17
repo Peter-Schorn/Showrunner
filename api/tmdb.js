@@ -277,7 +277,7 @@ exports.default = class TMDB {
      * Get the list of content ratings (certifications) that have been added to
      * a tv show.
      *
-     * https://developers.themoviedb.org/3/tv/get-tv-content-ratings
+     * https://developers.themoviedb.org/3/tv/get-tv-external-ids
      *
      * @param {string | number} id the tv show id
      * @param {string | null | undefined} [language] an ISO 639-1 language code
@@ -408,6 +408,8 @@ exports.default = class TMDB {
      *
      * A session id is required, which can be retrieved from
      * `TMDB.createSession`.
+     *
+     * https://developers.themoviedb.org/3/tv/rate-tv-show
      *
      * @param {string | number} id the id of the tv show
      * @param {number} rating the rating (must be in the range [0.5, 10])
