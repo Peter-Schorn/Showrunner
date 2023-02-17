@@ -48,7 +48,7 @@ const tmdb = new TMDB(apiKey);
 
 // --- example of calling the api ---
 //
-// https://www.themoviedb.org/tv/1396-breaking-bad
+// // https://www.themoviedb.org/tv/1396-breaking-bad
 // const breakingBadTVShowID = 1396;
 //
 // tmdb.tvShowDetails(breakingBadTVShowID)

@@ -93,8 +93,8 @@ export type ListSortBy = "original_order.asc" | "original_order.desc" | "release
  */
 export interface CreateListBody {
     name: string;
-    description: string;
-    language: string;
+    description?: string;
+    language?: string;
 }
 
 /**
@@ -107,4 +107,27 @@ export interface CreateListResponse {
     success: boolean;
     status_code: number;
     list_id: number;
+}
+
+export interface UpdateListRequest {
+    description?: string | null | undefined;
+    name?: string | null | undefined;
+    public?: boolean | null | undefined;
+    sort_by?: string | null | undefined;
+}
+
+export interface TMDBListItem {
+    media_type: string;
+    media_id: string | number;
+}
+
+/**
+ * Used in the request to add items to a list, and in the requests to remove
+ * items from a list.
+ *
+ * https://developers.themoviedb.org/4/list/add-items
+ * https://developers.themoviedb.org/4/list/remove-items
+ */
+export interface ModifyListRequest {
+    items: TMDBListItem[];
 }
