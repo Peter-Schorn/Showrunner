@@ -1,7 +1,9 @@
 const axios = require("axios").default;
 
 // https://www.typescriptlang.org/docs/handbook/jsdoc-supported-types.html
+
 /**
+ * @typedef { import("./types").HTTPMethod } HTTPMethod
  * @typedef { import("./types").TVShowDetails } TVShowDetails
  * @typedef { import("./types").TVShowAccountStates } TVShowAccountStates
  * @typedef { import("./types").UserList } UserList
@@ -25,9 +27,9 @@ const axios = require("axios").default;
  * @typedef { import("./types").UpdateListRequest } UpdateListRequest
  * @typedef { import("./types").ModifyListRequest } ModifyListRequest
  * @typedef { import("./types").AccountDetails } AccountDetails
- * @typedef { import("./types").HTTPMethod } HTTPMethod
+ * @typedef { import("./types").AccountLists } AccountLists
+ * @typedef { import("./types").AccountListsOptions } AccountListsOptions
  */
-
 
 /**
  * A class that provides access to the TMDB API.
@@ -455,6 +457,9 @@ exports.default = class TMDB {
     /**
      * Get the details of a user account.
      *
+     * A session id is required, which can be retrieved from
+     * `TMDB.createSession`.
+     *
      * https://developers.themoviedb.org/3/account/get-account-details
      *
      * @param {string} sessionID the session id
@@ -467,8 +472,27 @@ exports.default = class TMDB {
         );
     }
 
-    async accountLists() {
-
+    /**
+     * Get all of the lists created by an account. Will include private lists if
+     * you are the owner.
+     *
+     * A session id is required, which can be retrieved from
+     * `TMDB.createSession`.
+     *
+     * https://developers.themoviedb.org/3/account/get-created-lists
+     *
+     * @param {string} accountID the account id, which can be retrieved from
+     * `TMDB.accountDetails`
+     * @param {string} sessionID the session id
+     * @param {AccountListsOptions} [options] the options: language: an ISO
+     * 639-1 language
+     * @returns {Promise<AccountLists>}
+     */
+    async accountLists(accountID, sessionID, options) {
+        return await this._get(
+            `/3/account/${accountID}/lists`,
+            Object.assign({ session_id: sessionID }, options)
+        );
     }
 
     // MARK: Lists
