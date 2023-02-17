@@ -50,7 +50,7 @@ const tmdb = new TMDB(apiKey);
 //
 // // https://www.themoviedb.org/tv/1396-breaking-bad
 // const breakingBadTVShowID = 1396;
-
+//
 // tmdb.tvShowDetails(breakingBadTVShowID)
 //     .then((show) => {
 //         console.log(
@@ -60,19 +60,6 @@ const tmdb = new TMDB(apiKey);
 //     .catch((error) => {
 //         console.error("error from TMDB:", error);
 //     });
-
-// // https://www.themoviedb.org/list/8238485
-// const petersShows = 8238485;
-
-// tmdb.updateList(petersShows, {
-//     description: "programmatically created description"
-// })
-// .then((result) => {
-//     console.log(result);
-// })
-// .catch((error) => {
-//     console.error(error);
-// });
 
 // Route handlers
 
