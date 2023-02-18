@@ -310,17 +310,6 @@ export interface SpokenLanguage {
     name: string;
 }
 
-// =======
-
-export interface TVShowAccountStates {
-    id: number;
-    favorite: boolean;
-    watchlist: boolean
-    rated: {
-        value: number;
-    } | boolean
-}
-
 export interface TVShowAlternativeTitles {
     id: number;
     results: TVShowAlternativeTitlesResult[];
