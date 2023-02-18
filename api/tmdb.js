@@ -1,7 +1,9 @@
 const axios = require("axios").default;
 
 // https://www.typescriptlang.org/docs/handbook/jsdoc-supported-types.html
+
 /**
+ * @typedef { import("./types").HTTPMethod } HTTPMethod
  * @typedef { import("./types").TVShowDetails } TVShowDetails
  * @typedef { import("./types").TVShowAccountStates } TVShowAccountStates
  * @typedef { import("./types").UserList } UserList
@@ -20,10 +22,14 @@ const axios = require("axios").default;
  * @typedef { import("./types").TMDBGeneralResponse } TMDBGeneralResponse
  * @typedef { import("./types").CreateListBody } CreateListBody
  * @typedef { import("./types").CreateListResponse } CreateListResponse
- *
- * @typedef { "GET" | "POST" | "PUT" | "DELETE" } HTTPMethod
+ * @typedef { import("./types").TVSearchOptions } TVSearchOptions
+ * @typedef { import("./types").TVShowsResponse } TVShowsResponse
+ * @typedef { import("./types").UpdateListRequest } UpdateListRequest
+ * @typedef { import("./types").ModifyListRequest } ModifyListRequest
+ * @typedef { import("./types").AccountDetails } AccountDetails
+ * @typedef { import("./types").AccountLists } AccountLists
+ * @typedef { import("./types").AccountListsOptions } AccountListsOptions
  */
-
 
 /**
  * A class that provides access to the TMDB API.
@@ -38,8 +44,10 @@ exports.default = class TMDB {
      * Creates an instance of TMDB.
      *
      * @param {string} apiKey the API key
+     * @param {boolean} enableLogging whether or not to log the http requests
+     * to the TMDB api; default: true
      */
-    constructor(apiKey) {
+    constructor(apiKey, enableLogging=true) {
 
         if (!apiKey) {
             throw new Error(`apiKey cannot be '${apiKey}'`);
@@ -47,25 +55,29 @@ exports.default = class TMDB {
         this.apiKey = apiKey;
         this.httpClient = axios.create();
 
-        // log all http requests
-        // https://axios-http.com/docs/interceptors
-        this.httpClient.interceptors.request.use((request) => {
-            const date = new Date().toUTCString();
-            const prefix = `[TMDB: ${date}]`;
-            const fullURL = `${request?.baseURL ?? ""}${request?.url}`;
-            const methodString = request?.method?.toUpperCase() ?? "GET";
-            let message = `${prefix} ${methodString} to ${fullURL}`;
-            const data = request?.data;
-            if (data) {
-                const dataString = typeof data === "object" ?
+        if (enableLogging) {
+
+            // log all http requests
+            // https://axios-http.com/docs/interceptors
+            this.httpClient.interceptors.request.use((request) => {
+                const date = new Date().toUTCString();
+                const prefix = `[TMDB: ${date}]`;
+                const fullURL = `${request?.baseURL ?? ""}${request?.url}`;
+                const methodString = request?.method?.toUpperCase() ?? "GET";
+                let message = `${prefix} ${methodString} to ${fullURL}`;
+                const data = request?.data;
+                if (data) {
+                    const dataString = typeof data === "object" ?
                         JSON.stringify(data) :
                         data;
-                message += ` with body:\n${dataString}`;
-            }
-            console.log(message);
+                    message += ` with body:\n${dataString}`;
+                }
+                console.log(message);
 
-            return request;
-        });
+                return request;
+            });
+
+        }
 
     }
 
@@ -79,7 +91,24 @@ exports.default = class TMDB {
      *
      * https://developers.themoviedb.org/3/tv/get-tv-details
      *
-     * @param {string | Number} id the tv show id
+     * Example:
+     *
+     * ```
+     * // https://www.themoviedb.org/tv/1396-breaking-bad
+     * const breakingBadTVShowID = 1396;
+     *
+     * tmdb.tvShowDetails(breakingBadTVShowID)
+     *     .then((show) => {
+     *         console.log(
+     *             `tmdb.tvShowDetails callback: show.name: "${show.name}"`
+     *         );
+     *     })
+     *     .catch((error) => {
+     *         console.error("error from TMDB:", error);
+     *     });
+     * ```
+     *
+     * @param {string |  number} id the tv show id
      * @param {string | null | undefined} [language] an ISO 639-1 language code
      * @returns {Promise<TVShowDetails>} the details of a TMDB tv show
      */
@@ -87,6 +116,68 @@ exports.default = class TMDB {
         return await this._get(
             `/3/tv/${id}`,  // path
             { language }  // query params
+        );
+    }
+
+    /**
+     * Get a list of the current popular TV shows on TMDB. This list updates daily.
+     *
+     * https://developers.themoviedb.org/3/tv/get-popular-tv-shows
+     *
+     * Example:
+     * ```
+     * tmdb.tvShowPopular({ page: 2 })
+     *     .then((result) => {
+     *         console.log(result);
+     *     })
+     *     .catch((error) => {
+     *         console.error(error);
+     *     });
+     * ```
+     *
+     * @param {{
+     *     page?: number | null | undefined,
+     *     language?: string | null | undefined
+     * }} [options] the options: page: the page to return (default: 1);
+     * language: an ISO 63901 language code
+     * @returns {Promise<TVShowsResponse>} an object containing a list of the
+     * most popular tv shows
+     */
+    async tvShowPopular(options) {
+        return await this._get(
+            "/3/tv/popular",
+            options
+        );
+    }
+
+    /**
+     * Get a list of the top rated TV shows on TMDB.
+     *
+     * https://developers.themoviedb.org/3/tv/get-top-rated-tv
+     *
+     * Example:
+     * ```
+     * tmdb.tvShowTopRated({ language: "es" })  // spanish
+     *     .then((result) => {
+     *         console.log(result);
+     *     })
+     *     .catch((error) => {
+     *         console.error(error);
+     *     });
+     * ```
+     *
+     * @param {{
+    *     page?: number | null | undefined,
+    *     language?: string | null | undefined
+    * }} [options] the options: page: the page to return (default: 1);
+    * language: an ISO 63901 language code
+    * @returns {Promise<TVShowsResponse>} an object containing a list of the
+    * most top rated tv shows
+    */
+    async tvShowTopRated(options) {
+        return await this._get(
+            "/3/tv/top_rated",
+            options
         );
     }
 
@@ -186,7 +277,7 @@ exports.default = class TMDB {
      * Get the list of content ratings (certifications) that have been added to
      * a tv show.
      *
-     * https://developers.themoviedb.org/3/tv/get-tv-content-ratings
+     * https://developers.themoviedb.org/3/tv/get-tv-external-ids
      *
      * @param {string | number} id the tv show id
      * @param {string | null | undefined} [language] an ISO 639-1 language code
@@ -240,22 +331,22 @@ exports.default = class TMDB {
         );
     }
 
-     /**
-      * Get the similar shows for a tv show.
-      *
-      * https://developers.themoviedb.org/3/tv/get-similar-tv-shows
-      *
-      * See also `TMDB.tvShowRecommendations(id, options)`.
-      *
-      * @param {string | number} id the tv show id
-      * @param {{
-      *     language?: string | null | undefined,
-      *     page?: number | null | undefined
-      * } | null | undefined} [options] the options for this endpoint:
-      *   language: an ISO 639-1 language code;
-      *   page: the index of the page to return;
-      * @returns {Promise<SimilarTVShows>} similar tv shows
-      */
+    /**
+     * Get the similar shows for a tv show.
+     *
+     * https://developers.themoviedb.org/3/tv/get-similar-tv-shows
+     *
+     * See also `TMDB.tvShowRecommendations(id, options)`.
+     *
+     * @param {string | number} id the tv show id
+     * @param {{
+     *     language?: string | null | undefined,
+     *     page?: number | null | undefined
+     * } | null | undefined} [options] the options for this endpoint:
+     *   language: an ISO 639-1 language code;
+     *   page: the index of the page to return;
+     * @returns {Promise<SimilarTVShows>} similar tv shows
+     */
     async tvShowSimilarShows(id, options) {
         return await this._get(
             `/3/tv/${id}/similar`,  // path
@@ -315,11 +406,13 @@ exports.default = class TMDB {
     /**
      * Rate a tv show.
      *
-     * A session id is required
+     * A session id is required, which can be retrieved from
+     * `TMDB.createSession`.
+     *
+     * https://developers.themoviedb.org/3/tv/rate-tv-show
      *
      * @param {string | number} id the id of the tv show
      * @param {number} rating the rating (must be in the range [0.5, 10])
-     * @param {string} sessionID the session id
      * @returns {Promise<TMDBGeneralResponse>} a response indicating whether or
      * not the request succeeded
      */
@@ -329,10 +422,83 @@ exports.default = class TMDB {
             `/3/tv/${id}/rating`,
             { session_id: sessionID },
             { value: rating }
-        )
+        );
+    }
+
+    // MARK: Search
+
+    /**
+     * Search for tv shows.
+     *
+     * https://developers.themoviedb.org/3/search/search-tv-shows
+     *
+     * Example:
+     *
+     * ```
+     * tmdb.searchTVShows({ query: "Wire The", include_adult: true })
+     *     .then((result) => {
+     *         console.log(`name of first show: "${result.results[0].name}"`);
+     *     })
+     *     .catch((error) => {
+     *         console.error(error);
+     *     });
+     * ```
+     *
+     * @param {TVSearchOptions} options the options for the search: `query`,
+     * `page`, `language`, `include_adult`, and `first_air_date_year`
+     *
+     * @returns {Promise<TVShowsResponse>} an object containing the tv shows
+     * that match the query
+     */
+    async searchTVShows(options) {
+        return await this._get("/3/search/tv", options);
+    }
+
+    // MARK: Account
+
+    /**
+     * Get the details of a user account.
+     *
+     * A session id is required, which can be retrieved from
+     * `TMDB.createSession`.
+     *
+     * https://developers.themoviedb.org/3/account/get-account-details
+     *
+     * @param {string} sessionID the session id
+     * @returns {Promise<AccountDetails>} the account details
+     */
+    async accountDetails(sessionID) {
+        return await this._get(
+            "/3/account",
+            { session_id: sessionID }
+        );
+    }
+
+    /**
+     * Get all of the lists created by an account. Will include private lists if
+     * you are the owner.
+     *
+     * A session id is required, which can be retrieved from
+     * `TMDB.createSession`.
+     *
+     * https://developers.themoviedb.org/3/account/get-created-lists
+     *
+     * @param {string} accountID the account id, which can be retrieved from
+     * `TMDB.accountDetails`
+     * @param {string} sessionID the session id
+     * @param {AccountListsOptions} [options] the options: language: an ISO
+     * 639-1 language
+     * @returns {Promise<AccountLists>}
+     */
+    async accountLists(accountID, sessionID, options) {
+        return await this._get(
+            `/3/account/${accountID}/lists`,
+            Object.assign({ session_id: sessionID }, options)
+        );
     }
 
     // MARK: Lists
+
 
     /**
      * Gets a user's list by id. Private lists can only be accessed by their
@@ -340,9 +506,9 @@ exports.default = class TMDB {
      *
      * https://developers.themoviedb.org/3/lists/get-list-details
      *
-     * @param {string | Number} listID the list id
+     * @param {string | number } listID the list id
      * @param {{
-     *     page?: Number | null | undefined,
+     *     page?:  number | null | undefined,
      *     sortBy?: ListSortBy | null | undefined,
      *     language?: string | null | undefined
      * } | null | undefined} [options] the options for this endpoint:
@@ -361,7 +527,25 @@ exports.default = class TMDB {
     /**
      * Create a list for the user.
      *
+     * A session id is required, which can be retrieved from
+     * `TMDB.createSession`.
+     *
      * https://developers.themoviedb.org/3/lists/create-list
+     *
+     * For example:
+     * ```
+     * tmdb.createList(sessionID, {
+     *     name: "programmatically created list",
+     *     description: "The description for my new list.",
+     *     language: "en"
+     * })
+     * .then((result) => {
+     *     console.log(result);
+     * })
+     * .catch((error) => {
+     *     console.error(error);
+     * });
+     * ```
      *
      * @param {string} sessionID the session id
      * @param {CreateListBody} body the options for creating the list
@@ -376,8 +560,167 @@ exports.default = class TMDB {
         );
     }
 
-    // MARK: User Authorization
+    /**
+     * Update the details of a list.
+     *
+     * Requires a user access token, which can be retrieved from
+     * `TMDB.createAccessToken`.
+     *
+     * https://developers.themoviedb.org/4/list/update-list
+     *
+     * @param {string | number} listID the id of the list to update
+     * @param {string} accessToken the user access token
+     * @param {UpdateListRequest} options the options for updating the list
+     */
+    async updateList(listID, accessToken, options) {
+        return await this._apiRequest(
+            "PUT",
+            `/4/list/${listID}`,
+            null,  // query params
+            options,
+            {
+                "Authorization": `Bearer ${accessToken}`
+            }
+        );
+    }
 
+    /**
+     * Clear all of the items from a list.
+     *
+     * A session id is required, which can be retrieved from
+     * `TMDB.createSession`.
+     *
+     * https://developers.themoviedb.org/3/lists/clear-list
+     *
+     * @param {string | number} listID the list id
+     * @param {string} sessionID the session id
+     */
+    async clearList(listID, sessionID) {
+        return await this._apiRequest(
+            "POST",
+            `/3/list/${listID}/clear`,
+            {
+                session_id: sessionID,
+                confirm: true
+            }
+        );
+    }
+
+    /**
+     * Delete a list.
+     *
+     * A session id is required, which can be retrieved from
+     * `TMDB.createSession`.
+     *
+     * https://developers.themoviedb.org/3/lists/delete-list
+     *
+     * Appears to return an error response even if the list has been
+     * successfully deleted.
+     *
+     * @param {string | number} listID the list id
+     * @param {string} sessionID the session id
+     * @returns {Promise<TMDBGeneralResponse>} whether or not the list was
+     * successfully deleted
+     */
+    async deleteList(listID, sessionID) {
+        return await this._apiRequest(
+            "DELETE",
+            `/3/list/${listID}`,
+            { session_id: sessionID }
+        );
+    }
+
+    /**
+     * Add items to a list.
+     *
+     * Requires a user access token, which can be retrieved from
+     * `TMDB.createAccessToken`.
+     *
+     * https://developers.themoviedb.org/4/list/add-items
+     *
+     * For example:
+     * ```
+     * tmdb.addItemsToList(myListID, accessToken, {
+     *     items: [
+     *         {
+     *             "media_type": "tv",
+     *             "media_id": theWireID
+     *         },
+     *         {
+     *             "media_type": "movie",
+     *             "media_id": inceptionMovieID
+     *         }
+     *     ]
+     * })
+     * .then((result) => {
+     *     console.log(result);
+     * })
+     * .catch((error) => {
+     *     console.error(error);
+     * });
+     * ```
+     *
+     * @param {string | number} listID the id of the list to add items to
+     * @param {ModifyListRequest} items the items to add to the list
+     */
+    async addItemsToList(listID, accessToken, items) {
+        return await this._apiRequest(
+            "POST",
+            `/4/list/${listID}/items`,
+            null,
+            items,
+            {
+                "Authorization": `Bearer ${accessToken}`
+            }
+        );
+    }
+
+    /**
+     * Remove items from a list.
+     *
+     * Requires a user access token, which can be retrieved from
+     * `TMDB.createAccessToken`.
+     *
+     * https://developers.themoviedb.org/4/list/remove-items
+     *
+     * For example:
+     * ```
+     * tmdb.removeItemsFromList(myListID, accessToken, {
+     *     items: [
+     *         {
+     *             "media_type": "tv",
+     *             "media_id": theWireID
+     *         },
+     *         {
+     *             "media_type": "movie",
+     *             "media_id": inceptionMovieID
+     *         }
+     *     ]
+     * })
+     * .then((result) => {
+     *     console.log(result);
+     * })
+     * .catch((error) => {
+     *     console.error(error);
+     * });
+     * ```
+     *
+     * @param {string | number} listID the id of the list to remove items from
+     * @param {ModifyListRequest} items the items to remove from the list
+     */
+    async removeItemsFromList(listID, accessToken, items) {
+        return await this._apiRequest(
+            "DELETE",
+            `/4/list/${listID}/items`,
+            null,
+            items,
+            {
+                "Authorization": `Bearer ${accessToken}`
+            }
+        );
+    }
+
+    // MARK: User Authentication
 
     /**
      * Creates the request token, the first step in the authorization process.
@@ -396,7 +739,7 @@ exports.default = class TMDB {
      *
      * Once a user has approved your request, they'll either be directed to the
      * /auth/access/approve page on TMDb or redirected to the `callbackURL` you
-     * specified when you made the request token.
+     * specified in this method.
      *
      * Next, call `TMDB.createAccessToken(requestToken)` with the approved
      * refresh token to get the access token.
@@ -442,9 +785,8 @@ exports.default = class TMDB {
     }
 
     /**
-     * Creates a session from an access token.
-     *
-     * This is the final step in the authorization process.
+     * Creates a session from an access token, the final step in the
+     * authorization process.
      *
      * https://developers.themoviedb.org/3/authentication/create-session-from-v4-access-token
      *
@@ -468,7 +810,7 @@ exports.default = class TMDB {
      *
      * @param {string} path the path of the endpoint, which will be appended to
      * `TMDB.apiBase`.
-     * @param {Object.<string, string | number | null | undefined> | null | undefined} [queryParams] the query parameters for
+     * @param {Object | null | undefined} [queryParams] the query parameters for
      * the endpoint
      * @returns {Promise<any>} the response body from the server
      */
@@ -482,23 +824,35 @@ exports.default = class TMDB {
      * @param {HTTPMethod} method the http method
      * @param {string} path the path of the endpoint, which will be appended to
      * `TMDB.apiBase`.
-     * @param {Object.<string, string | number | null | undefined> | null | undefined} [queryParams] the query parameters for the endpoint
+     * @param {Object | null | undefined} [queryParams] the query parameters for the endpoint
      * @param {Object | null | undefined} [body] the body of the request
+     * @param {Object<string, string | null | undefined> | null | undefined} [headers] additional headers to use,
+     * which, if present, will overwrite any default headers
      * @returns {Promise<any>} the response body from the server
      */
-    async _apiRequest(method, path, queryParams, body) {
+    async _apiRequest(method, path, queryParams, body, headers) {
 
         try {
+
+            let fullHeaders = {
+                "Authorization": `Bearer ${this.apiKey}`,
+                "Content-Type": "application/json;charset=utf-8"
+            }
+
+            if (typeof headers === "object") {
+                // Allow the passed in headers to overwrite the default headers
+                // above, not the other way around. Keys already present in
+                // `headers` will NOT have their values overwritten by the
+                // values of the same keys in `fullHeaders`.
+                fullHeaders = Object.assign(fullHeaders, headers);
+            }
 
             // https://axios-http.com/docs/req_config
             const response = await this.httpClient.request({
                 method: method,
                 baseURL: TMDB.apiBase,
                 url: path,
-                headers: {
-                    "Authorization": `Bearer ${this.apiKey}`,
-                    "Content-Type": "application/json;charset=utf-8"
-                },
+                headers: fullHeaders,
                 // "params that are null or undefined are not rendered in the URL."
                 params: queryParams,
                 // the body is omitted if it is null or undefined
