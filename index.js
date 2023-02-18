@@ -51,13 +51,13 @@ const tmdb = new TMDB(apiKey);
 // // https://www.themoviedb.org/tv/1396-breaking-bad
 // const breakingBadTVShowID = 1396;
 //
-// tmdb.tvShowDetails(breakingBadTVShowID)
-//     .then((show) => {
-//         console.log(
-//             `tmdb.tvShowDetails callback: show.name: "${show.name}"`
-//         );
-//     })
-//     .catch((error) => {
+//  tmdb.tvShowDetails(breakingBadTVShowID)
+//      .then((show) => {
+//          console.log(
+//              `tmdb.tvShowDetails callback: show.name: "${show.name}"`
+//          );
+//      })
+//      .catch((error) => {
 //         console.error("error from TMDB:", error);
 //     });
 

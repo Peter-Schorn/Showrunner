@@ -13,3 +13,17 @@ nav:has(*) {
   background-color:#1155CC 
 }
 
+.sidebar {
+  background-color:black; 
+  border:red solid 2px;
+  
+}
+
+.sidebar div {
+border: inherit
+} 
+
+.sidebar {
+  margin-left: 20px;
+} 
+
