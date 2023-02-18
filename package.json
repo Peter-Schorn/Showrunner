@@ -28,6 +28,7 @@
     "node-fetch": "^3.3.0"
   },
   "devDependencies": {
-    "documentation": "^14.0.1"
+    "documentation": "^14.0.1",
+    "heroku": "^7.68.1"
   }
 }
