@@ -42,6 +42,10 @@ mongoose.connect(url, connectionObject)
 .then(()=> console.log(`Connected to ${DB} database`))
 .catch(error=> console.log(`Error connecting to ${DB} database: ${error}`))
 
+// update tmdb configuration
+
+const updateTMDBConfiguration = require("./models/updateTMDBConfiguration").default;
+updateTMDBConfiguration()
 
 const apiKey = process.env.TMDB_API_KEY_V4;
 const tmdb = new TMDB(apiKey);
