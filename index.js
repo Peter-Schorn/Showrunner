@@ -13,9 +13,14 @@ app.set('view engine', 'ejs');
 const logger = require('morgan');
 app.use(logger('dev'));
 
+const appUser = process.env.SR_USER;
+
 // console.log(process.env);
 
 // DB CONNECTION
+
+const {createUser} = require('./models/Queries')
+createUser();
 
 // get connection variables from .env file
 const {URI, DB, DB_USER, DB_PASS} = process.env;
@@ -78,9 +83,6 @@ app.get('/home', (req, res) => {
 
 app.get('/error', (req, res) =>
 res.render('error.ejs'))
-
-
-
 
 
 
