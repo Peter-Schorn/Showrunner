@@ -516,8 +516,7 @@ exports.default = class TMDB {
             const fullURL = `${request?.baseURL ?? ""}${request?.url}`;
             const methodString = request?.method?.toUpperCase() ?? "GET";
             const headersString = request?.headers;
-            let message = `${prefix} ${methodString} to ${fullURL}` +
-                `with headers:\n${headersString}\n`;
+            let message = `${prefix} ${methodString} to ${fullURL}`
             const data = request?.data;
             if (data) {
                 const dataString = typeof data === "object" ?

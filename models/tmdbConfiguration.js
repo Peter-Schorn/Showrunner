@@ -4,15 +4,18 @@ const mongoose = require("mongoose");
 
 const tmdbConfigurationSchema = new mongoose.Schema({
     images: {
-        base_url: String,
-        secure_base_url: String,
-        backdrop_sizes: [String],
-        logo_sizes: [String],
-        poster_sizes: [String],
-        profile_sizes: [String],
-        still_sizes: [String]
+        required: true,
+        type: {
+            base_url: { type: String, required: true },
+            secure_base_url: { type: String, required: true },
+            backdrop_sizes: { type: [String], required: true },
+            logo_sizes: { type: [String], required: true },
+            poster_sizes: { type: [String], required: true },
+            profile_sizes: { type: [String], required: true },
+            still_sizes: { type: [String], required: true },
+        }
     },
-    change_keys: [String]
+    change_keys: { type: [String], required: true }
 });
 
 // https://mongoosejs.com/docs/api.html#mongoose_Mongoose-model

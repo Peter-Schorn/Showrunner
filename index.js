@@ -18,6 +18,7 @@ app.use(logger('dev'));
 
 const mongoose = require('mongoose');
 mongoose.set('strictQuery', false);
+// mongoose.set("runValidators", true);
 
 // get connection variables from .env file
 const {URI, DB, DB_USER, DB_PASS} = process.env;
@@ -46,6 +47,9 @@ mongoose.connect(url, connectionObject)
 
 const updateTMDBConfiguration = require("./models/updateTMDBConfiguration").default;
 updateTMDBConfiguration()
+
+// const retrieveTMDBConfiguration = require("./models/updateTMDBConfiguration").retrieveTMDBConfiguration;
+// retrieveTMDBConfiguration()
 
 const apiKey = process.env.TMDB_API_KEY_V4;
 const tmdb = new TMDB(apiKey);
