@@ -1,56 +1,201 @@
-<%- include('./partials/header.ejs', {title: 'Home'}) %>
+<%- include('./partials/header.ejs', {title: 'Home'}) %> 
 <%- include('./partials/navbar.ejs') %>
 
- <div class="start-1 col-xs-2 col-sm-3 col-md-3 col-lg-2 col-xl-.5" style="margin-top: 10px; margin-left: 10px">    
+<!-- Example for grid:
 
-<div class="d-flex flex-column flex-shrink-0 p-3 bg-light">
-    <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
-      <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
-      <span class="fs-4">Sidebar</span>
-    </a>
-    <hr>
-    <ul class="nav nav-pills flex-column mb-auto">
-      <li class="nav-item">
-        <a href="#" class="nav-link active" aria-current="page">
-          <svg class="bi" width="16" height="16"><use xlink:href="#home"></use></svg>
-          Home
-        </a>
-      </li>
-      <li>
-        <a href="#" class="nav-link link-dark">
-          <svg class="bi" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
-          Dashboard
-        </a>
-      </li>
-      <li>
-        <a href="#" class="nav-link link-dark">
-          <svg class="bi" width="16" height="16"><use xlink:href="#table"></use></svg>
-          Orders
-        </a>
-      </li>
-      <li>
-        <a href="#" class="nav-link link-dark">
-          <svg class="bi" width="16" height="16"><use xlink:href="#grid"></use></svg>
-          Products
-        </a>
-      </li>
-      <li>
-        <a href="#" class="nav-link link-dark">
-          <svg class="bi" width="16" height="16"><use xlink:href="#people-circle"></use></svg>
-          Customers
-        </a>
-      </li>
-    </ul>
-    <hr>
-    
-  </div> 
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm">1</div>
+    <div class="col-md">2</div>
+    <div class="col-sm">3</div>
+  </div>
+</div>
+-->
+
+<!-- Grid Container START-->
+<div class="container-fluid">
+  <!-- Grid row 1 START-->
+  <div class="row">
+    <!-- Grid Column 1 START-->
+    <div class="col-sm-2">
+      <!-- Left Sidebar START -->
+      <div class="start-1">
+        <div class="d-flex flex-column flex-shrink-0 bg-light">
+          <a href="/" class="align-items-center link-dark text-decoration-none">
+            <span class="fs-4">Left Sidebar</span>
+          </a>
+          <ul class="nav nav-pills flex-column">
+            <li class="nav-item">
+              <a href="#" class="nav-link active" aria-current="page"> Home </a>
+            </li>
+            <li>
+              <a href="#" class="nav-link link-dark"> Dashboard </a>
+            </li>
+            <li>
+              <a href="#" class="nav-link link-dark"> Orders </a>
+            </li>
+            <li>
+              <a href="#" class="nav-link link-dark"> Products </a>
+            </li>
+            <li>
+              <a href="#" class="nav-link link-dark"> Customers </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <!-- Left Sidebar END -->
+    </div>
+    <!-- Column 1 END -->
+
+    <!-- Grid Column 2 - content cards START-->
+    <div class="col-sm-8">
+      <!-- Column 2 inner row 1 START-->
+      <div class="row">
+        <!-- Content card 1 START -->
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Content 1</h5>
+            <p class="card-text">This is content 1 card.</p>
+            <a href="#" class="btn btn-primary">Learn More</a>
+          </div>
+        </div>
+        <!--  Content card 1 END -->
+      </div>
+      <!-- Column 2 inner row 2 START -->
+      <div class="row">
+        <div class="card">
+          <!-- Content card 2 START-->
+          <div class="card-body">
+            <h5 class="card-title">Content 2</h5>
+            <p class="card-text">This is content 1 card.</p>
+            <a href="#" class="btn btn-primary">Learn More</a>
+          </div>
+        </div>
+        <!-- Content card 2 END -->
+      </div>
+      <!-- Column 2 inner row 2 START -->
+      <div class="row">
+        <div class="card">
+          <!-- Content card 2 START-->
+          <div class="card-body">
+            <h5 class="card-title">Content 3</h5>
+            <p class="card-text">This is content 1 card.</p>
+            <a href="#" class="btn btn-primary">Learn More</a>
+          </div>
+        </div>
+        <!-- Content card 2 END -->
+      </div>
+      <!-- Column 2 inner row 2 START -->
+      <div class="row">
+        <div class="card">
+          <!-- Content card 2 START-->
+          <div class="card-body">
+            <h5 class="card-title">Content 4</h5>
+            <p class="card-text">This is content 1 card.</p>
+            <a href="#" class="btn btn-primary">Learn More</a>
+          </div>
+        </div>
+        <!-- Content card 2 END -->
+      </div>
+      <!-- Column 2 inner row 2 START -->
+      <div class="row">
+        <div class="card">
+          <!-- Content card 2 START-->
+          <div class="card-body">
+            <h5 class="card-title">Content 5</h5>
+            <p class="card-text">This is content 1 card.</p>
+            <a href="#" class="btn btn-primary">Learn More</a>
+          </div>
+        </div>
+        <!-- Content card 2 END -->
+      </div>
+    </div>
+    <!-- Content 1 end -->
+
+    <!-- Right Sidebar start -->
+    <div class="col-sm-2">
+      <div class="start-1">
+        <!-- style="margin-top: 10px; margin-left: 10px" -->
+        <div class="d-flex flex-column flex-shrink-0 bg-light">
+          <a href="/" class="align-items-center link-dark text-decoration-none">
+            <!-- <svg class="bi" width="40" height="32">
+              <use xlink:href="#bootstrap"></use>
+            </svg> -->
+            <span class="fs-4">Right Sidebar</span>
+          </a>
+          <ul class="nav nav-pills flex-column">
+            <li class="nav-item">
+              <a href="#" class="nav-link active" aria-current="page">
+                <!-- <svg class="bi" width="16" height="16">
+                  <use xlink:href="#home"></use>
+                </svg> -->
+                Home
+              </a>
+            </li>
+            <li>
+              <a href="#" class="nav-link link-dark">
+                <!-- <svg class="bi" width="16" height="16">
+                  <use xlink:href="#speedometer2"></use>
+                </svg> -->
+                Dashboard
+              </a>
+            </li>
+            <li>
+              <a href="#" class="nav-link link-dark">
+                <!-- <svg class="bi" width="16" height="16">
+                  <use xlink:href="#table"></use>
+                </svg> -->
+                Orders
+              </a>
+            </li>
+            <li>
+              <a href="#" class="nav-link link-dark">
+                <!-- <svg class="bi" width="16" height="16">
+                  <use xlink:href="#grid"></use>
+                </svg> -->
+                Products
+              </a>
+            </li>
+            <li>
+              <a href="#" class="nav-link link-dark">
+                <!-- <svg class="bi" width="16" height="16">
+                  <use xlink:href="#people-circle"></use>
+                </svg> -->
+                Customers
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!-- Right Sidebar end -->
+  </div>
+</div>
+
+<!-- <div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-2">
+      
+    </div>
+  </div>
+</div> -->
+
+<!-- cards -->
+<!-- 
+<div class="col-sm-8">
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">Card title</h5>
+      <p class="card-text">Card content goes here.</p>
+      <a href="#" class="btn btn-primary">Learn More</a>
+    </div>
+  </div>
 </div> 
-
-  
+-->
 
 <!-- <div class="container-fluid">
     <div class="">
-       <div class="top-1 col-xs-1 col-sm-2 col-md-2 col-lg-2 col-xl-.5" style="background-color:#f0f; margin-top:10px">
+        <div class="top-1 col-xs-1 col-sm-2 col-md-2 col-lg-2 col-xl-.5" style="background-color:#f0f; margin-top:10px">
         <div class="nav flex-column" style="background-color:#f00;">
           <li class="nav-item">
             <a class="nav-link" href="#">Link 1</a>
@@ -70,13 +215,64 @@
     </div>
   </div>  -->
 
-
-
-
-
-
-
-
-
-
 <%- include('./partials/footer.ejs') %>
+
+<!-- <div
+class="start-1 col-xs-2 col-sm-3 col-md-3 col-lg-2 col-xl-.5"
+style="margin-top: 10px; margin-left: 10px"
+>
+<div class="d-flex flex-column flex-shrink-0 p-3 bg-light">
+  <a
+    href="/"
+    class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none"
+  >
+    <svg class="bi me-2" width="40" height="32">
+      <use xlink:href="#bootstrap"></use>
+    </svg>
+    <span class="fs-4">Sidebar</span>
+  </a>
+  <hr />
+  <ul class="nav nav-pills flex-column mb-auto">
+    <li class="nav-item">
+      <a href="#" class="nav-link active" aria-current="page">
+        <svg class="bi" width="16" height="16">
+          <use xlink:href="#home"></use>
+        </svg>
+        Home
+      </a>
+    </li>
+    <li>
+      <a href="#" class="nav-link link-dark">
+        <svg class="bi" width="16" height="16">
+          <use xlink:href="#speedometer2"></use>
+        </svg>
+        Dashboard
+      </a>
+    </li>
+    <li>
+      <a href="#" class="nav-link link-dark">
+        <svg class="bi" width="16" height="16">
+          <use xlink:href="#table"></use>
+        </svg>
+        Orders
+      </a>
+    </li>
+    <li>
+      <a href="#" class="nav-link link-dark">
+        <svg class="bi" width="16" height="16">
+          <use xlink:href="#grid"></use>
+        </svg>
+        Products
+      </a>
+    </li>
+    <li>
+      <a href="#" class="nav-link link-dark">
+        <svg class="bi" width="16" height="16">
+          <use xlink:href="#people-circle"></use>
+        </svg>
+        Customers
+      </a>
+    </li>
+  </ul>
+  <hr />
+</div> -->
