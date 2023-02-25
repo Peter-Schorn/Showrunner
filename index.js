@@ -45,6 +45,7 @@ mongoose.connect(url, connectionObject)
 
 const apiKey = process.env.TMDB_API_KEY_V4;
 const tmdb = new TMDB(apiKey);
+const baseUrl = 'https://www.themoviedb.org/'
 
 // --- example of calling the api ---
 
@@ -73,9 +74,37 @@ app.get('/about', (req, res) => {
 })
 
 app.get('/home', (req, res) => {
-    // do something
-    res.render('home.ejs');
+    
+    res.render('home.ejs', {showId: []});
 })
+
+app.get('/search', (req, res) => {
+
+    res.render('search.ejs', {shows: []});
+})
+
+
+app.get('/searchShows', (req, res)=>{
+    // let route = 'search/tv'
+    let {query} = req.query
+    console.log({query})
+    tmdb.searchTVShows({query})
+    .then((result) => {
+            console.log(result.results)
+            res.render('search.ejs', {shows: result.results})
+        })
+    .catch((error) => {
+        console.log('error: ', error);
+        res.render('error.ejs')
+    })
+})
+
+app.get('/addShow', (req, res)=>{
+let {showId} = req.query
+console.log(showId)
+    res.render('home.ejs', {showId: showId})
+})
+
 
 app.get('/error', (req, res) =>
 res.render('error.ejs'))
