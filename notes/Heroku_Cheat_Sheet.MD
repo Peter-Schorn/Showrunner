@@ -3,7 +3,16 @@
 ## Setup Command Line Client
 
 Install the heroku command line client (CLI):  
-`npm install -g heroku`
+
+* Globally: 
+  
+  `npm install -g heroku`
+
+* Locally:
+  
+  `npm install -D heroku`
+
+**NOTE**: If installed locally, you must use `npx heroku` instead of just `heroku` for *all* commands.
 
 Confirm the heroku CLI is installed (always ignore suggestions to update):  
 `heroku --version`
@@ -21,7 +30,7 @@ List your apps:
 Open app on browser:  
 `heroku open -a showrunner`
 
-Run app locally:  
+Run app locally (*must* be in showrunner directory):  
 `heroku local --port 3000`
 
 ## View Logs
