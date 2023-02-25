@@ -1,3 +1,4 @@
+
 // allows access to .env file
 require('dotenv').config();
 const express = require('express');
@@ -65,29 +66,51 @@ const tmdb = new TMDB(apiKey);
 //         console.error("error from TMDB:", error);
 //     });
 
-// ROUTE HANDLERS
+
+// Route handlers
 
 app.get('/', (req, res)=>{
     res.redirect('/home');
 })
 
-// ABOUT PAGE
 app.get('/about', (req, res) => {
     res.render('about.ejs');
 })
 
 app.get('/home', (req, res) => {
-    // do something
-    res.render('home.ejs');
+    
+    res.render('home.ejs', {showId: []});
 })
+
+app.get('/search', (req, res) => {
+
+    res.render('search.ejs', {shows: []});
+})
+
+app.get('/searchShows', (req, res)=>{
+    // let route = 'search/tv'
+    let {query} = req.query
+    console.log({query})
+    tmdb.searchTVShows({query})
+    .then((result) => {
+            console.log(result.results)
+            res.render('search.ejs', {shows: result.results})
+        })
+    .catch((error) => {
+        console.log('error: ', error);
+        res.render('error.ejs')
+    })
+})
+
+app.get('/addShow', (req, res)=>{
+let {showId} = req.query
+console.log(showId)
+    res.render('home.ejs', {showId: showId})
+})
+
 
 app.get('/error', (req, res) =>
 res.render('error.ejs'))
-
-
-
-
-
 
 app.listen(port, () => {
     console.log(`Showrunner Server is listening on port ${port}`)

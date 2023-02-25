@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "watch": "nodemon index.js --ext '*'",
+    "generate-docs": "npx documentation build api/tmdb.js -f html --github -o docs"
   },
   "repository": {
     "type": "git",
@@ -25,5 +27,9 @@
     "mongoose": "^6.9.1",
     "morgan": "^1.10.0",
     "node-fetch": "^3.3.0"
+  },
+  "devDependencies": {
+    "documentation": "^14.0.1",
+    "heroku": "^7.68.1"
   }
 }
