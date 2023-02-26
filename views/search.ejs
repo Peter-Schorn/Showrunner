@@ -1,5 +1,5 @@
 <%- include('./partials/header.ejs', {title: 'Showrunner Search'}) %>
-<%- include('./partials/navbar.ejs') %>
+<%- include('./partials/navbar.ejs', { username:  locals.username}) %>
 <body>
 
 <div class="container p-2">
@@ -12,11 +12,11 @@
 </div>
 
 <div class="p-2">
-    
+
         <% shows.forEach(element=> { %>
             <div class="row align-items-center border border-white m-2 p-2">
                 <div class="col-1">
-                    <form action="/addShow" method="get"> 
+                    <form action="/addShow" method="get">
                         <input type="hidden" name="showId" value="<%=element.id%>">
                         <button class="btn btn-light" type="submit">Add Show</button>
                     </form>

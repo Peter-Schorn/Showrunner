@@ -1,36 +1,31 @@
-const mongoose = require('mongoose')
+const mongoose = require("mongoose");
+const passportLocalMongoose = require("passport-local-mongoose");
 
 // Blueprints
 
 // 1. Schema
 
-const userSchema = mongoose.Schema({
-    emailAddress: {
-        type: String,
-        minLength: 6,
-        required: [true, "no data provided"]
-    },
-    password: {
+const userSchema = new mongoose.Schema({
+    username: {
         type: String,
         minLength: 4,
-        required: [true, "no data provided"]
+        required: [true, "missing username"]
     },
-    firstName: {
-        type: String,
-        minLength: 2,
-        required: [true, "no data provided"]
-    },
-    lastName: {
-        type: String,
-        minLength: 2,
-        required: [true, "no data provided"]
-    },
+    // we don't need to define the password here because passport-local-mongoose
+    // will take care of it for us
+    // password: {
+    //     type: String,
+    //     minLength: 4,
+    //     required: [true, "missing password"]
+    // },
     created: {
         type: Date,
-        default: Date.now()
+        default: Date.now
     }
 })
 
+userSchema.plugin(passportLocalMongoose);
+
 // 2. Model
 
-exports.UserModel = new mongoose.model('users', userSchema)
+module.exports = mongoose.model("users", userSchema);
