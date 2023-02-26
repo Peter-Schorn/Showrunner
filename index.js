@@ -83,6 +83,14 @@ const tmdb = new TMDB(apiKey);
 //         console.error("error from TMDB:", error);
 //     });
 
+// Middleware
+
+function verifyLoggedIn(req, res, next) {
+    if (req.isAuthenticated()) {
+        return next();
+    }
+    res.redirect("/login");
+}
 
 // Route handlers
 
@@ -91,7 +99,9 @@ app.get("/", (req, res)=>{
 })
 
 app.get("/home", (req, res) => {
-    res.render("home.ejs", {showId: []});
+    // `username` will be undefined if the user is not logged in
+    const username = req.isAuthenticated() ? req.user?.username : undefined;
+    res.render("home.ejs", { username: username, showId: []});
 })
 
 app.get("/about", (req, res) => {
@@ -135,11 +145,21 @@ app.post("/login", passport.authenticate("local", {
     }
 });
 
+// https://www.passportjs.org/concepts/authentication/logout/
+app.get("/logout", (req, res, next) => {
+    req.logout((error) => {
+        if (error) {
+            return next(error);
+        }
+        res.redirect("/");
+    });
+});
+
 app.get("/search", (req, res) => {
     res.render("search.ejs", {shows: []});
 })
 
-app.get("/searchShows", (req, res)=>{
+app.get("/searchShows", verifyLoggedIn, (req, res)=>{
     // let route = "search/tv"
     const { query } = req.query
     console.log({query})

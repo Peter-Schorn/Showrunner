@@ -3,6 +3,17 @@
 
 <!-- Grid Container START-->
 <div class="container-fluid">
+
+  <!-- a placeholder that demonstrates how to display the username -->
+  <div class="row">
+    <% if (username) { %>
+        <p>Welcome, <%= username %></p>
+    <% } else { %>
+        <p>You are not logged in</p>
+    <% } %>
+
+  </div>
+
   <!-- Grid row 1 START-->
   <div class="row">
 
