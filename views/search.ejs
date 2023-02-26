@@ -22,7 +22,7 @@
                     </form>
                 </div>
                 <div class="col-1">
-                    <img src="https://image.tmdb.org/t/p/w92<%= element.poster_path %>" alt="<%= element.name %>">
+                    <img src="<%= `${imageBasePath}${element.poster_path}` %>" alt="<%= element.name %>">
                 </div>
                 <div class="col-10">
                     <h5><%= element.name %> (<%= element.first_air_date %>)</h5>

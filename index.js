@@ -10,6 +10,7 @@ const expressSession = require("express-session");
 const LocalStrategy = require("passport-local").Strategy;
 const MongoStore = require("connect-mongo");
 const User = require("./models/UserModel");
+const { TMDBConfiguration } = require("./models/TMDBConfiguration");
 
 const app = express();
 const port = process.env.PORT ?? 3000;
@@ -163,15 +164,25 @@ app.get("/searchShows", verifyLoggedIn, (req, res)=>{
     // let route = "search/tv"
     const { query } = req.query
     console.log({query})
-    tmdb.searchTVShows({query})
-        .then((result) => {
-            console.log(result.results)
-            res.render("search.ejs", {shows: result.results})
-        })
-        .catch((error) => {
-            console.error("/searchShows: error:", error);
-            res.render("error.ejs")
-        })
+
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/all
+    Promise.all([
+        TMDBConfiguration.findOne({}),
+        tmdb.searchTVShows({query})
+    ])
+    .then(([configuration, searchResults]) => {
+        
+        console.log(searchResults.results)
+        const imageBasePath = configuration.imageBasePath("w92");
+        res.render("search.ejs", {
+            imageBasePath: imageBasePath,
+            shows: searchResults.results
+        });
+    })
+    .catch((error) => {
+        console.error("/searchShows: error:", error);
+        res.render("error.ejs")
+    })
 })
 
 app.get("/addShow", (req, res)=>{

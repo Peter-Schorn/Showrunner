@@ -15,7 +15,14 @@ const tmdbConfigurationSchema = new mongoose.Schema({
             still_sizes: { type: [String], required: true },
         }
     },
-    change_keys: { type: [String], required: true }
+    change_keys: { type: [String], required: true },
+}, {
+    methods: {
+        imageBasePath(size) {
+            const theSize = size ?? "original";
+            return `${this.images.secure_base_url}/${theSize}`;
+        }
+    }
 });
 
 // https://mongoosejs.com/docs/api.html#mongoose_Mongoose-model
