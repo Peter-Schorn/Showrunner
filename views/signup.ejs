@@ -1,12 +1,10 @@
 <%- include('./partials/header.ejs', {title: 'Home' }) %>
 <%- include('./partials/navbar.ejs') %>
 
-<h1>Log in Page</h1>
-
-<form action="/login" method="POST">
+<form action="/signup" method="POST">
     <input type="text" name="username" placeholder="username">
     <input type="password" name="password" placeholder="password">
-    <button>Login</button>
+    <button>Submit</button>
 </form>
 
 <%- include('./partials/footer.ejs') %>

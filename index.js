@@ -1,50 +1,67 @@
-
-// allows access to .env file
-require('dotenv').config();
-const express = require('express');
-const app = express();
-const mongoose = require('mongoose');
-mongoose.set('strictQuery', false);
-const port = process.env.PORT || 3000;
-
+require("dotenv").config();
+const express = require("express");
+const logger = require("morgan");
+const mongoose = require("mongoose");
 const TMDB = require("./api").TMDB;
-app.use(express.static('public'));
-app.set('view engine', 'ejs');
 
-const logger = require('morgan');
-app.use(logger('dev'));
+// passport dependencies
+const passport = require("passport");
+const expressSession = require("express-session");
+const LocalStrategy = require("passport-local").Strategy;
+const MongoStore = require("connect-mongo");
+const User = require("./models/UserModel");
 
-const appUser = process.env.SR_USER;
+const app = express();
+const port = process.env.PORT ?? 3000;
 
-// console.log(process.env);
+app.use(express.static("public"));
+app.use(express.urlencoded({ extended: false }));
+app.set("view engine", "ejs");
+app.use(logger("dev"));
+
+mongoose.set("strictQuery", false);
 
 // DB CONNECTION
-
-const {createUser} = require('./models/Queries')
-createUser();
 
 // get connection variables from .env file
 const {URI, DB, DB_USER, DB_PASS} = process.env;
 
 // url to connect to database
 
-let url = `${URI}/${DB}`;
+const connectionURL = `${URI}/${DB}`;
 
 // connection options
-
+// https://mongoosejs.com/docs/connections.html#options
+// https://mongodb.github.io/node-mongodb-native/4.2/interfaces/MongoClientOptions.html
 let connectionObject = {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
     authSource: "admin",
     user: DB_USER,
     pass: DB_PASS,
+    autoIndex: false
 };
+
+const mongoStoreURL = `mongodb+srv://${DB_USER}:${DB_PASS}@bootcamp.doe2g0y.mongodb.net`;
+app.use(expressSession({
+    secret: "CV9tHTeLGh-eGieT_csDd_-fHk!W-WJZFofjDJN-",
+    resave: false,
+    saveUninitialized: true,
+    store: MongoStore.create({ mongoUrl: mongoStoreURL})
+}));
+
+const strategy = new LocalStrategy(User.authenticate());
+passport.use(strategy);
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+app.use(passport.initialize());
+app.use(passport.session());
 
 // build connection
 
-mongoose.connect(url, connectionObject)
-.then(()=> console.log(`Connected to ${DB} database`))
-.catch(error=> console.log(`Error connecting to ${DB} database: ${error}`))
+mongoose.connect(connectionURL, connectionObject)
+    .then(() => {
+        console.log(`Connected to ${DB} database`)
+    })
+    .catch(error => console.log(`Error connecting to ${DB} database: ${error}`))
 
 // API CONNECTION
 
@@ -69,49 +86,83 @@ const tmdb = new TMDB(apiKey);
 
 // Route handlers
 
-app.get('/', (req, res)=>{
-    res.redirect('/home');
+app.get("/", (req, res)=>{
+    res.redirect("/home");
 })
 
-app.get('/about', (req, res) => {
-    res.render('about.ejs');
+app.get("/home", (req, res) => {
+    res.render("home.ejs", {showId: []});
 })
 
-app.get('/home', (req, res) => {
-    
-    res.render('home.ejs', {showId: []});
+app.get("/about", (req, res) => {
+    res.render("about.ejs");
 })
 
-app.get('/search', (req, res) => {
+app.get("/signup", (req, res) => {
+    res.render("signup.ejs");
+});
 
-    res.render('search.ejs', {shows: []});
+app.post("/signup", (req, res) => {
+    User.register(
+        new User({
+            username: req.body.username
+        }),
+        req.body.password,
+        (error, response) => {
+            if (error) {
+                res.send(error);
+            }
+            else {
+                console.log(`response from signup: ${response}`);
+                res.redirect("/home");
+            }
+        }
+    )
+});
+
+app.get("/login", (req, res) => {
+    res.render("login.ejs");
+});
+
+app.post("/login", passport.authenticate("local", {
+    failureRedirect: "/login",
+    successRedirect: "/home"
+}), (error, req, res, next) => {
+    if (error) {
+        next(error);
+    }
+});
+
+app.get("/search", (req, res) => {
+    res.render("search.ejs", {shows: []});
 })
 
-app.get('/searchShows', (req, res)=>{
-    // let route = 'search/tv'
-    let {query} = req.query
+app.get("/searchShows", (req, res)=>{
+    // let route = "search/tv"
+    const { query } = req.query
     console.log({query})
     tmdb.searchTVShows({query})
-    .then((result) => {
+        .then((result) => {
             console.log(result.results)
-            res.render('search.ejs', {shows: result.results})
+            res.render("search.ejs", {shows: result.results})
         })
-    .catch((error) => {
-        console.log('error: ', error);
-        res.render('error.ejs')
-    })
+        .catch((error) => {
+            console.error("/searchShows: error:", error);
+            res.render("error.ejs")
+        })
 })
 
-app.get('/addShow', (req, res)=>{
+app.get("/addShow", (req, res)=>{
 let {showId} = req.query
 console.log(showId)
-    res.render('home.ejs', {showId: showId})
+    res.render("home.ejs", {showId: showId})
 })
 
 
-app.get('/error', (req, res) =>
-res.render('error.ejs'))
+app.get("/error", (req, res) => {
+    res.render("error.ejs")
+})
 
 app.listen(port, () => {
-    console.log(`Showrunner Server is listening on port ${port}`)
+    console.log(`Showrunner Server is running on http://localhost:${port}`)
 })
