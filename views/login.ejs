@@ -9,4 +9,9 @@
     <button>Login</button>
 </form>
 
+<!-- set to true if we are being redirected from a failed login attempt -->
+<% if (failedAttempt) { %>
+    <p style="color: red;">Please try again.</p>
+<% } %>
+
 <%- include('./partials/footer.ejs') %>

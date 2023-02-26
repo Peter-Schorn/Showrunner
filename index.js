@@ -121,12 +121,14 @@ app.post("/signup", (req, res) => {
 });
 
 app.get("/login", (req, res) => {
-    res.render("login.ejs");
+    const failedAttempt = req.query.failedAttempt ?? false;
+    res.render("login.ejs", { failedAttempt });
 });
 
 app.post("/login", passport.authenticate("local", {
-    failureRedirect: "/login",
-    successRedirect: "/home"
+    failureRedirect: "/login?failedAttempt=true",
+    successRedirect: "/home",
+    failureMessage: "the failure message"
 }), (error, req, res, next) => {
     if (error) {
         next(error);
