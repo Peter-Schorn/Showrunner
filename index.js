@@ -3,6 +3,7 @@ const express = require("express");
 const logger = require("morgan");
 const mongoose = require("mongoose");
 const TMDB = require("./api").TMDB;
+const updateTMDBConfiguration = require("./models/updateTMDBConfiguration").default;
 
 // passport dependencies
 const passport = require("passport");
@@ -68,6 +69,12 @@ mongoose.connect(connectionURL, connectionObject)
 
 const apiKey = process.env.TMDB_API_KEY_V4;
 const tmdb = new TMDB(apiKey);
+
+// https://developers.themoviedb.org/3/configuration/get-api-configuration
+setInterval(() => {
+    updateTMDBConfiguration();
+}, 86_400_000);  // 24 hours
+
 
 // --- example of calling the api ---
 //
@@ -171,7 +178,7 @@ app.get("/searchShows", verifyLoggedIn, (req, res)=>{
         tmdb.searchTVShows({query})
     ])
     .then(([configuration, searchResults]) => {
-        
+
         console.log(searchResults.results)
         const imageBasePath = configuration.imageBasePath("w92");
         res.render("search.ejs", {
