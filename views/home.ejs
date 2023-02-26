@@ -1,5 +1,5 @@
-<%- include('./partials/header.ejs', {title: 'Home' }) %>
-<%- include('./partials/navbar.ejs') %>
+<%- include('./partials/header.ejs', { title: 'Home' }) %>
+<%- include('./partials/navbar.ejs', { username:  locals.username}) %>
 
 <!-- Grid Container START-->
 <div class="container-fluid">
@@ -11,7 +11,6 @@
     <% } else { %>
         <p>You are not logged in</p>
     <% } %>
-
   </div>
 
   <!-- Grid row 1 START-->

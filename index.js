@@ -100,7 +100,7 @@ app.get("/", (req, res)=>{
 
 app.get("/home", (req, res) => {
     // `username` will be undefined if the user is not logged in
-    const username = req.isAuthenticated() ? req.user?.username : undefined;
+    const username = req.user?.username;
     res.render("home.ejs", { username: username, showId: []});
 })
 
