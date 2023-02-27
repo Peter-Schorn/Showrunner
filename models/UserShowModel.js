@@ -5,15 +5,13 @@ const mongoose = require('mongoose')
 // 1. Schema
 
 const userShowSchema = mongoose.Schema({
-    // userId comes from _id for user in users collection
-    userId: {
+    // username comes user in users collection
+    username: {
         type: String,
         required: [true, "data is missing"]
     },
-    showIds: [{
-        // showId will come from API
-        showId: {
-            type: string,
+    showId: {
+            type: String,
             required: [true, 'data is missing']
         },
         // user can mark a show as watched...consider using filters to show list excluding or only hasWatched = true
@@ -26,11 +24,10 @@ const userShowSchema = mongoose.Schema({
             default: false
         },
         rating: {
-            type: string
+            type: String
         }
-    }]
 })
 
 // 2. Model
 
-exports.UserShowModel = new mongoose.model('usershows', userShowSchema)
+module.exports = mongoose.model('userShow', userShowSchema)

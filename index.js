@@ -1,25 +1,29 @@
 require("dotenv").config();
 const express = require("express");
-const logger = require("morgan");
 const mongoose = require("mongoose");
-const TMDB = require("./api").TMDB;
+const app = express();
+const port = process.env.PORT ?? 3000;
+app.use(express.static("public"));
+app.use(express.urlencoded({ extended: false }));
+app.set("view engine", "ejs");
+mongoose.set("strictQuery", false);
+const logger = require("morgan"); 
+app.use(logger("dev"));
 
-// passport dependencies
+// PASSPORT DEPENDENCIES
 const passport = require("passport");
 const expressSession = require("express-session");
 const LocalStrategy = require("passport-local").Strategy;
 const MongoStore = require("connect-mongo");
 const User = require("./models/UserModel");
 
-const app = express();
-const port = process.env.PORT ?? 3000;
+// DB MODEL DEPENDENCIES
+const UserShowModel = require('./models/UserShowModel');
+const ShowModel = require('./models/ShowModel');
+const WatchProviderModel = require('./models/WatchProviderModel');
 
-app.use(express.static("public"));
-app.use(express.urlencoded({ extended: false }));
-app.set("view engine", "ejs");
-app.use(logger("dev"));
-
-mongoose.set("strictQuery", false);
+// API DEPENDENCY
+const TMDB = require("./api").TMDB;
 
 // DB CONNECTION
 
@@ -27,33 +31,15 @@ mongoose.set("strictQuery", false);
 const {URI, DB, DB_USER, DB_PASS} = process.env;
 
 // url to connect to database
-
 const connectionURL = `${URI}/${DB}`;
 
-// connection options
-// https://mongoosejs.com/docs/connections.html#options
-// https://mongodb.github.io/node-mongodb-native/4.2/interfaces/MongoClientOptions.html
+// connection options (See https://mongoosejs.com/docs/connections.html#options, https://mongodb.github.io/node-mongodb-native/4.2/interfaces/MongoClientOptions.html)
 let connectionObject = {
     authSource: "admin",
     user: DB_USER,
     pass: DB_PASS,
     autoIndex: false
 };
-
-const mongoStoreURL = `mongodb+srv://${DB_USER}:${DB_PASS}@bootcamp.doe2g0y.mongodb.net`;
-app.use(expressSession({
-    secret: "CV9tHTeLGh-eGieT_csDd_-fHk!W-WJZFofjDJN-",
-    resave: false,
-    saveUninitialized: true,
-    store: MongoStore.create({ mongoUrl: mongoStoreURL})
-}));
-
-const strategy = new LocalStrategy(User.authenticate());
-passport.use(strategy);
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
-app.use(passport.initialize());
-app.use(passport.session());
 
 // build connection
 
@@ -63,28 +49,26 @@ mongoose.connect(connectionURL, connectionObject)
     })
     .catch(error => console.log(`Error connecting to ${DB} database: ${error}`))
 
-// API CONNECTION
+// not entirely sure what this does except create a session....is this for DB or User Auth or both?
+const mongoStoreURL = `mongodb+srv://${DB_USER}:${DB_PASS}@bootcamp.doe2g0y.mongodb.net`;
+app.use(expressSession({
+    secret: "CV9tHTeLGh-eGieT_csDd_-fHk!W-WJZFofjDJN-",
+    resave: false,
+    saveUninitialized: true,
+    store: MongoStore.create({ mongoUrl: mongoStoreURL})
+}));
 
-const apiKey = process.env.TMDB_API_KEY_V4;
-const tmdb = new TMDB(apiKey);
 
-// --- example of calling the api ---
-//
-// // https://www.themoviedb.org/tv/1396-breaking-bad
-// const breakingBadTVShowID = 1396;
-//
-// tmdb.tvShowDetails(breakingBadTVShowID)
-//     .then((show) => {
-//         console.log(
-//             `tmdb.tvShowDetails callback: show.name: "${show.name}"`
-//         );
-//     })
-//     .catch((error) => {
-//         console.error("error from TMDB:", error);
-//     });
+// USER AUTHENTICATION
 
-// Middleware
+const strategy = new LocalStrategy(User.authenticate());
+passport.use(strategy);
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+app.use(passport.initialize());
+app.use(passport.session());
 
+// Authentication Verification Middleware
 function verifyLoggedIn(req, res, next) {
     if (req.isAuthenticated()) {
         return next();
@@ -92,26 +76,60 @@ function verifyLoggedIn(req, res, next) {
     res.redirect("/login");
 }
 
-// Route handlers
 
+// API CONNECTION
+
+const apiKey = process.env.TMDB_API_KEY_V4;
+const tmdb = new TMDB(apiKey);
+
+
+// ROUTE HANDLERS
+
+// PAGE ROUTES
+
+// Landing page (root route)
 app.get("/", (req, res)=>{
-    res.redirect("/home");
-})
+    res.render("landing.ejs");
+});
 
+// Login page
+app.get("/login", (req, res) => {
+    const failedAttempt = req.query.failedAttempt ?? false;
+    res.render("login.ejs", { failedAttempt });
+});
+
+// User Home page
 app.get("/home", (req, res) => {
     // `username` will be undefined if the user is not logged in
     const username = req.user?.username;
     res.render("home.ejs", { username: username, showId: []});
-})
+});
 
+// About page
 app.get("/about", (req, res) => {
     res.render("about.ejs");
-})
+});
 
+// Signup page
 app.get("/signup", (req, res) => {
     res.render("signup.ejs");
 });
 
+// Search page - initiate a search and view results
+app.get("/search", verifyLoggedIn, (req, res) => {
+    const username = req.user.username;
+    res.render("search.ejs", {username: username, shows: []});
+});
+
+// Shows page (**this page might be eliminated - currently using it as a testing ground)
+app.get("/shows", verifyLoggedIn, (req, res) => {
+    const username = req.user.username;
+    res.render("shows.ejs", {username: username, showId: []});
+});
+
+// ACTION ROUTES
+
+// Create a user account using passport
 app.post("/signup", (req, res) => {
     User.register(
         new User({
@@ -132,11 +150,7 @@ app.post("/signup", (req, res) => {
     )
 });
 
-app.get("/login", (req, res) => {
-    const failedAttempt = req.query.failedAttempt ?? false;
-    res.render("login.ejs", { failedAttempt });
-});
-
+// Login using passport authentication
 app.post("/login", passport.authenticate("local", {
     failureRedirect: "/login?failedAttempt=true",
     successRedirect: "/home",
@@ -147,7 +161,7 @@ app.post("/login", passport.authenticate("local", {
     }
 });
 
-// https://www.passportjs.org/concepts/authentication/logout/
+// Logout and end session - https://www.passportjs.org/concepts/authentication/logout/
 app.get("/logout", (req, res, next) => {
     req.logout((error) => {
         if (error) {
@@ -157,35 +171,36 @@ app.get("/logout", (req, res, next) => {
     });
 });
 
-app.get("/search", (req, res) => {
-    res.render("search.ejs", {shows: []});
-})
-
+// Send a search query to the TMDB API and return results to the user
 app.get("/searchShows", verifyLoggedIn, (req, res)=>{
     // let route = "search/tv"
-    const { query } = req.query
-    console.log({query})
+    const {query} = req.query
+    const username = req.user.username;
     tmdb.searchTVShows({query})
-        .then((result) => {
-            console.log(result.results)
-            res.render("search.ejs", {shows: result.results})
-        })
-        .catch((error) => {
-            console.error("/searchShows: error:", error);
-            res.render("error.ejs")
-        })
+    .then((result) => {
+        res.render("search.ejs", {username: username, shows: result.results})
+    })
+    .catch((error) => {
+        console.error("/searchShows: error:", error);
+        res.render("error.ejs")
+    })
 })
 
-app.get("/addShow", (req, res)=>{
-let {showId} = req.query
-console.log(showId)
-    res.render("home.ejs", {showId: showId})
+// Add a selected show from search results to the UserShows collection (***in progress) 
+app.get("/addShow", verifyLoggedIn, (req, res)=>{
+    const username = req.user?.username;
+    const showId = req.query.showId
+    res.render("shows.ejs", {username: username, showId: showId})
 })
 
 
+
+// Error Route
 app.get("/error", (req, res) => {
     res.render("error.ejs")
 })
+
+// LISTENER
 
 app.listen(port, () => {
     console.log(`Showrunner Server is running on http://localhost:${port}`)

@@ -1,5 +1,5 @@
 <%- include('./partials/header.ejs', {title: 'Showrunner Search'}) %>
-<%- include('./partials/navbar.ejs', { username:  locals.username}) %>
+<%- include('./partials/navbar.ejs', {username: locals.username}) %>
 <body>
 
 <div class="container p-2">
@@ -12,6 +12,7 @@
 </div>
 
 <div class="p-2">
+<% if (shows) { %>
 
         <% shows.forEach(element=> { %>
             <div class="row align-items-center border border-white m-2 p-2">
@@ -30,6 +31,7 @@
                 </div>
             </div>
         <% }) %>
+    <% } %>
 
 </div>
 
