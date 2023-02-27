@@ -355,7 +355,7 @@ exports.default = class TMDB {
      * Example:
      *
      * ```
-     * tmdb.searchTVShows({ query: "Wire The", include_adult: true })
+     * tmdb.searchTVShows({ query: "The Wire", include_adult: true })
      *     .then((result) => {
      *         console.log(`name of first show: "${result.results[0].name}"`);
      *     })

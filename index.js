@@ -172,19 +172,22 @@ app.get("/searchShows", verifyLoggedIn, (req, res)=>{
     const { query } = req.query
     console.log({query})
 
+    // we want to execute `TMDBConfiguration.findOne({})` and
+    // `tmdb.searchTVShows({query})` in parallel, so we use `Promise.all`
+    // instead of chaining the promises
     // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/all
     Promise.all([
         TMDBConfiguration.findOne({}),
-        tmdb.searchTVShows({query})
+        tmdb.searchTVShows({ query })
     ])
     .then(([configuration, searchResults]) => {
 
         console.log(searchResults.results)
-        const imageBasePath = configuration.imageBasePath("w92");
+        const imagePosterBasePath = configuration.imagePosterBasePath("w92");
         res.render("search.ejs", {
-            imageBasePath: imageBasePath,
-            shows: searchResults.results
+            imagePosterBasePath,
         });
+            shows: searchResults.results
     })
     .catch((error) => {
         console.error("/searchShows: error:", error);
