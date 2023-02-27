@@ -12,7 +12,7 @@ const watchProviderSchema = mongoose.Schema({
                     link: { type: String },
             buy: [
                 {
-                    
+
                 }
             ]
             }
