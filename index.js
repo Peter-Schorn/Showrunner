@@ -132,7 +132,9 @@ app.post("/signup", (req, res) => {
             }
             else {
                 console.log(`response from signup: ${response}`);
-                res.redirect("/home");
+                passport.authenticate("local") (req, res, () => {
+                    res.redirect("/home");
+                });
             }
         }
     )
