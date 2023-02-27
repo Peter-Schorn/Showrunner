@@ -12,7 +12,7 @@ const watchProviderSchema = mongoose.Schema({
                     link: { type: String },
             buy: [
                 {
-                    
+
                 }
             ]
             }
@@ -22,4 +22,4 @@ const watchProviderSchema = mongoose.Schema({
 
 // 2. Model
 
-module.export = mongoose.model('watchProvider', watchProviderSchema)
+exports.WatchProviderModel = new mongoose.model('watchProviders', watchProviderSchema)

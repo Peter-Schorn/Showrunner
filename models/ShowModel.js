@@ -69,4 +69,4 @@ const showSchema = mongoose.Schema(
 
 // 2. Model
 
-module.exports = mongoose.model('show', showSchema)
+exports.ShowModel = new mongoose.model('shows', showSchema)
