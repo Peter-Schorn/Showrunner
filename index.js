@@ -188,8 +188,8 @@ app.get("/searchShows", verifyLoggedIn, (req, res)=>{
         const imagePosterBasePath = configuration.imagePosterBasePath("w92");
         res.render("search.ejs", {
             imagePosterBasePath,
-        });
             shows: searchResults.results
+        });
     })
     .catch((error) => {
         console.error("/searchShows: error:", error);
