@@ -3,6 +3,7 @@ const express = require("express");
 const logger = require("morgan");
 const mongoose = require("mongoose");
 const TMDB = require("./api").TMDB;
+const updateTMDBConfiguration = require("./models/updateTMDBConfiguration").default;
 
 // passport dependencies
 const passport = require("passport");
@@ -10,6 +11,7 @@ const expressSession = require("express-session");
 const LocalStrategy = require("passport-local").Strategy;
 const MongoStore = require("connect-mongo");
 const User = require("./models/UserModel");
+const { TMDBConfiguration } = require("./models/TMDBConfiguration");
 
 const app = express();
 const port = process.env.PORT ?? 3000;
@@ -67,6 +69,12 @@ mongoose.connect(connectionURL, connectionObject)
 
 const apiKey = process.env.TMDB_API_KEY_V4;
 const tmdb = new TMDB(apiKey);
+
+// https://developers.themoviedb.org/3/configuration/get-api-configuration
+setInterval(() => {
+    updateTMDBConfiguration();
+}, 86_400_000);  // 24 hours
+
 
 // --- example of calling the api ---
 //
@@ -165,15 +173,28 @@ app.get("/searchShows", verifyLoggedIn, (req, res)=>{
     // let route = "search/tv"
     const { query } = req.query
     console.log({query})
-    tmdb.searchTVShows({query})
-        .then((result) => {
-            console.log(result.results)
-            res.render("search.ejs", {shows: result.results})
-        })
-        .catch((error) => {
-            console.error("/searchShows: error:", error);
-            res.render("error.ejs")
-        })
+
+    // we want to execute `TMDBConfiguration.findOne({})` and
+    // `tmdb.searchTVShows({query})` in parallel, so we use `Promise.all`
+    // instead of chaining the promises
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/all
+    Promise.all([
+        TMDBConfiguration.findOne({}),
+        tmdb.searchTVShows({ query })
+    ])
+    .then(([configuration, searchResults]) => {
+
+        console.log(searchResults.results)
+        const imagePosterBasePath = configuration.imagePosterBasePath("w92");
+        res.render("search.ejs", {
+            imagePosterBasePath,
+        });
+            shows: searchResults.results
+    })
+    .catch((error) => {
+        console.error("/searchShows: error:", error);
+        res.render("error.ejs")
+    })
 })
 
 app.get("/addShow", (req, res)=>{
