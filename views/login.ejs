@@ -1,8 +1,23 @@
-<%- include('./partials/header.ejs', {title: 'PAGE TITLE HERE'}) %>
-<%- include('./partials/navbar.ejs') %>
-<div class="container">
-  <div class="row justify-content-center">
-    <div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3 block">
+<%- include('./partials/header.ejs', {title: "Login"}) %>
+<%- include('./partials/navbar.ejs', {username: locals.username}) %>
+
+<!-- Start Peter's login form using passport -->
+<h1>Log in Page</h1>
+
+<form action="/login" method="POST">
+    <input type="text" name="username" placeholder="username">
+    <input type="password" name="password" placeholder="password">
+    <button>Login</button>
+</form>
+
+<!-- set to true if we are being redirected from a failed login attempt -->
+<% if (failedAttempt) { %>
+    <p style="color: red;">Please try again.</p>
+<% } %>
+
+<%- include('./partials/footer.ejs') %>
+<!-- End Peter's login form using passport -->
+
 
 <form>
   <!-- Email input -->

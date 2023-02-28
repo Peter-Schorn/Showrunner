@@ -1,5 +1,5 @@
 <%- include('./partials/header.ejs', {title: 'Showrunner Search'}) %>
-<%- include('./partials/navbar.ejs', { username:  locals.username}) %>
+<%- include('./partials/navbar.ejs', {username: locals.username}) %>
 <body>
 
 <div class="container p-2">
@@ -22,7 +22,7 @@
                     </form>
                 </div>
                 <div class="col-1">
-                    <img src="https://image.tmdb.org/t/p/w92<%= element.poster_path %>" alt="<%= element.name %>">
+                    <img src="<%= `${imagePosterBasePath}${element.poster_path}` %>" alt="<%= element.name %>">
                 </div>
                 <div class="col-10">
                     <h5><%= element.name %> (<%= element.first_air_date %>)</h5>
