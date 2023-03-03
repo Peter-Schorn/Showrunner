@@ -22,4 +22,4 @@ const watchProviderSchema = mongoose.Schema({
 
 // 2. Model
 
-exports.WatchProviderModel = new mongoose.model('watchProviders', watchProviderSchema)
+module.exports = mongoose.model('watchProvider', watchProviderSchema)

@@ -11,21 +11,39 @@ const userSchema = new mongoose.Schema({
         minLength: 4,
         required: [true, "missing username"]
     },
-    // we don't need to define the password here because passport-local-mongoose
-    // will take care of it for us
-    // password: {
-    //     type: String,
-    //     minLength: 4,
-    //     required: [true, "missing password"]
-    // },
+    // we don't need to define the password here because passport-local-mongoose will take care of it for us
     created: {
         type: Date,
         default: Date.now
-    }
+    },
+    // The array of ShowIds that a user has added to their list. It gets added the first time a show is added to the list.
+    userShows:
+        [{
+        showId: {
+        type: String,
+        required: [true, 'Show ID is missing']
+        },
+        hasWatched: {
+            type: Boolean,
+            default: false
+        },
+        favorite: {
+            type: Boolean,
+            default: false
+        },
+        rating: {
+            type: String,
+            default: 'unrated'
+        },
+        added: {
+            type: Date,
+            default: Date.now
+        }
+    }]
 })
 
 userSchema.plugin(passportLocalMongoose);
 
 // 2. Model
 
-module.exports = mongoose.model("users", userSchema);
+module.exports = mongoose.model("user", userSchema);
