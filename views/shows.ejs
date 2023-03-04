@@ -1,10 +1,29 @@
 <%- include('./partials/header.ejs', {title: "Shows"}) %>
 <%- include('./partials/navbar.ejs', {username: locals.username}) %>
 
+<body>
 
-
-<h1><%= username %></h1>
-<h1><%= showId %></h1>
+    <div class="p-2">
+    
+            <% userShows.forEach(element=> { %>
+                <div class="row align-items-center border border-white m-2 p-2">
+                    <div class="col-1">
+                        <form action="/getDetails" method="get">
+                            <button name="showId" value="<%=element.showId%>" class="btn btn-light" type="submit">Get Details</button>
+                        </form>
+                    </div>                   
+                    <div class="col-2">
+                        <form action="/deleteUserShow" method="delete">
+                            <button name="_id" value="<%=element._id%>" class="btn btn-light" type="submit">Delete User Show</button>
+                        </form>
+                    </div>
+                    <div class="col-9" name="_id" value="<%=element._id%>">
+                        <h5>showId: <%= element.showId %> (Database ID: <%= element._id%>)</h5>
+                    </div>
+                </div>
+            <% }) %>
+    
+    </div>
 
 
 
