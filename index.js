@@ -136,7 +136,7 @@ app.get("/error", (req, res) => {
 
 app.get('/shows', verifyLoggedIn, (req, res) => {
     const {username, userShows} = req.user;
-    console.log(req.user)
+    console.log(`This is the list of user shows: ${userShows}`)
     res.render('shows.ejs', {username, userShows});
 })
 
@@ -221,7 +221,7 @@ User.findByIdAndUpdate(
         if(error) {
             console.log(error)
         } else {
-            console.log(success)
+            // console.log(success)
 
             res.redirect("/shows", {showId: showId}, {success: success.userShows})
         }

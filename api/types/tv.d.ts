@@ -303,7 +303,7 @@ export interface ProductionCompany {
 export interface ProductionCountry {
     iso_3166_1: string;
     name: string;
-};
+}
 
 export interface SpokenLanguage {
     iso_639_1: string;
