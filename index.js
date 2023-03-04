@@ -26,7 +26,6 @@ const updateTMDBConfiguration = require("./models/updateTMDBConfiguration").defa
 // API DEPENDENCY
 const TMDB = require("./api").TMDB;
 
-
 // DB CONNECTION
 
 // Get connection variables from .env file
@@ -116,17 +115,13 @@ app.get("/login", (req, res) => {
 app.get("/home", (req, res) => {
     // `username` will be undefined if the user is not logged in
     const username = req.user?.username;
-    const userId = req.user?._id
-    res.render("home.ejs", { 
-        username, 
-        userId, 
-        showId: []});
+    res.render("home.ejs", {username:username, showId: []});
 });
 
 // Search - initiate a search and view results
 app.get("/search", verifyLoggedIn, (req, res) => {
-    const {userId, username} = req.user;
-    res.render("search.ejs", {userId: userId, username: username, shows: []});
+    const username = req.user.username;
+    res.render("search.ejs", {username: username, shows: []});
 });
 
 // Signup
@@ -140,8 +135,9 @@ app.get("/error", (req, res) => {
 });
 
 app.get('/shows', verifyLoggedIn, (req, res) => {
-    console.log(req.query.user)
-    res.render('shows.ejs');
+    const {username, userShows} = req.user;
+    console.log(req.user)
+    res.render('shows.ejs', {username, userShows});
 })
 
 // FUNCTIONALITY ROUTES
@@ -178,7 +174,8 @@ app.post("/login", passport.authenticate("local", {
     }
 });
 
-// Logout (ends session) - https://www.passportjs.org/concepts/authentication/logout/
+// Logout (ends session)
+// https://www.passportjs.org/concepts/authentication/logout/
 app.get("/logout", (req, res, next) => {
     req.logout((error) => {
         if (error) {
@@ -192,8 +189,7 @@ app.get("/logout", (req, res, next) => {
 app.get("/searchShows", verifyLoggedIn, (req, res)=>{
     // let route = "search/tv"
     const {query} = req.query;
-    const {userId} = req.user._id;
-    const {username} = req.query;
+    const {username} = req.user.username;
     
     // Execute the functions in parallel using "Promise.all" instead of chaining them 
     Promise.all([
@@ -204,8 +200,7 @@ app.get("/searchShows", verifyLoggedIn, (req, res)=>{
         const imagePosterBasePath = configuration.imagePosterBasePath("w92");
         res.render("search.ejs", {
             imagePosterBasePath,
-            shows: searchResults.results, 
-            userId: userId,
+            shows: searchResults.results,
             username: username
         });
     })
@@ -215,20 +210,23 @@ app.get("/searchShows", verifyLoggedIn, (req, res)=>{
     })
 })
 // Add a selected show from search results to the userShows object in the userModel (***in progress)
-app.get("/addShow", verifyLoggedIn, (req, res)=>{
-    const {showId} = req.query.showId;
-    const {userId} = req.user._id;
-    const {username} = req.user;
-    
+app.post("/addShow", verifyLoggedIn, (req, res)=>{
+    const username = req.user.username;
+    const showId = req.body.showId
+    let show = {showId}
+
 User.findByIdAndUpdate(
     {_id: req.user._id}, 
-    {$push: {userShows: showId}},(error, success)=> {
+    {$push: {userShows: show}},(error, success)=> {
         if(error) {
             console.log(error)
         } else {
-            res.redirect('/shows')
+            console.log(success)
+
+            res.redirect("/shows", {showId: showId}, {success: success.userShows})
         }
-    })
+    }
+)
 })
 
 app.listen(port, () => {

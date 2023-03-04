@@ -16,9 +16,8 @@
         <% shows.forEach(element=> { %>
             <div class="row align-items-center border border-white m-2 p-2">
                 <div class="col-1">
-                    <form action="/addShow" method="get">
-                        <input type="hidden" name="showId" value="<%=element.id%>">
-                        <button class="btn btn-light" type="submit">Add Show</button>
+                    <form action="/addShow" method="post">
+                        <button name="showId" value="<%=element.id%> class="btn btn-light" type="submit">Add Show</button>
                     </form>
                 </div>
                 <div class="col-1">
