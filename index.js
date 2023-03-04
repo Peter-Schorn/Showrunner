@@ -125,8 +125,8 @@ app.get("/home", (req, res) => {
 
 // Search - initiate a search and view results
 app.get("/search", verifyLoggedIn, (req, res) => {
-    const username = req.user.username;
-    res.render("search.ejs", {username: username, shows: []});
+    const {userId, username} = req.user;
+    res.render("search.ejs", {userId: userId, username: username, shows: []});
 });
 
 // Signup
@@ -136,7 +136,12 @@ app.get("/signup", (req, res) => {
 
 // Error page
 app.get("/error", (req, res) => {
-    res.render("error.ejs")
+    res.render("error.ejs");
+});
+
+app.get('/shows', verifyLoggedIn, (req, res) => {
+    console.log(req.query.user)
+    res.render('shows.ejs');
 })
 
 // FUNCTIONALITY ROUTES
@@ -187,7 +192,8 @@ app.get("/logout", (req, res, next) => {
 app.get("/searchShows", verifyLoggedIn, (req, res)=>{
     // let route = "search/tv"
     const {query} = req.query;
-    const userId = req.user._id;
+    const {userId} = req.user._id;
+    const {username} = req.query;
     
     // Execute the functions in parallel using "Promise.all" instead of chaining them 
     Promise.all([
@@ -199,7 +205,8 @@ app.get("/searchShows", verifyLoggedIn, (req, res)=>{
         res.render("search.ejs", {
             imagePosterBasePath,
             shows: searchResults.results, 
-            userId
+            userId: userId,
+            username: username
         });
     })
     .catch((error) => {
@@ -209,27 +216,20 @@ app.get("/searchShows", verifyLoggedIn, (req, res)=>{
 })
 // Add a selected show from search results to the userShows object in the userModel (***in progress)
 app.get("/addShow", verifyLoggedIn, (req, res)=>{
-    const userId = req.user._id;
-    const {showId} = req.query.showId
-
+    const {showId} = req.query.showId;
+    const {userId} = req.user._id;
+    const {username} = req.user;
+    
 User.findByIdAndUpdate(
     {_id: req.user._id}, 
     {$push: {userShows: showId}},(error, success)=> {
         if(error) {
             console.log(error)
         } else {
-            console.log(success)
-            res.render("shows.ejs", {
-                userId,
-                showId, 
-                success: success.userShows
-            })
+            res.redirect('/shows')
         }
-    }
-)
-
+    })
 })
-
 
 app.listen(port, () => {
     console.log(`Showrunner Server is running on http://localhost:${port}`)

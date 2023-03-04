@@ -30,14 +30,6 @@ const userSchema = new mongoose.Schema({
         favorite: {
             type: Boolean,
             default: false
-        },
-        rating: {
-            type: String,
-            default: 'unrated'
-        },
-        added: {
-            type: Date,
-            default: Date.now
         }
     }]
 })
