@@ -97,12 +97,13 @@ setInterval(() => {
 
 // Root Route (landing.ejs)
 app.get("/", (req, res)=>{
-    res.render("landing.ejs");
+    res.render("landing.ejs",);
 })
 
 // About
 app.get("/about", (req, res) => {
-    res.render("about.ejs");
+    const username = req.user?.username;
+    res.render("about.ejs", {username});
 })
 
 // User Login
@@ -115,13 +116,13 @@ app.get("/login", (req, res) => {
 app.get("/home", (req, res) => {
     // `username` will be undefined if the user is not logged in
     const username = req.user?.username;
-    res.render("home.ejs", {username:username, showId: []});
+    res.render("home.ejs", {username, showId: []});
 });
 
 // Search - initiate a search and view results
 app.get("/search", verifyLoggedIn, (req, res) => {
-    const username = req.user.username;
-    res.render("search.ejs", {username: username, shows: []});
+    const username = req.user?.username;
+    res.render("search.ejs", {username, shows: []});
 });
 
 // Signup
@@ -135,7 +136,8 @@ app.get("/error", (req, res) => {
 });
 
 app.get('/shows', verifyLoggedIn, (req, res) => {
-    const {username, userShows} = req.user;
+    const username = req.user?.username;
+    const userShows = req.user.userShows;
     console.log(`This is the list of user shows: ${userShows}`)
     res.render('shows.ejs', {username, userShows});
 })
@@ -189,7 +191,7 @@ app.get("/logout", (req, res, next) => {
 app.get("/searchShows", verifyLoggedIn, (req, res)=>{
     // let route = "search/tv"
     const {query} = req.query;
-    const {username} = req.user.username;
+    const username = req.user.username;
     
     // Execute the functions in parallel using "Promise.all" instead of chaining them 
     Promise.all([
@@ -201,7 +203,7 @@ app.get("/searchShows", verifyLoggedIn, (req, res)=>{
         res.render("search.ejs", {
             imagePosterBasePath,
             shows: searchResults.results,
-            username: username
+            username
         });
     })
     .catch((error) => {
@@ -217,7 +219,7 @@ app.post("/addShow", verifyLoggedIn, (req, res)=>{
 
 User.findByIdAndUpdate(
     {_id: req.user._id}, 
-    {$push: {userShows: show}},(error, success)=> {
+    {$push: {userShows: show}}, {runValidators: true}, (error, success)=> {
         if(error) {
             console.log(error)
         } else {

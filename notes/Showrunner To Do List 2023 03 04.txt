@@ -43,18 +43,18 @@ Update show details in DB - work through how we're going to do this so that info
 
 Flow of Adding a Show:
 
-1. Enter a search term and get results from TMDB: (TO-DO: Add a placeholder image to use when posterpath is null)
+1. Enter a search term and get results from TMDB: (TO-DO: Add a placeholder image to use when posterpath is null) *PETER TO POST PLACEHOLDER IMAGE*
 --Enter search query and click search (currently on search page, moving to navbar?)
 --Get search results from tmdb.searchTVShows({query})
 --Return list of search results (search.ejs)
 
-2. Choose a show from results and add it to the user's list of shows (TO-DO: PREVENT NULL AND DUPLICATE)
+2. Choose a show from results and add it to the user's list of shows (TO-DO: PREVENT DUPLICATE) *test that null is prevented* *PETER TO RESEARCH PREVENT DUPLICATE*
 --Click 'Add Show' next to desired show result to trigger '/addShow'
 --Add the showId to the DB - user.userShows (users collection)
 
 3. Determine behavior after user adds show. Currently going to '/shows' as a placeholder since there are more steps to perform before the show list is populated at '/home'. (TO-DO: Discuss/Implement)
 
-4. Add the details about the selected show to the app's list of shows (not user specific) (TO-DO: IMPLEMENT)
+4. Add the details about the selected show to the app's list of shows (not user specific) (TO-DO: IMPLEMENT) *This is the step that Aeridy is currently working on*
 -- Get show from tmdb.tvShowDetails(showId)
 -- Add tvShowDetails to the DB (shows collection) - consider upsert to prevent duplicates
 
