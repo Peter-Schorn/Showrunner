@@ -21,3 +21,7 @@ nav:has(*) {
 .sidebar div {
 border: inherit
 }
+
+.movie-poster {
+    width: 92px;
+}
