@@ -217,18 +217,21 @@ app.post("/addShow", verifyLoggedIn, (req, res)=>{
     const showId = req.body.showId
     let show = {showId}
 
-User.findByIdAndUpdate(
-    {_id: req.user._id}, 
-    {$push: {userShows: show}}, {runValidators: true}, (error, success)=> {
-        if(error) {
-            console.log(error)
-        } else {
-            // console.log(success)
+    // https://stackoverflow.com/a/14528282/12394554
+    User.updateOne(
+        {_id: req.user._id, "userShows.showId": {$ne: show.showId}},
+        {$push: {userShows: show}},
+        {runValidators: true}, 
+        (error, success) => {
+            if(error) {
+                console.log(error)
+            } else {
+                // console.log(success)
 
-            res.redirect("/shows", {showId: showId}, {success: success.userShows})
-        }
-    }
-)
+                res.redirect("/shows", {showId: showId}, {success: success.userShows})
+            }
+        })
+        
 })
 
 app.listen(port, () => {
