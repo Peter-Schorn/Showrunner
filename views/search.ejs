@@ -21,7 +21,9 @@
                     </form>
                 </div>
                 <div class="col-1">
-                    <img src="<%= `${imagePosterBasePath}${element.poster_path}` %>" alt="<%= element.name %>">
+                    <% const poster_path = element.poster_path ? `${imagePosterBasePath}${element.poster_path}` : "movie_poster_placeholder.svg" %>
+                    
+                    <img class="movie-poster" src="<%= poster_path %>" alt="<%= element.name %>">
                 </div>
                 <div class="col-10">
                     <h5><%= element.name %> (<%= element.first_air_date %>)</h5>
