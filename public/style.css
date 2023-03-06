@@ -21,3 +21,11 @@ nav:has(*) {
 .sidebar div {
 border: inherit
 }
+
+.failed-login-attempt {
+    color: red;
+}
+
+.movie-poster {
+    width: 92px;
+}

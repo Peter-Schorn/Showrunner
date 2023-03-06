@@ -15,13 +15,21 @@
 
         <% shows.forEach(element=> { %>
             <div class="row align-items-center border border-white m-2 p-2">
+                <% if (existingShows.includes(element.id.toString())) { %>
+                    <div class="col-1">
+                        <h5>Added to List</h1>
+                    </div>
+                <% } else { %>
+                    <div class="col-1">
+                        <form action="/addShow" method="post">
+                            <button name="showId" value="<%=element.id%>" class="btn btn-light" type="submit">Add Show</button>
+                        </form>
+                    </div>
+                <% } %>
                 <div class="col-1">
-                    <form action="/addShow" method="post">
-                        <button name="showId" value="<%=element.id%>" class="btn btn-light" type="submit">Add Show</button>
-                    </form>
-                </div>
-                <div class="col-1">
-                    <img src="<%= `${imagePosterBasePath}${element.poster_path}` %>" alt="<%= element.name %>">
+                    <% const poster_path = element.poster_path ? `${imagePosterBasePath}${element.poster_path}` : "movie_poster_placeholder.svg" %>
+                    
+                    <img class="movie-poster" src="<%= poster_path %>" alt="<%= element.name %>">
                 </div>
                 <div class="col-10">
                     <h5><%= element.name %> (<%= element.first_air_date %>)</h5>

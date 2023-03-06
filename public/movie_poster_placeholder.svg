@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="92px" height="138px" viewBox="0 0 92 138" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Movie Poster</title>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Movie-Poster">
+            <rect id="Rectangle" fill="#9C9A9A" x="0" y="0" width="92" height="138"></rect>
+            <rect id="Rectangle" fill="#D8D8D8" x="21" y="39" width="50" height="60" rx="5"></rect>
+            <rect id="Rectangle" fill="#C7C7C7" x="21" y="59" width="50" height="20"></rect>
+            <g id="small-squares-left" transform="translate(26.000000, 42.000000)" fill="#FFFFFF">
+                <rect id="Rectangle" x="0" y="0" width="6" height="6" rx="1"></rect>
+                <rect id="Rectangle" x="0" y="12" width="6" height="6" rx="1"></rect>
+                <rect id="Rectangle" x="0" y="24" width="6" height="6" rx="1"></rect>
+                <rect id="Rectangle" x="0" y="36" width="6" height="6" rx="1"></rect>
+                <rect id="Rectangle" x="0" y="48" width="6" height="6" rx="1"></rect>
+            </g>
+            <g id="small-squares-right" transform="translate(60.000000, 42.000000)" fill="#FFFFFF">
+                <rect id="Rectangle" x="0" y="0" width="6" height="6" rx="1"></rect>
+                <rect id="Rectangle" x="0" y="12" width="6" height="6" rx="1"></rect>
+                <rect id="Rectangle" x="0" y="24" width="6" height="6" rx="1"></rect>
+                <rect id="Rectangle" x="0" y="36" width="6" height="6" rx="1"></rect>
+                <rect id="Rectangle" x="0" y="48" width="6" height="6" rx="1"></rect>
+            </g>
+        </g>
+    </g>
+</svg>
