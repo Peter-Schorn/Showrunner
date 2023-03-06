@@ -1,3 +1,5 @@
+import { WatchProvidersResults } from "./watch-providers";
+
 // Adapted from: https://github.com/blakejoy/tmdb-ts/blob/master/src/types/tv-shows.ts
 
 /**
@@ -36,6 +38,12 @@ export interface TVShowDetails {
     type: string;
     vote_average: number;
     vote_count: number;
+}
+
+export interface TVShowDetailsAndWatchProviders extends TVShowDetails {
+    watch_providers: {
+        results: WatchProvidersResults
+    }
 }
 
 export interface CreatedBy {

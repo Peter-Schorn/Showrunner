@@ -17,6 +17,7 @@ const axios = require("axios").default;
  * @typedef { import("./types").TVSearchOptions } TVSearchOptions
  * @typedef { import("./types").TVShowsResponse } TVShowsResponse
  * @typedef { import("./types").TMDBConfigurationDetails } TMDBConfigurationDetails
+ * @typedef { import("./types").TVShowDetailsAndWatchProviders } TVShowDetailsAndWatchProviders
  */
 
 /**
@@ -85,6 +86,33 @@ exports.default = class TMDB {
             `/3/tv/${id}`,  // path
             { language }  // query params
         );
+    }
+    
+    /**
+     * Get the primary information about a tv show and the watch providers.
+     * 
+     * https://developers.themoviedb.org/3/tv/get-tv-details
+     * https://developers.themoviedb.org/3/tv/get-tv-watch-providers
+     * 
+     * @param {string |  number} id the tv show id
+     * @param {string | null | undefined} [language] an ISO 639-1 language code
+     * @returns {Promise<TVShowDetailsAndWatchProviders>} the details of a TMDB 
+     * tv show and the watch providers
+     */
+    async tvShowDetailsAndWatchProviders(id, language) {
+        const results = await this._get(
+            `/3/tv/${id}`,
+            { 
+                language,
+                append_to_response: "watch/providers"
+            }
+        );
+        // rename the "watch/providers" key to "watch_providers"
+        if (results?.["watch/providers"]) {
+            results.watch_providers = results["watch/providers"];
+            delete results["watch/providers"]
+        }
+        return results;
     }
 
     /**

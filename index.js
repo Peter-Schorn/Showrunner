@@ -122,7 +122,7 @@ app.get("/home", (req, res) => {
 // Search - initiate a search and view results
 app.get("/search", verifyLoggedIn, (req, res) => {
     const username = req.user?.username;
-    res.render("search.ejs", {username, shows: []});
+    res.render("search.ejs", {username, shows: [], existingShows: []});
 });
 
 // Signup
@@ -192,7 +192,8 @@ app.get("/searchShows", verifyLoggedIn, (req, res)=>{
     // let route = "search/tv"
     const {query} = req.query;
     const username = req.user.username;
-    
+    const existingShows = req.user.userShows.map( show => show.showId);
+        
     // Execute the functions in parallel using "Promise.all" instead of chaining them 
     Promise.all([
         TMDBConfiguration.findOne({}),
@@ -203,7 +204,8 @@ app.get("/searchShows", verifyLoggedIn, (req, res)=>{
         res.render("search.ejs", {
             imagePosterBasePath,
             shows: searchResults.results,
-            username
+            username,
+            existingShows
         });
     })
     .catch((error) => {
@@ -217,18 +219,21 @@ app.post("/addShow", verifyLoggedIn, (req, res)=>{
     const showId = req.body.showId
     let show = {showId}
 
-User.findByIdAndUpdate(
-    {_id: req.user._id}, 
-    {$push: {userShows: show}}, {runValidators: true}, (error, success)=> {
-        if(error) {
-            console.log(error)
-        } else {
-            // console.log(success)
+    // https://stackoverflow.com/a/14528282/12394554
+    User.updateOne(
+        {_id: req.user._id, "userShows.showId": {$ne: show.showId}},
+        {$push: {userShows: show}},
+        {runValidators: true}, 
+        (error, success) => {
+            if(error) {
+                console.log(error)
+            } else {
+                // console.log(success)
 
-            res.redirect("/shows", {showId: showId}, {success: success.userShows})
-        }
-    }
-)
+                res.redirect("/shows", {showId: showId}, {success: success.userShows})
+            }
+        })
+        
 })
 
 app.listen(port, () => {
