@@ -2,21 +2,21 @@
 <%- include('./partials/navbar.ejs') %>
 
 <div class="container">
-  <div class="row justify-content-center">
+<div class="row justify-content-center">
     <div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3 mt-5 block">
 
-      <form action="/login" method="POST">
+    <form action="/login" method="POST">
         
         <!-- Username input -->
         <div class="form-outline mb-4">
-          <input type="text" name="username" id="username" class="form-control">
-          <label class="form-label" for="username">Username</label>
+        <input type="text" name="username" id="username" class="form-control">
+        <label class="form-label" for="username">Username</label>
         </div>
 
         <!-- Password input -->
         <div class="form-outline mb-2">
-          <input type="password" name="password" id="password" class="form-control" />
-          <label class="form-label" for="password">Password</label>
+        <input type="password" name="password" id="password" class="form-control" />
+        <label class="form-label" for="password">Password</label>
         </div>
         
         <% if (failedAttempt) { %>
@@ -25,10 +25,10 @@
 
         <!-- Submit button -->
         <button type="submit" class="btn btn-primary btn-block">Sign in</button>
-      </form>
+    </form>
 
     </div>
-  </div>
+</div>
 </div>
 
 <%- include('./partials/footer.ejs') %>
