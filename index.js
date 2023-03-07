@@ -39,8 +39,7 @@ const connectionURL = `${URI}/${DB}`;
 let connectionObject = {
     authSource: "admin",
     user: DB_USER,
-    pass: DB_PASS,
-    autoIndex: false
+    pass: DB_PASS
 };
 
 // Build the connection
