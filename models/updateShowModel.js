@@ -21,7 +21,7 @@ exports.addShowToDatabase = function(showId) {
             
             // https://mongoosejs.com/docs/api/model.html#model_Model-findOneAndUpdate
             return ShowModel.findOneAndUpdate({ showId }, {
-                showId: showId,
+                showId: tvShowDetails.id,
                 showName: tvShowDetails.name,
                 backdropPath: tvShowDetails.backdrop_path,
                 firstAirDate: tvShowDetails.first_air_date,
@@ -43,7 +43,6 @@ exports.addShowToDatabase = function(showId) {
                 upsert: true,
                 returnDocument: "after"
             })
-            
             
         })
         .catch((error) => {
@@ -68,7 +67,7 @@ exports.retrieveShow = function(showId) {
                 return show;
             }
             else {
-                exports.addShowToDatabase(showId);
+                return exports.addShowToDatabase(showId);
             }
         });
     
