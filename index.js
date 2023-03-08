@@ -108,7 +108,8 @@ app.get("/about", (req, res) => {
 // User Login
 app.get("/login", (req, res) => {
     const failedAttempt = req.query.failedAttempt ?? false;
-    res.render("login.ejs", {failedAttempt});
+    const username = req.user?.username;
+    res.render("login.ejs", {username, failedAttempt});
 });
 
 // User Home (Show list)
@@ -126,7 +127,8 @@ app.get("/search", verifyLoggedIn, (req, res) => {
 
 // Signup
 app.get("/signup", (req, res) => {
-    res.render("signup.ejs");
+    const username = req.user?.username;
+    res.render("signup.ejs", {username});
 });
 
 // Error page

@@ -1,46 +1,45 @@
-const submitButtons = document.querySelectorAll(".submit-validation") ?? [];
+const forms = document.querySelectorAll(".needs-validation") ?? [];
 
 const emailRegex = /[a-zA-Z0-9._8+-]+@[a-zA-Z.-0-9]+\.[a-zA-Z]{2,}/;
 
-submitButtons.forEach(function(button) {
-    button.addEventListener("click", function(event) {
+function validate(event) {
 
-        console.log("click .submit-validation");
-        
-        const username = Array.from(document.forms)
-            .find((element) => { 
-                return element.classList.contains("needs-validation");
-            })
-            ?.["username"]
-            ?.value ?? "";
-        
-        let errorMessage = "";
-        
-        let stop = false;
-        
-        if (!button.checkValidity()) {
-            stop = true;
-        }
-        else if (username.match(emailRegex)) {
-            stop = true;
-            errorMessage = "username cannot be email";
-            console.log(errorMessage);
-        }
-        
-        const errorMessageElement = document.querySelector(
-            "#username-error-message"
-        );
-        if (errorMessageElement) {
-            errorMessageElement.textContent = errorMessage;
-        }
-        
-        if (stop === true) {
-            console.log("stop");
-            event.preventDefault();
-            event.stopPropagation();
-        }
-        
-        button.classList.add("was-validated");
-        
-    });
+    console.log("form submit .needs-validation");
+    
+    const username = document.getElementById("username")?.value ?? "";
+    const password = document.getElementById("password")?.value ?? "";
+    
+    let errorMessage = "";
+    
+    let stop = false;
+    
+    if (username.match(emailRegex)) {
+        stop = true;
+        errorMessage = "username cannot be email";
+        console.log(errorMessage);
+    }
+    
+    const errorMessageElement = document.querySelector(
+        "#username-error-message"
+    );
+    if (errorMessageElement) {
+        errorMessageElement.textContent = errorMessage;
+    }
+    
+    if (stop === true) {
+        console.log("stop");
+        event.preventDefault();
+        event.stopPropagation();
+    }
+    
+}
+
+forms.forEach(function(form) {
+    
+    form.addEventListener("submit", validate);
+    form.querySelector(`button[type="submit]"`)?.addEventListener("click", validate);
+    
 });
+
+document.getElementById("username")?.addEventListener("input", validate);
+document.getElementById("password")?.addEventListener("input", validate);
