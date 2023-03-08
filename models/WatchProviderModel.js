@@ -4,7 +4,7 @@ const mongoose = require('mongoose')
 
 // 1. Schema
 
-const watchProviderSchema = mongoose.Schema({
+const watchProviderSchema = new mongoose.Schema({
     showId: { type: Number },
     results: [
         {
@@ -22,4 +22,4 @@ const watchProviderSchema = mongoose.Schema({
 
 // 2. Model
 
-module.exports = mongoose.model('watchProvider', watchProviderSchema)
+module.exports = mongoose.model('WatchProvider', watchProviderSchema)

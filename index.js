@@ -20,8 +20,13 @@ const MongoStore = require("connect-mongo");
 const User = require("./models/UserModel");
 const Show = require('./models/ShowModel');
 const WatchProvider = ('./models/WatchProviderModel');
-const {TMDBConfiguration} = require("./models/TMDBConfiguration");
-const updateTMDBConfiguration = require("./models/updateTMDBConfiguration").default;
+const {TMDBConfiguration}  = require("./models/TMDBConfiguration");
+const updateTMDBConfiguration = require("./models/updateTMDBConfiguration");
+const {
+    addShowToDatabase,
+    retrieveShow,
+    userFullShows
+} = require("./models/updateShowModel");
 
 // API DEPENDENCY
 const TMDB = require("./api").TMDB;
@@ -219,6 +224,8 @@ app.post("/addShow", verifyLoggedIn, (req, res)=>{
     const showId = req.body.showId
     let show = {showId}
 
+   addShowToDatabase(showId);
+    
     // https://stackoverflow.com/a/14528282/12394554
     User.updateOne(
         {_id: req.user._id, "userShows.showId": {$ne: show.showId}},
@@ -235,6 +242,19 @@ app.post("/addShow", verifyLoggedIn, (req, res)=>{
         })
         
 })
+
+app.get("/full-shows", verifyLoggedIn, (req, res) => {
+    console.log(`req.user._id: "${req.user._id}"`);
+    userFullShows(req.user._id)
+        .then((shows) => {
+            console.log("\n\nFULL SHOWS:", shows);
+            res.send(shows);
+        })
+        .catch((error) => {
+            console.error(error);
+            res
+        });
+});
 
 app.listen(port, () => {
     console.log(`Showrunner Server is running on http://localhost:${port}`)

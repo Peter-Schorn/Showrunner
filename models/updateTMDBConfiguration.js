@@ -20,7 +20,7 @@ const tmdb = new TMDB(apiKey);
  *     });
  * ```
  */
-exports.default = function updateTMDBConfiguration() {
+module.exports = function updateTMDBConfiguration() {
     // this function could be called multiple times (e.g., once every 24 hours)
     // we can define the function and export it at the same time
 
