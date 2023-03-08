@@ -42,7 +42,7 @@ exports.addShowToDatabase = function(showId) {
             }, {
                 upsert: true,
                 returnDocument: "after"
-            })
+            });
             
         })
         .catch((error) => {
@@ -74,27 +74,43 @@ exports.retrieveShow = function(showId) {
 }
 
 /**
- * Retrieves the full show objects for a given user
+ * Retrieves the full show objects for a given user.
+ * 
+ * First checks database, then falls back on TMDB api, and saves returned data
+ * back into database.
  * 
  * @param {string} userId the user id
  * @returns {*} a promise that resolves to an array of show objects
  */
 exports.userFullShows = function(userId) {
     
-    // TODO: fallback on TMDB api when shows not in database
-    
     return UserModel.findById(userId)
         .then((user) => {
-            const showIds = (user?.userShows ?? []).map((show) => show.showId);
-            return ShowModel.find({ "showId": { $in: showIds } })
-                .then((shows) => {
-                    
-                    if (!shows) {
-                        return []
-                    }
-                    return shows;
-                })
             
-        })
+            const showIds = (user?.userShows ?? []).map((show) => `${show?.showId}`);
+            
+            return ShowModel.find({ "showId": { $in: showIds } }).then((showObjects) => {
+                
+                const foundIds = showObjects.map(show => `${show?.showId}`);
+                const remainingIds = showIds.filter((id) => {
+                    return !foundIds.includes(id);
+                });
+                
+                // console.log({showIds});
+                // console.log({foundIds});
+                // console.log({remainingIds});
+                
+                const addToDatabasePromises = remainingIds.map((id) => {
+                    return exports.addShowToDatabase(id);
+                })
+                console.log(
+                    `addToDatabasePromises.length: ${addToDatabasePromises.length}`
+                );
+                return Promise.all(addToDatabasePromises).then((shows) => {
+                    return showObjects.concat(shows);
+                });
+            });
+            
+        });
         
 }
