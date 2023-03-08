@@ -4,7 +4,7 @@ const mongoose = require('mongoose')
 
 // 1. Schema
 
-const showSchema = mongoose.Schema(
+const showSchema = new mongoose.Schema(
     {
         showId: { type: Number },
         showName: { type: String },
@@ -27,7 +27,7 @@ const showSchema = mongoose.Schema(
             showId: { type: Number },
             stillPath: { type: String }
         },
-        nextEpisodeAired: {
+        nextEpisodeToAir: {
             airDate: { type: Date },
             episodeNum: { type: Number },
             episodeId: { type: Number },
@@ -48,7 +48,6 @@ const showSchema = mongoose.Schema(
         seasonCount: { type: Number },
         overview: { type: String },
         popularity: { type: Number },
-        posterPath: { type: String },
         seasons: [
             {
                 airDate: { type: Date },
@@ -69,4 +68,4 @@ const showSchema = mongoose.Schema(
 
 // 2. Model
 
-module.exports = mongoose.model('show', showSchema)
+module.exports = mongoose.model('Show', showSchema)
