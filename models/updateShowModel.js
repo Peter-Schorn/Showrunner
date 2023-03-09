@@ -114,3 +114,51 @@ exports.userFullShows = function(userId) {
         });
         
 }
+
+/**
+ * Deletes a show from a user's list. If the show is not in any other user's,
+ * list, then delete it from the shows collection.
+ * 
+ * @param {string} userId the user id
+ * @param {string} showId the show id
+ * @returns {*} a promise that resolves to result of removing the
+ * show from the user's list
+ */
+exports.deleteUserShow = function(userId, showId) {
+    
+    // find all other users that have this show in their list
+    UserModel.find(
+        {
+            _id: { $ne: userId }, 
+            "userShows.showId": showId 
+        },
+    )
+    .then((users) => {
+        
+        console.log(`all other users with show ${showId}:`, users);
+        
+        if (users && users.length > 0) {
+            // there are other users with this show in their list, so don't 
+            // delete it from the shows collection
+            return;
+        }
+        
+        // there are no other users with this show in their list, so delete it
+        // from the shows collection
+        ShowModel.deleteOne({showId})
+            .then((result) => {
+                console.log(`deleteUserShow Show.deleteOne result:`, result);
+            })
+            .catch((error) => {
+                console.error(`deleteUserShow Show.deleteOne error:`, error);
+            });
+            
+    })
+    
+    // remove the show from the user's list
+    return UserModel.updateOne(
+        {_id: userId}, 
+        {$pull: {userShows: {showId: showId}}}
+    );
+    
+}

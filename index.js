@@ -25,7 +25,8 @@ const updateTMDBConfiguration = require("./models/updateTMDBConfiguration");
 const {
     addShowToDatabase,
     retrieveShow,
-    userFullShows
+    userFullShows,
+    deleteUserShow
 } = require("./models/updateShowModel");
 
 // API DEPENDENCY
@@ -265,13 +266,13 @@ app.post("/deleteUserShow", verifyLoggedIn, (req, res) => {
     }
     console.log(`delete showId: ${showId} for user ${req.user.username}`);
     
-    User.updateOne({_id: req.user._id}, {$pull: {userShows: {showId: showId}}})
+    deleteUserShow(req.user._id, showId)
         .then((result) => {
-            console.log("result from /deleteUserShow User.updateOne:", result);
+            console.log("result from deleteUserShow:", result);
             res.sendStatus(200);
         })
         .catch((error) => {
-            console.error("error from /deleteUserShow User.updateOne:", error);
+            console.error("error deleteUserShow:", error);
             res.sendStatus(400);
         });
     
