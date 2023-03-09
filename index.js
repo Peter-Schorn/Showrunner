@@ -267,6 +267,10 @@ app.get("/show", verifyLoggedIn, (req, res) => {
     Show.findOne({showId})
         .then((show) => {
             console.log(show);
+            if (!show) {
+                // gets caught by the catch block directly below
+                throw new Error("user does not have this show");
+            }
             res.render("showDetail.ejs", {show, username});
         })
         .catch((error) => {
