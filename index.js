@@ -252,8 +252,49 @@ app.get("/full-shows", verifyLoggedIn, (req, res) => {
         })
         .catch((error) => {
             console.error(error);
-            res
+            res.sendStatus(500);
         });
+});
+
+app.get("/show", verifyLoggedIn, (req, res) => {
+    const {showId} = req.query;
+    const {username} = req.user;
+    if (!showId) {
+        res.sendStatus(400);
+        return;
+    }
+    
+    Show.findOne({showId})
+        .then((show) => {
+            console.log(show);
+            res.render("showDetail.ejs", {show, username});
+        })
+        .catch((error) => {
+            console.error(error);
+            res.sendStatus(400)
+        });
+    
+});
+
+app.post("/deleteUserShow", verifyLoggedIn, (req, res) => {
+    
+    const showId = req.body.showId;
+    if (!showId) {
+        res.sendStatus(400);
+        return;
+    }
+    console.log(`delete showId: ${showId} for user ${req.user.username}`);
+    
+    deleteUserShow(req.user._id, showId)
+        .then((result) => {
+            console.log("result from deleteUserShow:", result);
+            res.sendStatus(200);
+        })
+        .catch((error) => {
+            console.error("error deleteUserShow:", error);
+            res.sendStatus(400);
+        });
+    
 });
 
 app.listen(port, () => {
