@@ -256,6 +256,27 @@ app.get("/full-shows", verifyLoggedIn, (req, res) => {
         });
 });
 
+app.post("/deleteUserShow", verifyLoggedIn, (req, res) => {
+    
+    const showId = req.body.showId;
+    if (!showId) {
+        res.sendStatus(400);
+        return;
+    }
+    console.log(`delete showId: ${showId} for user ${req.user.username}`);
+    
+    User.updateOne({_id: req.user._id}, {$pull: {userShows: {showId: showId}}})
+        .then((result) => {
+            console.log("result from /deleteUserShow User.updateOne:", result);
+            res.sendStatus(200);
+        })
+        .catch((error) => {
+            console.error("error from /deleteUserShow User.updateOne:", error);
+            res.sendStatus(400);
+        });
+    
+});
+
 app.listen(port, () => {
     console.log(`Showrunner Server is running on http://localhost:${port}`)
 })

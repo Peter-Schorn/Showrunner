@@ -13,11 +13,11 @@
                         </form>
                     </div>                   
                     <div class="col-2">
-                        <form action="/deleteUserShow" method="delete">
-                            <button name="_id" value="<%=element._id%>" class="btn btn-light" type="submit">Delete User Show</button>
+                        <form action="/deleteUserShow" method="post">
+                            <button name="showId" value="<%=element.showId%>" class="btn btn-light" type="submit">Delete User Show</button>
                         </form>
                     </div>
-                    <div class="col-9" name="_id" value="<%=element._id%>">
+                    <div class="col-9" name="_id" value="<%=element.showId%>">
                         <h5>showId: <%= element.showId %> (Database ID: <%= element._id%>)</h5>
                     </div>
                 </div>
