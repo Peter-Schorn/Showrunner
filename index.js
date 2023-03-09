@@ -192,6 +192,30 @@ app.get("/logout", (req, res, next) => {
     });
 });
 
+app.get("/account", verifyLoggedIn, (req, res) => {
+    const user = req.user;
+    res.render("account.ejs", {user});
+});
+
+app.get("/change-password", verifyLoggedIn, (req, res) => {
+    const user = req.user;
+    const failedAttempt = req.query.failedAttempt ?? false;
+    res.render("change_password.ejs", {user, failedAttempt});
+});
+
+app.post("/change-password", (req, res) => {
+    req.user.changePassword(req.body.oldPassword, req.body.newPassword, (error) => {
+        if (error) {
+            console.log(`Error changing password: ${error}`);
+            res.redirect("/change-password?failedAttempt=true");
+        }
+        else {
+            console.log("Password changed successfully");
+            res.redirect("/home");
+        }
+    });
+});
+
 // Send a search query to the TMDB API and return results to the user
 app.get("/searchShows", verifyLoggedIn, (req, res)=>{
     // let route = "search/tv"
