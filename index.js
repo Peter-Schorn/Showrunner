@@ -124,12 +124,6 @@ app.get("/home", (req, res) => {
     res.render("home.ejs", {username, showId: []});
 });
 
-// Search - initiate a search and view results
-app.get("/search", verifyLoggedIn, (req, res) => {
-    const username = req.user?.username;
-    res.render("search.ejs", {username, shows: [], existingShows: []});
-});
-
 // Signup
 app.get("/signup", (req, res) => {
     res.render("signup.ejs");
@@ -190,6 +184,12 @@ app.get("/logout", (req, res, next) => {
         }
         res.redirect("/");
     });
+});
+
+// Search - initiate a search and view results
+app.get("/search", verifyLoggedIn, (req, res) => {
+    const username = req.user?.username;
+    res.render("search.ejs", {username, shows: [], existingShows: []});
 });
 
 // Send a search query to the TMDB API and return results to the user
