@@ -124,6 +124,20 @@ app.get("/home", (req, res) => {
     res.render("home.ejs", {username, showId: []});
 });
 
+// Search - initiate a search and view results
+app.get("/search", verifyLoggedIn, (req, res) => {
+    const username = req.user?.username;
+    res.render("search.ejs", {username, shows: [], existingShows: []});
+  })
+    
+// Shows Page
+app.get('/shows', verifyLoggedIn, (req, res) => {
+    const username = req.user?.username;
+    const userShows = req.user.userShows;
+    console.log(`This is the list of user shows: ${userShows}`)
+    res.render('shows.ejs', {username, userShows});
+});
+
 // Signup
 app.get("/signup", (req, res) => {
     const username = req.user?.username;
@@ -135,17 +149,25 @@ app.get("/profile", (req, res) => {
     res.render("profile.ejs");
 });
 
+// Account Page
+app.get("/account", verifyLoggedIn, (req, res) => {
+    const user = req.user;
+    res.render("account.ejs", {user});
+});
+
+// Change Password Page
+app.get("/change-password", verifyLoggedIn, (req, res) => {
+    const user = req.user;
+    const failedAttempt = req.query.failedAttempt ?? false;
+    res.render("change_password.ejs", {user, failedAttempt});
+});
+
 // Error page
 app.get("/error", (req, res) => {
     res.render("error.ejs");
 });
 
-app.get('/shows', verifyLoggedIn, (req, res) => {
-    const username = req.user?.username;
-    const userShows = req.user.userShows;
-    console.log(`This is the list of user shows: ${userShows}`)
-    res.render('shows.ejs', {username, userShows});
-})
+
 
 // FUNCTIONALITY ROUTES
 
@@ -192,11 +214,17 @@ app.get("/logout", (req, res, next) => {
     });
 });
 
-// Search - initiate a search and view results
-app.get("/search", verifyLoggedIn, (req, res) => {
-    const username = req.user?.username;
-    res.render("search.ejs", {username, shows: [], existingShows: []});
-});
+app.post("/change-password", (req, res) => {
+    req.user.changePassword(req.body.oldPassword, req.body.newPassword, (error) => {
+        if (error) {
+            console.log(`Error changing password: ${error}`);
+            res.redirect("/change-password?failedAttempt=true");
+        }
+        else {
+            console.log("Password changed successfully");
+            res.redirect("/home");
+        }
+    });
 
 // Send a search query to the TMDB API and return results to the user
 app.get("/searchShows", verifyLoggedIn, (req, res)=>{
@@ -224,7 +252,7 @@ app.get("/searchShows", verifyLoggedIn, (req, res)=>{
         res.render("error.ejs")
     })
 })
-// Add a selected show from search results to the userShows object in the userModel (***in progress)
+// Add a selected show from search results to the userShows object in the userModel
 app.post("/addShow", verifyLoggedIn, (req, res)=>{
     const username = req.user.username;
     const showId = req.body.showId
@@ -246,8 +274,7 @@ app.post("/addShow", verifyLoggedIn, (req, res)=>{
                 res.redirect("/shows", {showId: showId}, {success: success.userShows})
             }
         })
-        
-})
+      })
 
 app.get("/full-shows", verifyLoggedIn, (req, res) => {
     console.log(`req.user._id: "${req.user._id}"`);

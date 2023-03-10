@@ -19,7 +19,7 @@ nav:has(*) {
 }
 
 .sidebar div {
-border: inherit
+    border: inherit
 }
 
 .failed-login-attempt {
@@ -28,4 +28,13 @@ border: inherit
 
 .movie-poster {
     width: 92px;
+}
+
+.change-password {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    flex: 100px;
+    padding: 10px 10px;
 }
