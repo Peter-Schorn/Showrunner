@@ -286,8 +286,32 @@ app.get("/full-shows", verifyLoggedIn, (req, res) => {
         })
         .catch((error) => {
             console.error(error);
-            res
+            res.sendStatus(500);
         });
+});
+
+app.get("/show", verifyLoggedIn, (req, res) => {
+    const {showId} = req.query;
+    const {username} = req.user;
+    if (!showId) {
+        res.sendStatus(400);
+        return;
+    }
+    
+    Show.findOne({showId})
+        .then((show) => {
+            console.log(show);
+            if (!show) {
+                // gets caught by the catch block directly below
+                throw new Error("user does not have this show");
+            }
+            res.render("showDetail.ejs", {show, username});
+        })
+        .catch((error) => {
+            console.error(error);
+            res.sendStatus(400)
+        });
+    
 });
 
 app.post("/deleteUserShow", verifyLoggedIn, (req, res) => {

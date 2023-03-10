@@ -1,0 +1,11 @@
+<%- include('./partials/header.ejs', {title: show.showName}) %>
+<%- include('./partials/navbar.ejs', {username: locals.username}) %>
+
+<div class="container">
+    <div class="row">
+        <h2><%= show.showName %></h2>
+        <p>popularity: <%= show.popularity %></p>
+    </div>
+</div>
+
+<%- include('./partials/footer.ejs') %>
