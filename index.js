@@ -44,8 +44,7 @@ const connectionURL = `${URI}/${DB}`;
 let connectionObject = {
     authSource: "admin",
     user: DB_USER,
-    pass: DB_PASS,
-    autoIndex: false
+    pass: DB_PASS
 };
 
 // Build the connection
@@ -114,7 +113,8 @@ app.get("/about", (req, res) => {
 // User Login
 app.get("/login", (req, res) => {
     const failedAttempt = req.query.failedAttempt ?? false;
-    res.render("login.ejs", {failedAttempt});
+    const username = req.user?.username;
+    res.render("login.ejs", {username, failedAttempt});
 });
 
 // User Home (Show list)
@@ -126,7 +126,8 @@ app.get("/home", (req, res) => {
 
 // Signup
 app.get("/signup", (req, res) => {
-    res.render("signup.ejs");
+    const username = req.user?.username;
+    res.render("signup.ejs", {username});
 });
 
 // Profile page
