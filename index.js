@@ -129,6 +129,11 @@ app.get("/signup", (req, res) => {
     res.render("signup.ejs");
 });
 
+// Profile page
+app.get("/profile", (req, res) => {
+    res.render("profile.ejs");
+});
+
 // Error page
 app.get("/error", (req, res) => {
     res.render("error.ejs");
