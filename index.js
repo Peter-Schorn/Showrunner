@@ -259,7 +259,7 @@ app.post("/addShow", verifyLoggedIn, (req, res)=>{
     const showId = req.body.showId
     let show = {showId}
 
-   addShowToDatabase(showId);
+    addShowToDatabase(showId);
     
     // https://stackoverflow.com/a/14528282/12394554
     User.updateOne(
@@ -275,7 +275,8 @@ app.post("/addShow", verifyLoggedIn, (req, res)=>{
                 res.redirect("/shows", {showId: showId}, {success: success.userShows})
             }
         })
-      })
+    })
+})
 
 app.get("/full-shows", verifyLoggedIn, (req, res) => {
     console.log(`req.user._id: "${req.user._id}"`);
@@ -337,4 +338,4 @@ app.post("/deleteUserShow", verifyLoggedIn, (req, res) => {
 
 app.listen(port, () => {
     console.log(`Showrunner Server is running on http://localhost:${port}`)
-})
+});
