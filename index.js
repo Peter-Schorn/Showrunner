@@ -226,6 +226,7 @@ app.post("/change-password", (req, res) => {
             res.redirect("/home");
         }
     });
+});
 
 // Send a search query to the TMDB API and return results to the user
 app.get("/searchShows", verifyLoggedIn, (req, res)=>{
@@ -253,6 +254,7 @@ app.get("/searchShows", verifyLoggedIn, (req, res)=>{
         res.render("error.ejs")
     })
 })
+
 // Add a selected show from search results to the userShows object in the userModel
 app.post("/addShow", verifyLoggedIn, (req, res)=>{
     const username = req.user.username;
@@ -274,8 +276,8 @@ app.post("/addShow", verifyLoggedIn, (req, res)=>{
 
                 res.redirect("/shows", {showId: showId}, {success: success.userShows})
             }
-        })
-    })
+        }
+    )
 })
 
 app.get("/full-shows", verifyLoggedIn, (req, res) => {
