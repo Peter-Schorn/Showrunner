@@ -7,9 +7,12 @@ const apiKey = process.env.TMDB_API_KEY_V4;
 const tmdb = new TMDB(apiKey);
 
 /**
- * Adds a show to the database.
+ * Adds a show to the database. If a show with the same `showId` already exists
+ * in the database, then it will be updated.
  * 
- * @param {number} showId 
+ * @param {number} showId the show id
+ * @returns {*} a promise that resolves to the full show object that was added
+ * to the database
  */
 exports.addShowToDatabase = function(showId) {
     
@@ -40,9 +43,14 @@ exports.addShowToDatabase = function(showId) {
                 voteAvg: tvShowDetails.vote_average,
                 voteCount: tvShowDetails.vote_count
             }, {
+                // insert the document if it does not exist; else, update the
+                // document
                 upsert: true,
+                // return the document after it has been updated
                 returnDocument: "after"
-            });
+                
+            })
+            .lean();
             
         })
         .catch((error) => {
@@ -50,7 +58,7 @@ exports.addShowToDatabase = function(showId) {
             throw error;
         });
         
-}
+};
 
 /**
  * Retrieve a show from the database or from the TMDB api.
@@ -71,13 +79,14 @@ exports.retrieveShow = function(showId) {
             }
         });
     
-}
+};
 
 /**
- * Retrieves the full show objects for a given user.
+ * Retrieves the full show objects for a given user, with the user show object
+ * inside each full show object.
  * 
- * First checks database, then falls back on TMDB api, and saves returned data
- * back into database.
+ * First checks database, then falls back on the TMDB api, and saves the 
+ * returned data back into the database.
  * 
  * @param {string} userId the user id
  * @returns {*} a promise that resolves to an array of show objects
@@ -87,45 +96,75 @@ exports.userFullShows = function(userId) {
     return UserModel.findById(userId)
         .then((user) => {
             
+            // an array of all of the user's show ids
             const showIds = (user?.userShows ?? []).map((show) => `${show?.showId}`);
             
             return ShowModel.find({ "showId": { $in: showIds } })
                 .lean()
                 .then((showObjects) => {
                     
-                    for (let i = 0; i < showObjects.length; i++) {
-                        const show = showObjects[i];
-                        const userShow = user.userShows.find((userShow) => {
-                            return userShow.showId.toString() === show.showId.toString();
-                        });
-                        if (userShow) {
-                            showObjects[i].userShow = userShow;
-                        }
-                    }
-                        
+                    // the show ids for which the corresponding full show 
+                    // objects exist in the shows collection
                     const foundIds = showObjects.map(show => `${show?.showId}`);
+                    
+                    // The show ids for which the corresponding full show 
+                    // objects do NOT exist in the shows collection. We need
+                    // to both add the full show object to the shows collection
+                    // and retrieve it so that it can be returned by this 
+                    // function.
                     const remainingIds = showIds.filter((id) => {
                         return !foundIds.includes(id);
                     });
                     
-                    // console.log({showIds});
-                    // console.log({foundIds});
-                    // console.log({remainingIds});
-                    
+                    // an array of promises, each of which add a show to the
+                    // shows collection and resolve to the show that was added
                     const addToDatabasePromises = remainingIds.map((id) => {
+                        // returns the full show object that was added
                         return exports.addShowToDatabase(id);
-                    })
+                    });
+                    
                     console.log(
                         `addToDatabasePromises.length: ${addToDatabasePromises.length}`
                     );
-                    return Promise.all(addToDatabasePromises).then((shows) => {
-                        return showObjects.concat(shows);
-                    });
+                    
+                    // execute all promises in parallel for performance
+                    return Promise.all(addToDatabasePromises)
+                        .then((missingShowObjects) => {
+                            
+                            // `missingShowObjects` are the full show objects
+                            // that were not originally in the shows collection
+                            
+                            const fullShowObjects = showObjects.concat(
+                                missingShowObjects
+                            );
+                            
+                            for (let i = 0; i < fullShowObjects.length; i++) {
+                                
+                                const show = fullShowObjects[i];
+                                
+                                // find the user show object that corresponds to
+                                // the full show object
+                                const userShow = user.userShows.find((userShow) => {
+                                    return userShow.showId.toString() === show.showId.toString();
+                                });
+                                
+                                if (userShow) {
+                                    // attach the user show object to the full
+                                    // show object
+                                    fullShowObjects[i].userShow = userShow;
+                                }
+                                
+                            }
+                            
+                            return fullShowObjects;
+                            
+                        });
+                        
                 });
             
         });
         
-}
+};
 
 /**
  * Deletes a show from a user's list. If the show is not in any other user's,
@@ -133,8 +172,8 @@ exports.userFullShows = function(userId) {
  * 
  * @param {string} userId the user id
  * @param {string} showId the show id
- * @returns {*} a promise that resolves to result of removing the
- * show from the user's list
+ * @returns {*} a promise that resolves to the result of removing the show from 
+ * the user's list
  */
 exports.deleteUserShow = function(userId, showId) {
     
@@ -165,7 +204,7 @@ exports.deleteUserShow = function(userId, showId) {
                 console.error(`deleteUserShow Show.deleteOne error:`, error);
             });
             
-    })
+    });
     
     // remove the show from the user's list
     return UserModel.updateOne(
@@ -173,4 +212,4 @@ exports.deleteUserShow = function(userId, showId) {
         {$pull: {userShows: {showId: showId}}}
     );
     
-}
+};
