@@ -65,7 +65,8 @@ exports.addShowToDatabase = function(showId) {
  * 
  * If the show was not already in the database, then it will be added.
  * 
- * @param {number} showId 
+ * @param {string} showId the show id
+ * @returns {*} a promise that resolves to a show object
  */
 exports.retrieveShow = function(showId) {
     
@@ -210,6 +211,44 @@ exports.deleteUserShow = function(userId, showId) {
     return UserModel.updateOne(
         {_id: userId}, 
         {$pull: {userShows: {showId: showId}}}
+    );
+    
+};
+
+/**
+ * Sets the `hasWatched` value for a show for a given user.
+ * 
+ * @param {string} userId the user id
+ * @param {string} showId the show id
+ * @param {boolean} hasWatched a boolean value indicating whether the user has 
+ * watched the show
+ * @returns {*} a promise that resolves to the result of updating the user's 
+ * show
+ */
+exports.setHasWatched = function(userId, showId, hasWatched) {
+    
+    return UserModel.updateOne(
+        { _id: userId, "userShows.showId": showId }, 
+        { $set: { "userShows.$.hasWatched": hasWatched } }
+    );
+    
+};
+
+/**
+ * Sets the `favorite` value for a show for a given user.
+ * 
+ * @param {string} userId the user id
+ * @param {string} showId the show id
+ * @param {boolean} isFavorite a boolean value indicating whether the user has 
+ * favorited the show
+ * @returns {*} a promise that resolves to the result of updating the user's 
+ * show
+ */
+exports.setIsFavorite = function(userId, showId, isFavorite) {
+    
+    return UserModel.updateOne(
+        { _id: userId, "userShows.showId": showId }, 
+        { $set: { "userShows.$.favorite": isFavorite } }
     );
     
 };

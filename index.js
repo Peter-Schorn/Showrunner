@@ -274,7 +274,7 @@ app.post("/addShow", verifyLoggedIn, (req, res)=>{
             } else {
                 // console.log(success)
 
-                res.redirect("/shows", {showId: showId}, {success: success.userShows})
+                res.redirect("/shows");
             }
         }
     )
