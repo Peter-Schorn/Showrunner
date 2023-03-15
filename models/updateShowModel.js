@@ -61,25 +61,58 @@ exports.addShowToDatabase = function(showId) {
 };
 
 /**
- * Retrieve a show from the database or from the TMDB api.
+ * Retrieve a full show object with the user show object inside it from the 
+ * database or from the TMDB api. 
  * 
  * If the show was not already in the database, then it will be added.
  * 
- * @param {string} showId the show id
- * @returns {*} a promise that resolves to a show object
+ * @param {string} userId the user id
+ * @param {number} showId the show id
+ * @returns {*} a promise that resolves to a show object with the user show
+ * object inside it
  */
-exports.retrieveShow = function(showId) {
+exports.retrieveShow = function(userId, showId) {
     
-    return ShowModel.findOne({ showId })
+    // search for the show in the database; if it is not found, then retrieve
+    // it from the TMDB api and add it back to the database
+    const findShow = ShowModel.findOne({ showId })
+        .lean()
         .then((show) => {
             if (show) {
                 return show;
             }
             else {
+                // returns the full show object that was added to the database
                 return exports.addShowToDatabase(showId);
             }
         });
+        
+    const findUser = UserModel.findById(userId);
     
+    return Promise.all([
+        findUser,
+        findShow
+    ])
+    .then(([user, show]) => {
+        
+        if (!show) {
+            throw new Error(
+                `could not find show ${showId} in database or in tmdb api`
+            );
+        }
+        
+        const userShow = user?.userShows.find((userShow) => {
+            return userShow.showId.toString() === show.showId.toString();
+        });
+        
+        if (userShow) {
+            show.userShow = userShow;
+        }
+            
+        return show;
+        
+    });
+   
 };
 
 /**

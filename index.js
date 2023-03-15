@@ -294,25 +294,28 @@ app.get("/full-shows", verifyLoggedIn, (req, res) => {
 });
 
 app.get("/show", verifyLoggedIn, (req, res) => {
+    
     const {showId} = req.query;
     const {username} = req.user;
+    
     if (!showId) {
-        res.sendStatus(400);
+        res.status(400).send("missing 'showId' query parameter");
         return;
     }
     
-    Show.findOne({showId})
+    // retrieves a full show object with the user show object inside it
+    retrieveShow(req.user._id, showId)
         .then((show) => {
             console.log(show);
             if (!show) {
                 // gets caught by the catch block directly below
-                throw new Error("user does not have this show");
+                throw new Error("could not find show in database or in TMDB api");
             }
             res.render("showDetail.ejs", {show, username});
         })
         .catch((error) => {
             console.error(error);
-            res.sendStatus(400)
+            res.sendStatus(400);
         });
     
 });
