@@ -133,7 +133,7 @@ exports.userFullShows = function(userId) {
         .then((user) => {
             
             // an array of all of the user's show ids
-            const showIds = (user?.userShows ?? []).map((show) => `${show?.showId}`);
+            const showIds = (user?.userShows ?? []).map((show) => show?.showId);
             
             return ShowModel.find({ "showId": { $in: showIds } })
                 .lean()
@@ -141,7 +141,7 @@ exports.userFullShows = function(userId) {
                     
                     // the show ids for which the corresponding full show 
                     // objects exist in the shows collection
-                    const foundIds = showObjects.map(show => `${show?.showId}`);
+                    const foundIds = new Set(showObjects.map(show => show?.showId));
                     
                     // The show ids for which the corresponding full show 
                     // objects do NOT exist in the shows collection. We need
@@ -149,7 +149,7 @@ exports.userFullShows = function(userId) {
                     // and retrieve it so that it can be returned by this 
                     // function.
                     const remainingIds = showIds.filter((id) => {
-                        return !foundIds.includes(id);
+                        return !foundIds.has(id);
                     });
                     
                     // an array of promises, each of which add a show to the
@@ -286,4 +286,22 @@ exports.setIsFavorite = function(userId, showId, isFavorite) {
         { $set: { "userShows.$.favorite": isFavorite } }
     );
     
+};
+
+/**
+ * Retrieves all of the show ids from the shows collection.
+ * 
+ * @returns {Promise<Set<number>>} a promise that resolves to a set of all the 
+ * show ids
+ */
+exports.retrieveAllShowIds = function() {
+   
+    return ShowModel.find(
+        {},
+        "showId"    
+    )
+    .then((showIds) => {
+        return new Set(showIds.map(showId => showId.showId));
+    });
+
 };

@@ -22,6 +22,8 @@ const Show = require('./models/ShowModel');
 const WatchProvider = ('./models/WatchProviderModel');
 const {TMDBConfiguration}  = require("./models/TMDBConfiguration");
 const updateTMDBConfiguration = require("./models/updateTMDBConfiguration");
+const refreshShowModel = require("./models/refreshShowModel");
+
 const {
     addShowToDatabase,
     retrieveShow,
@@ -89,11 +91,13 @@ function verifyLoggedIn(req, res, next) {
 const apiKey = process.env.TMDB_API_KEY_V4;
 const tmdb = new TMDB(apiKey);
 
-// Updates TMDB API Configuration every 24 hours 
-// https://developers.themoviedb.org/3/configuration/get-api-configuration
-setInterval(() => {
+
+function performMaintenance() {
     updateTMDBConfiguration();
-}, 86_400_000);  // 24 hours
+    refreshShowModel();    
+}
+performMaintenance();
+setInterval(performMaintenance, 86_400_000);  // 24 hours
 
 
 // ROUTE HANDLERS

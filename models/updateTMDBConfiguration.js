@@ -53,4 +53,4 @@ module.exports = function updateTMDBConfiguration() {
             console.error("updateTMDBConfiguration: error:", error);
         });
 
-}
+};
