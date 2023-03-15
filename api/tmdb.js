@@ -18,6 +18,7 @@ const axios = require("axios").default;
  * @typedef { import("./types").TVShowsResponse } TVShowsResponse
  * @typedef { import("./types").TMDBConfigurationDetails } TMDBConfigurationDetails
  * @typedef { import("./types").TVShowDetailsAndWatchProviders } TVShowDetailsAndWatchProviders
+ * @typedef { import("./types").AllTVShowChanges } AllTVShowChanges
  */
 
 /**
@@ -110,7 +111,7 @@ exports.default = class TMDB {
         // rename the "watch/providers" key to "watch_providers"
         if (results?.["watch/providers"]) {
             results.watch_providers = results["watch/providers"];
-            delete results["watch/providers"]
+            delete results["watch/providers"];
         }
         return results;
     }
@@ -194,8 +195,8 @@ exports.default = class TMDB {
     }
 
     /**
-     * Get the changes for a tv show. By default only the last 24 hours are
-     * returned.
+     * Get the changes for a *single* tv show. By default only the last 24 hours 
+     * are returned.
      *
      * You can query up to 14 days in a single query by using the start_date
      * and end_date query parameters.
@@ -214,9 +215,9 @@ exports.default = class TMDB {
      *     end_date?: string | null | undefined,
      *     page?: number | null | undefined
      * } | null | undefined} [options] the options for this endpoint:
-     *   start_date: the start date;
-     *   end_date: the end date;
-     *   page: specify which page to query
+     *  start_date: the start date;
+     *  end_date: the end date;
+     *  page: specify which page to query
      * @returns {Promise<TVShowChanges>} the tv show changes
      */
     async tvShowChanges(id, options) {
@@ -225,7 +226,98 @@ exports.default = class TMDB {
             options  // query params
         );
     }
-
+    
+    /**
+     * Get a list of *all* of the TV show ids that have been changed. By 
+     * default, the last 24 hours are returned.
+     * 
+     * https://developers.themoviedb.org/3/changes/get-tv-change-list
+     * 
+     * The `start_date` and `end_date` parameters must be specified in ISO 8601
+     * format: https://en.wikipedia.org/wiki/ISO_8601. For example:
+     * `2023-3-14T08:30:00.000Z`. If both `start_date` and `end_date` are not
+     * provided, then the last 24 hours are returned.
+     * 
+     * @param {{
+     *     start_date?: string | null | undefined,
+     *     end_date?: string | null | undefined,
+     *     page?: number | null | undefined
+     * } | null | undefined} [options] the options for this endpoint:
+     * start_date: the start of the date range;
+     * end_date: the end of the date range;
+     * page: the page of results to return; default: 0
+     *     
+     * @returns {Promise<AllTVShowChanges>} a list of tv show ids that have been 
+     * changed within the specified date range
+     */
+    async allTVShowChanges(options) {
+        return await this._get(
+            "/3/tv/changes",  // path
+            options  // query params
+        );
+    }
+    
+    /**
+     * Retrieves all pages of results for the `TMDB.allTVShowChanges` method
+     * *concurrently*. Except for the first page, the order of the pages 
+     * returned is undefined.
+     * 
+     * @param {{
+     *     start_date?: string | null | undefined,
+     *     end_date?: string | null | undefined
+     * } | null | undefined} [options] the options for this endpoint:
+     * start_date: the start of the date range;
+     * end_date: the end of the date range;
+     * @param {function} onReceivePage a callback function that is called when
+     */
+    allTVShowChangesAllPages(options, onReceivePage) {
+        
+        // we must retrieve the first page serially in order to get the total
+        // number of pages; then, we can retrieve the rest concurrently
+        this.allTVShowChanges(options)
+            .then((firstPage) => {
+                console.log(
+                    `did receive first page; actual index: ${firstPage.page}; ` +
+                    `total pages: ${firstPage.total_pages}; ` +
+                    `total results: ${firstPage.total_results};`
+                );
+                
+                const firstPagePromise = Promise.resolve(firstPage);
+                const retrievePagePromises = [firstPagePromise];
+                
+                for (
+                    // pages are one-indexed
+                    let pageIndex = 2; 
+                    pageIndex <= firstPage.total_pages; 
+                    pageIndex++
+                ) {
+                    
+                    console.log(`will retrieve page ${pageIndex}`);
+                    
+                    const mergedOptions = {
+                        ...options,
+                        page: pageIndex
+                    };
+                    
+                    const retrievePagePromise = this.allTVShowChanges(
+                        mergedOptions
+                    );
+                    
+                    retrievePagePromises.push(retrievePagePromise);
+                }
+                
+                console.log(`retrievePagePromises.length: ${retrievePagePromises.length}`);
+                    
+            });
+            
+            
+            
+            // .catch((error) => {
+            //     console.error(error);
+            // });
+        
+    }
+    
     /**
      * Get the list of content ratings (certifications) that have been added to
      * a tv show.
@@ -503,7 +595,7 @@ exports.default = class TMDB {
             let fullHeaders = {
                 "Authorization": `Bearer ${this.apiKey}`,
                 "Content-Type": "application/json;charset=utf-8"
-            }
+            };
 
             if (typeof headers === "object") {
                 // Allow the passed in headers to overwrite the default headers
@@ -544,13 +636,13 @@ exports.default = class TMDB {
             const fullURL = `${request?.baseURL ?? ""}${request?.url}`;
             const methodString = request?.method?.toUpperCase() ?? "GET";
             const headersString = request?.headers;
-            let message = `${prefix} ${methodString} to ${fullURL}`
+            let message = `${prefix} ${methodString} to ${fullURL}`;
             const data = request?.data;
             if (data) {
                 const dataString = typeof data === "object" ?
                     JSON.stringify(data) :
                     data;
-                message += `with body:\n${dataString}`;
+                message += ` with body:\n${dataString}`;
             }
             console.log(message);
 

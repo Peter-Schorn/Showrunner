@@ -329,6 +329,18 @@ export interface TVShowAlternativeTitlesResult {
     type: string;
 }
 
+export interface AllTVShowChanges {
+    results: AllTVShowChangesResult[];
+    page: number;
+    total_pages: number;
+    total_results: number;
+}
+
+export interface AllTVShowChangesResult {
+    id: number;
+    adult: boolean;
+}
+
 export interface TVShowChanges {
     changes: TVShowChange[];
 }
@@ -428,7 +440,7 @@ export interface TVShowReview {
     author_details: AuthorDetails;
     content: string;
     created_at: string;
-    id: string;
+    id: number;
     updated_at: string;
     url: string;
 }
