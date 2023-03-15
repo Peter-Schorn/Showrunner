@@ -258,19 +258,29 @@ exports.default = class TMDB {
     }
     
     /**
+     * @callback OnReceivePage
+     * @param {AllTVShowChanges | null} page a page of results, or `null` if
+     * an error occurred
+     * @param {*} error an error, if one occurred; otherwise, `null`
+     */
+    
+    /**
      * Retrieves all pages of results for the `TMDB.allTVShowChanges` method
      * *concurrently*. Except for the first page, the order of the pages 
      * returned is undefined.
      * 
+     * https://developers.themoviedb.org/3/changes/get-tv-change-list
+     * 
+     * @param {OnReceivePage} onReceivePage a callback function that is called 
+     * with each page, or an error, if one occurred
      * @param {{
      *     start_date?: string | null | undefined,
      *     end_date?: string | null | undefined
      * } | null | undefined} [options] the options for this endpoint:
      * start_date: the start of the date range;
      * end_date: the end of the date range;
-     * @param {function} onReceivePage a callback function that is called when
      */
-    allTVShowChangesAllPages(options, onReceivePage) {
+    allTVShowChangesAllPages(onReceivePage, options) {
         
         // we must retrieve the first page serially in order to get the total
         // number of pages; then, we can retrieve the rest concurrently
@@ -282,8 +292,7 @@ exports.default = class TMDB {
                     `total results: ${firstPage.total_results};`
                 );
                 
-                const firstPagePromise = Promise.resolve(firstPage);
-                const retrievePagePromises = [firstPagePromise];
+                onReceivePage(firstPage, null);
                 
                 for (
                     // pages are one-indexed
@@ -299,23 +308,34 @@ exports.default = class TMDB {
                         page: pageIndex
                     };
                     
-                    const retrievePagePromise = this.allTVShowChanges(
-                        mergedOptions
-                    );
-                    
-                    retrievePagePromises.push(retrievePagePromise);
+                    this.allTVShowChanges(mergedOptions)
+                        .then((page) => {
+                            console.log(
+                                `did receive page ${page.page}; ` +
+                                `results: ${page.results.length}; ` +
+                                `total pages: ${page.total_pages}; ` +
+                                `total results: ${page.total_results};`
+                            );
+                            onReceivePage(page, null);
+                        })
+                        .catch((error) => {
+                            console.error(
+                                "allTVShowChangesAllPages: error retrieving " +
+                                `page ${pageIndex}:`,
+                                error
+                            );
+                            onReceivePage(null, error);
+                        });
                 }
                 
-                console.log(`retrievePagePromises.length: ${retrievePagePromises.length}`);
-                    
+            }, (firstPageError) => {
+                console.error(
+                    "allTVShowChangesAllPages: firstPageError:", 
+                    firstPageError
+                );
+                onReceivePage(null, firstPageError);
             });
             
-            
-            
-            // .catch((error) => {
-            //     console.error(error);
-            // });
-        
     }
     
     /**
