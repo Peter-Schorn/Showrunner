@@ -1,8 +1,9 @@
 const mongoose = require("mongoose");
+const { toCamelCase } = require("camel-case-converter");
+
 const ShowModel = require("./ShowModel");
 const UserModel = require("./UserModel");
 const { TMDB } = require("../api");
-
 const apiKey = process.env.TMDB_API_KEY_V4;
 const tmdb = new TMDB(apiKey);
 
@@ -29,19 +30,20 @@ exports.addShowToDatabase = function(showId) {
                 backdropPath: tvShowDetails.backdrop_path,
                 firstAirDate: tvShowDetails.first_air_date,
                 lastAirDate: tvShowDetails.last_air_date,
-                lastEpisodeAired: tvShowDetails.last_episode_to_air,
-                nextEpisodeToAir: tvShowDetails.next_episode_to_air,
+                lastEpisodeToAir: toCamelCase(tvShowDetails.last_episode_to_air),
+                nextEpisodeToAir: toCamelCase(tvShowDetails.next_episode_to_air),
                 genres: tvShowDetails.genres,
-                networks: tvShowDetails.watch_providers.results,
+                networks: toCamelCase(tvShowDetails.networks),
                 episodeCount: tvShowDetails.number_of_episodes,
                 seasonCount: tvShowDetails.number_of_seasons,
                 overview: tvShowDetails.overview,
                 popularity: tvShowDetails.popularity,
-                seasons: tvShowDetails.seasons,
+                seasons: toCamelCase(tvShowDetails.seasons),
                 status: tvShowDetails.status,
                 tagline: tvShowDetails.tagline,
-                voteAvg: tvShowDetails.vote_average,
-                voteCount: tvShowDetails.vote_count
+                voteAverage: tvShowDetails.vote_average,
+                voteCount: tvShowDetails.vote_count,
+                watchProviders: toCamelCase(tvShowDetails.watch_providers.results)
             }, {
                 // insert the document if it does not exist; else, update the
                 // document

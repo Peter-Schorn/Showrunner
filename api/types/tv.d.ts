@@ -16,10 +16,10 @@ export interface TVShowDetails {
     in_production: boolean;
     languages: string[];
     last_air_date: string;
-    last_episode_to_air: LastEpisodeToAir;
+    last_episode_to_air: AiringEpisode;
     /** The name of the show. */
     name: string;
-    next_episode_to_air?: any;
+    next_episode_to_air?: AiringEpisode;
     networks: Network[];
     number_of_episodes: number;
     number_of_seasons: number;
@@ -54,12 +54,15 @@ export interface CreatedBy {
     profile_path: string;
 }
 
-export interface LastEpisodeToAir {
-    air_date: string;
-    episode_number: number;
+/**
+ * Represents both the next episode to air and the previous episode that aired.
+ */
+export interface AiringEpisode {
     id: number;
     name: string;
     overview: string;
+    air_date: string;
+    episode_number: number;
     production_code: string;
     season_number: number;
     still_path: string;
@@ -106,13 +109,6 @@ export interface TVShowItem {
     value: any;
     iso_639_1: string;
     original_value: any;
-}
-
-export interface Network {
-    id: number;
-    logo_path: string;
-    name: string;
-    origin_country: string;
 }
 
 export interface EpisodeGroup {

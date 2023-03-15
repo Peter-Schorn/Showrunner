@@ -4,10 +4,39 @@ const mongoose = require('mongoose')
 
 // 1. Schema
 
+const watchProviderSchema = new mongoose.Schema({
+    link: { type: String },
+    flatrate: [
+        {
+            displayPriority: { type: Number },
+            logoPath: { type: String },
+            providerId: { type: Number },
+            providerName: { type: String }
+        }
+    ],
+    rent: [
+        {
+            displayPriority: { type: Number },
+            logoPath: { type: String },
+            providerId: { type: Number },
+            providerName: { type: String }
+        }
+    ],
+    buy: [
+        {
+            displayPriority: { type: Number },
+            logoPath: { type: String },
+            providerId: { type: Number },
+            providerName: { type: String }
+        }
+        
+    ]
+});
+
 const showSchema = new mongoose.Schema(
     {
         showId: { type: Number },
-        showName: { type: String },
+        show_name: { type: String },
         backdropPath: { type: String },
         firstAirDate: { type: Date },
         genres: [
@@ -17,23 +46,23 @@ const showSchema = new mongoose.Schema(
             }
         ],
         lastAirDate: { type: Date },
-        lastEpisodeAired: {
+        lastEpisodeToAir: {
             airDate: { type: Date },
-            episodeNum: { type: Number },
-            episodeId: { type: Number },
+            episodeNumber: { type: Number },
+            id: { type: Number },
             name: { type: String },
             overview: { type: String },
-            seasonNum: { type: Number },
+            seasonNumber: { type: Number },
             showId: { type: Number },
             stillPath: { type: String }
         },
         nextEpisodeToAir: {
             airDate: { type: Date },
-            episodeNum: { type: Number },
-            episodeId: { type: Number },
+            episodeNumber: { type: Number },
+            id: { type: Number },
             name: { type: String },
             overview: { type: String },
-            seasonNum: { type: Number },
+            seasonNumber: { type: Number },
             showId: { type: Number },
             stillPath: { type: String }
         },
@@ -52,17 +81,22 @@ const showSchema = new mongoose.Schema(
             {
                 airDate: { type: Date },
                 episodeCount: { type: Number },
-                seasonId: { type: Number },
+                id: { type: Number },
                 name: { type: String },
                 overview: { type: String },
                 posterPath: { type: String },
-                seasonNum: { type: Number }
+                seasonNumber: { type: Number }
             }
         ],
         status: { type: String },
         tagline: { type: String },
-        voteAvg: { type: Number },
-        voteCount: { type: Number }
+        voteAverage: { type: Number },
+        voteCount: { type: Number },
+        // https://mongoosejs.com/docs/schematypes.html#maps
+        watchProviders: {
+            type: Map,
+            of: watchProviderSchema
+        }
     }
 )
 
