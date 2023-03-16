@@ -1,46 +1,25 @@
-<%- include('./partials/header.ejs', {title: 'Home'}) %>
-<%- include('./partials/navbar.ejs', {username: locals.username}) %>
+<body> <!-- Added open body tag to each View for custom body styling -->
+    <%- include('./partials/header.ejs', {title: 'Home'}) %>
+    <%- include('./partials/navbar.ejs', {username: locals.username}) %>
 
-<!-- Grid Container START-->
-<div class="container-fluid">
+    <div class="container-fluid">
 
-  <!-- a placeholder that demonstrates how to display the username -->
-  <div class="row">
-    <% if (username) { %>
-        <p>Welcome, <%= username %></p>
-    <% } else { %>
-        <p>You are not logged in</p>
-    <% } %>
-  </div>
+        <div class="row">
+        <% if (username) { %>
+            <p>Welcome, <%= username %></p>
+        <% } else { %>
+            <p>You are not logged in</p>
+        <% } %>
+        </div>
 
-  <!-- Grid row 1 START-->
-  <div class="row">
-
-    <!-- Grid Column 1 START-->
-    <div class="col-sm-2">
-      <!-- Left Sidebar START -->
-
-          <%- include('./partials/sidebarleft.ejs') %>
-
-      <!-- Left Sidebar END -->
+        <div class="row">
+        <div class="col-sm-2">
+            <%- include('./partials/sidebarleft.ejs') %>
+        </div>
+        <div class="col-sm-8">
+            <%- include('./partials/card.ejs') %>
+        </div>
+        </div>
     </div>
-    <!-- Column 1 END -->
 
-    <!-- Grid Column 2 - content cards START-->
-    <div class="col-sm-8">
-      <!-- Column 2 inner row 1 START-->
-
-      <!-- Content card START -->
-      <%- include('./partials/card.ejs') %>
-    </div>
-    <!-- Content card end -->
-
-    <!-- Right Sidebar start -->
-
-   <!--  <div class="col-sm-2">%- include('./partials/sidebarright.ejs') %></div> -->
-
-    <!-- Right Sidebar end -->
-  </div>
-</div>
-
-<%- include('./partials/footer.ejs') %>
+    <%- include('./partials/footer.ejs') %>

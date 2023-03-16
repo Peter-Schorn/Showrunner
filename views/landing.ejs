@@ -1,14 +1,15 @@
-<%- include('./partials/header.ejs', {title: 'Home'}) %>
-<%- include('./partials/navbar.ejs', {username: locals.username}) %>
+<body> <!-- Added open body tag to each View for custom body styling -->
+    <%- include('./partials/header.ejs', {title: 'Home'}) %>
+    <%- include('./partials/navbar.ejs', {username: locals.username}) %>
 
-<div class="container-fluid">
+    <div class="container-fluid">
 
-  <div class="container">
-    <h1>Welcome to Showrunner!</h1>
-    <div>
-      <a class="btn btn-light" href="/login" role="button">Login</a>
-      <a class="btn btn-light" href="/signup" role="button">Create an Account</a>
-    </div>
-  </div>
-  
-<%- include('./partials/footer.ejs') %>
+        <div class="container">
+        <h1>Welcome to Showrunner!</h1>
+        <div>
+            <a class="btn btn-light" href="/login" role="button">Login</a>
+            <a class="btn btn-light" href="/signup" role="button">Create an Account</a>
+        </div>
+        </div>
+        
+    <%- include('./partials/footer.ejs') %>

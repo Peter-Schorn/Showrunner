@@ -1,43 +1,43 @@
-<%- include('./partials/header.ejs', {title: 'Showrunner Search'}) %>
-<%- include('./partials/navbar.ejs', {username: locals.username}) %>
-<body>
+<body> <!-- Added open body tag to each View for custom body styling -->
+    <%- include('./partials/header.ejs', {title: 'Showrunner Search'}) %>
+    <%- include('./partials/navbar.ejs', {username: locals.username}) %>
 
-<div class="container p-2">
-    <form action="/searchShows" method="get">
+
+    <div class="container p-2">
+        <form action="/searchShows" method="get">
         <div class="input-group m-2">
             <input type="text" name="query" class="form-control minLength="3" required placeholder="Enter the name of a show">
             <button class="btn btn-secondary" type="submit">Search</button>
         </div>
-    </form>
-</div>
+        </form>
+    </div>
 
-<div class="p-2">
+    <div class="p-2">
 
         <% shows.forEach(element=> { %>
-            <div class="row align-items-center border border-white m-2 p-2">
-                <% if (existingShows.includes(element.id.toString())) { %>
-                    <div class="col-1">
-                        <h5>Added to List</h1>
-                    </div>
-                <% } else { %>
-                    <div class="col-1">
-                        <form action="/addShow" method="post">
-                            <button name="showId" value="<%=element.id%>" class="btn btn-light" type="submit">Add Show</button>
-                        </form>
-                    </div>
-                <% } %>
-                <div class="col-1">
-                    <% const poster_path = element.poster_path ? `${imagePosterBasePath}${element.poster_path}` : "movie_poster_placeholder.svg" %>
-                    
-                    <img class="movie-poster" src="<%= poster_path %>" alt="<%= element.name %>">
-                </div>
-                <div class="col-10">
-                    <h5><%= element.name %> (<%= element.first_air_date %>)</h5>
-                    <p><%= element.overview %></p>
-                </div>
+        <div class="row align-items-center border border-white m-2 p-2">
+            <% if (existingShows.includes(element.id.toString())) { %>
+            <div class="col-1">
+                <h5>Added to List</h1>
             </div>
+            <% } else { %>
+            <div class="col-1">
+                <form action="/addShow" method="post">
+                <button name="showId" value="<%=element.id%>" class="btn btn-light" type="submit">Add Show</button>
+                </form>
+            </div>
+            <% } %>
+            <div class="col-1">
+            <% const poster_path = element.poster_path ? `${imagePosterBasePath}${element.poster_path}` : "movie_poster_placeholder.svg" %>
+            <img class="movie-poster" src="<%= poster_path %>" alt="<%= element.name %>">
+            </div>
+            <div class="col-10">
+            <h5><%= element.name %> (<%= element.first_air_date %>)</h5>
+            <p><%= element.overview %></p>
+            </div>
+        </div>
         <% }) %>
 
-</div>
+    </div>
 
-<%- include('./partials/footer.ejs') %>
+    <%- include('./partials/footer.ejs') %>
