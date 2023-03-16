@@ -32,6 +32,8 @@ const {
     deleteUserShow
 } = require("./models/updateShowModel");
 
+const {updateUserProfile} = require("./models/updateUserModel");
+
 // API DEPENDENCY
 const TMDB = require("./api").TMDB;
 
@@ -182,34 +184,38 @@ app.post("/addShow", verifyLoggedIn, (req, res)=>{
 
 // Shows Page
 app.get("/shows", verifyLoggedIn, (req, res) => {
-    userFullShows(req.user._id)
-        .then((shows) => {
-            res.render('shows.ejs', {shows});
-        })
-        .catch((error) => {
-            console.error(error);
-            res.sendStatus(500);
-    });
-});
-
-app.get("/full-shows", verifyLoggedIn, (req, res) => {
-    console.log(`req.user._id: "${req.user._id}"`);
-
     Promise.all([
         TMDBConfiguration.findOne({}),
         userFullShows(req.user._id)
     ])
     .then(([configuration, shows]) => {
         const imagePosterBasePath = configuration.imagePosterBasePath("w92");
-        console.log(`imagePosterBasePath: ${imagePosterBasePath}`);
-        console.log("\n\nFULL SHOWS:", shows);
-        res.send(shows);
+        res.render('shows.ejs', {shows, imagePosterBasePath});
     })
     .catch((error) => {
         console.error(error);
         res.sendStatus(500);
     });
 });
+
+// app.get("/full-shows", verifyLoggedIn, (req, res) => {
+//     console.log(`req.user._id: "${req.user._id}"`);
+
+//     Promise.all([
+//         TMDBConfiguration.findOne({}),
+//         userFullShows(req.user._id)
+//     ])
+//     .then(([configuration, shows]) => {
+//         const imagePosterBasePath = configuration.imagePosterBasePath("w92");
+//         console.log(`imagePosterBasePath: ${imagePosterBasePath}`);
+//         console.log("\n\nFULL SHOWS:", shows);
+//         res.send(shows);
+//     })
+//     .catch((error) => {
+//         console.error(error);
+//         res.sendStatus(500);
+//     });
+// });
 
 
 // Show Detail Page
