@@ -1,11 +1,12 @@
-<%- include('./partials/header.ejs', {title: 'Account'}) %>
-<%- include('./partials/navbar.ejs', {username: user.username}) %>
+<body> <!-- Added open body tag to each View for custom body styling -->
+  <%- include('./partials/header.ejs', {title: 'Account'}) %>
+  <%- include('./partials/navbar.ejs', {username: user.username}) %>
 
-<div class="container m-5 px-5">
+  <div class="container m-5 px-5">
     <div class="row justify-content-center text-center p-5 bg-secondary">
-        <h2><%= `Username: ${user.username}` %></h2>
-        <a href="/change-password" class="btn btn-primary">Change Password</a>
+      <h2><%= `Username: ${user.username}` %></h2>
+      <a href="/change-password" class="btn btn-primary">Change Password</a>
     </div>
-</div>
+  </div>
 
-<%- include('./partials/footer.ejs') %>
+  <%- include('./partials/footer.ejs') %>

@@ -1,13 +1,14 @@
-<%- include('./partials/header.ejs', {title: show.showName}) %>
-<%- include('./partials/navbar.ejs', {username: locals.username}) %>
+<body> <!-- Added open body tag to each View for custom body styling -->
+  <%- include('./partials/header.ejs', {title: show.showName}) %>
+  <%- include('./partials/navbar.ejs', {username: locals.username}) %>
 
-<div class="container">
+  <div class="container">
     <div class="row">
-        <h2><%= show.showName %></h2>
-        <p>popularity: <%= show.popularity %></p>
-        <p>favorite: <%= show.userShow?.favorite ?? false %></p>
-        <p>watched: <%= show.userShow?.hasWatched ?? false %></p>
+      <h2><%= show.showName %></h2>
+      <p>popularity: <%= show.popularity %></p>
+      <p>favorite: <%= show.userShow?.favorite ?? false %></p>
+      <p>watched: <%= show.userShow?.hasWatched ?? false %></p>
     </div>
-</div>
+  </div>
 
-<%- include('./partials/footer.ejs') %>
+  <%- include('./partials/footer.ejs') %>
