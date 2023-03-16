@@ -1,39 +1,54 @@
 <%- include('./partials/header.ejs', {title: "Profile"}) %>
-<%- include('./partials/navbar.ejs', {username: locals.username}) %>
+<%- include('./partials/navbar.ejs', {username: user.username}) %>
 
-<div class="container rounded bg-black mt-5 mb-5">
-    <div class="row">
-        <div class="col-md-3 border-right">
-            <div class="d-flex justify-content-center align-items-center mt-5">
+<div class="container">
+    <div class="row bg-black rounded-4 my-5">
+
+        <div class="col-md-3 align-self-center p-5">
+            <div class="d-flex justify-content-center align-items-center m-2">
                 <h4 class="text-center">Profile Settings</h4>
             </div>
-            <div class="d-flex flex-column align-items-center text-center px-3"><img class="rounded-circle my-5" width="150px" src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"><span class="font-weight-bold"></span><span class="text-black-50"></span><span> </span></div>
-        </div>
-        <div class="col-md-5 border-right d-flex align-items-center">
-            <div class="px-3 ">
-                
-                <div class="row">
-                    <div class="col-md-6"><label class="labels">First Name</label><input type="text" class="form-control" placeholder="First Name" value=""></div>
-                    <div class="col-md-6"><label class="labels">Last Name</label><input type="text" class="form-control" value="" placeholder="Last Name"></div>
-                </div>
-               
-                   
-                    <div class="col-md-12"><label class="labels">Email</label><input type="text" class="form-control" placeholder="Email" value=""></div>
-                    
-                    <div class="text-center mt-4"><button class="btn btn-primary profile-button" type="button">Save Profile</button></div>
-                </div>
-                
-                
+            <div class="d-flex flex-column align-items-center text-center px-3">
+                <img class="rounded-circle my-2" width="150px" src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg">
             </div>
         </div>
-        
+
+        <div class="col-md-5 d-flex align-items-center align-self-center p-5 flex-column">
+
+                <form action="/update-profile" method="post">
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label" for="firstName">First Name</label>
+                            <input type="text" class="form-control" name="firstName" id="firstName" value="<%= user.firstName %>">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="lastName">Last Name</label>
+                            <input type="text" class="form-control" name="lastName" id="lastName" value="<%= user.lastName %>">
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+                        <label class="form-label" for="email">Email</label>
+                        <input type="text" class="form-control" name="email" id="email" minlength="4" value="<%= user.email %>">
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <button class="btn btn-primary profile-button" type="submit">
+                            Save Profile
+                        </button>
+                    </div>
+
+                </form>
+
+                <div class="row mt-5">
+                    <a href="/change-password" class="btn btn-primary">Change Password</a>
+                </div>
+
+        </div>
     </div>
 </div>
-</div>
-</div>
 
-
-
-
+<script src="profile.js"></script>
 
 <%- include('./partials/footer.ejs') %>

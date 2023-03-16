@@ -38,3 +38,7 @@ nav:has(*) {
     flex: 100px;
     padding: 10px 10px;
 }
+
+.change-password-container {
+    max-width: 600px;
+}
