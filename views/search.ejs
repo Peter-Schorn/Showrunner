@@ -1,7 +1,6 @@
-<body> <!-- Added open body tag to each View for custom body styling -->
     <%- include('./partials/header.ejs', {title: 'Showrunner Search'}) %>
     <%- include('./partials/navbar.ejs', {username: locals.username}) %>
-
+    <body>
 
     <div class="container p-2">
         <form action="/searchShows" method="get">

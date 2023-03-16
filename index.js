@@ -32,8 +32,6 @@ const {
     deleteUserShow
 } = require("./models/updateShowModel");
 
-const { updateUserProfile } = require("./models/updateUserModel");
-
 // API DEPENDENCY
 const TMDB = require("./api").TMDB;
 
@@ -108,25 +106,21 @@ setInterval(performMaintenance, 86_400_000);  // 24 hours
 
 // ROUTE HANDLERS
 
-//PAGE ROUTES
+// PUBLIC PAGES
 
-// Root Route (landing.ejs)
+// Landing Page
 app.get("/", (req, res)=>{
     res.render("landing.ejs",);
 })
 
-// About
+// About Page
 app.get("/about", (req, res) => {
     const username = req.user?.username;
     res.render("about.ejs", {username});
 })
 
-// User Login
-app.get("/login", (req, res) => {
-    const failedAttempt = req.query.failedAttempt ?? false;
-    const username = req.user?.username;
-    res.render("login.ejs", {username, failedAttempt});
-});
+
+// USER CONTENT PAGES (SEARCH, SHOWS, SHOW DETAIL)
 
 // User Home (Show list)
 app.get("/home", (req, res) => {
@@ -135,130 +129,11 @@ app.get("/home", (req, res) => {
     res.render("home.ejs", {username, showId: []});
 });
 
+
 // Search - initiate a search and view results
 app.get("/search", verifyLoggedIn, (req, res) => {
     const username = req.user?.username;
     res.render("search.ejs", {username, shows: [], existingShows: []});
-  })
-
-// Shows Page
-app.get('/shows', verifyLoggedIn, (req, res) => {
-    const username = req.user?.username;
-    const userShows = req.user.userShows;
-    console.log(`This is the list of user shows: ${userShows}`)
-    res.render('shows.ejs', {username, userShows});
-});
-
-// Signup
-app.get("/signup", (req, res) => {
-    const username = req.user?.username;
-    res.render("signup.ejs", {username});
-});
-
-// Profile page
-app.get("/profile", verifyLoggedIn, (req, res) => {
-    const user = req.user;
-    // for display purposes, we want to display an empty string for missing
-    // properties, not "undefined"
-    const keys = ["firstName", "lastName", "email"];
-    for (const key of keys) {
-        if (!user[key]) {
-            user[key] = "";
-        }
-    }
-    res.render("profile.ejs", {user});
-});
-
-// Change Password Page
-app.get("/change-password", verifyLoggedIn, (req, res) => {
-    const user = req.user;
-    const failedAttempt = req.query.failedAttempt ?? false;
-    res.render("change_password.ejs", {user, failedAttempt});
-});
-
-app.post("/update-profile", (req, res) => {
-    const userId = req.user._id;
-    const { firstName, lastName, email } = req.body;
-
-    const options = {
-        firstName: firstName === "" ? null : firstName,
-        lastName: lastName === "" ? null : lastName,
-        email: email === "" ? null : email
-    };
-
-    updateUserProfile(userId, options)
-        .then(() => {
-            res.redirect("/profile");
-        })
-        .catch(error => {
-            console.log(`Error updating user profile: ${error}`);
-            res.redirect("/error");
-        });
-});
-
-// Error page
-app.get("/error", (req, res) => {
-    res.render("error.ejs");
-});
-
-
-
-// FUNCTIONALITY ROUTES
-
-// Create a user account using passport
-app.post("/signup", (req, res) => {
-    User.register(
-        new User({
-            username: req.body.username
-        }),
-        req.body.password,
-        (error, response) => {
-            if (error) {
-                res.send(error);
-            }
-            else {
-                console.log(`response from signup: ${response}`);
-                passport.authenticate("local") (req, res, () => {
-                    res.redirect("/home");
-                });
-            }
-        }
-    )
-});
-
-// Login using passport authentication
-app.post("/login", passport.authenticate("local", {
-    failureRedirect: "/login?failedAttempt=true",
-    successRedirect: "/home",
-    failureMessage: "the failure message"
-}), (error, req, res, next) => {
-    if (error) {
-        next(error);
-    }
-});
-
-// Logout (ends session)
-// https://www.passportjs.org/concepts/authentication/logout/
-app.get("/logout", (req, res, next) => {
-    req.logout((error) => {
-        if (error) {
-            return next(error);
-        }
-        res.redirect("/");
-    });
-});
-
-app.post("/change-password", (req, res) => {
-    req.user.changePassword(req.body.oldPassword, req.body.newPassword, (error) => {
-        if (error) {
-            console.log(`Error changing password: ${error}`);
-            res.redirect("/change-password?failedAttempt=true");
-        }
-        else {
-            console.log("Password changed successfully");
-            res.redirect("/home");
-        }
-    });
 });
 
 // Send a search query to the TMDB API and return results to the user
@@ -286,7 +161,7 @@ app.get("/searchShows", verifyLoggedIn, (req, res)=>{
         console.error("/searchShows: error:", error);
         res.render("error.ejs")
     })
-})
+});
 
 // Add a selected show from search results to the userShows object in the userModel
 app.post("/addShow", verifyLoggedIn, (req, res)=>{
@@ -302,8 +177,20 @@ app.post("/addShow", verifyLoggedIn, (req, res)=>{
             console.error(error);
             res.sendStatus(500);
         });
+});
 
-})
+
+// Shows Page
+app.get("/shows", verifyLoggedIn, (req, res) => {
+    userFullShows(req.user._id)
+        .then((shows) => {
+            res.render('shows.ejs', {shows});
+        })
+        .catch((error) => {
+            console.error(error);
+            res.sendStatus(500);
+    });
+});
 
 app.get("/full-shows", verifyLoggedIn, (req, res) => {
     console.log(`req.user._id: "${req.user._id}"`);
@@ -322,7 +209,13 @@ app.get("/full-shows", verifyLoggedIn, (req, res) => {
         console.error(error);
         res.sendStatus(500);
     });
+});
 
+
+// Show Detail Page
+app.get('/showDetail', verifyLoggedIn, (req, res) => {
+    const username = req.user?.username;
+    res.render('showDetail.ejs', {username});
 });
 
 app.get("/show", verifyLoggedIn, (req, res) => {
@@ -355,7 +248,6 @@ app.get("/show", verifyLoggedIn, (req, res) => {
         console.error(error);
         res.sendStatus(400);
     });
-
 });
 
 app.post("/deleteUserShow", verifyLoggedIn, (req, res) => {
@@ -376,8 +268,135 @@ app.post("/deleteUserShow", verifyLoggedIn, (req, res) => {
             console.error("error deleteUserShow:", error);
             res.sendStatus(400);
         });
-
 });
+
+
+
+// USER ACCOUNT MANAGEMENT (LOGIN, LOGOUT, SIGNUP, PROFILE, CHANGE PASSWORD)
+
+// User Login Page
+app.get("/login", (req, res) => {
+    const failedAttempt = req.query.failedAttempt ?? false;
+    const username = req.user?.username;
+    res.render("login.ejs", {username, failedAttempt});
+});
+
+// Login using passport authentication
+app.post("/login", passport.authenticate("local", {
+    failureRedirect: "/login?failedAttempt=true",
+    successRedirect: "/home",
+    failureMessage: "the failure message"
+}), (error, req, res, next) => {
+    if (error) {
+        next(error);
+    }
+});
+
+
+// Logout (ends session)
+// https://www.passportjs.org/concepts/authentication/logout/
+app.get("/logout", (req, res, next) => {
+    req.logout((error) => {
+        if (error) {
+            return next(error);
+        }
+        res.redirect("/");
+    });
+});
+
+
+// Signup Page
+app.get("/signup", (req, res) => {
+    const username = req.user?.username;
+    res.render("signup.ejs", {username});
+});
+
+// Create a user account using passport
+app.post("/signup", (req, res) => {
+    User.register(
+        new User({
+            username: req.body.username
+        }),
+        req.body.password,
+        (error, response) => {
+            if (error) {
+                res.send(error);
+            }
+            else {
+                console.log(`response from signup: ${response}`);
+                passport.authenticate("local") (req, res, () => {
+                    res.redirect("/home");
+                });
+            }
+        }
+    )
+});
+
+
+// Profile page
+app.get("/profile", verifyLoggedIn, (req, res) => {
+    const user = req.user;
+    // for display purposes, we want to display an empty string for missing
+    // properties, not "undefined"
+    const keys = ["firstName", "lastName", "email"];
+    for (const key of keys) {
+        if (!user[key]) {
+            user[key] = "";
+        }
+    }
+    res.render("profile.ejs", {user});
+});
+
+// Update user info in the db
+app.post("/update-profile", (req, res) => {
+    const userId = req.user._id;
+    const { firstName, lastName, email } = req.body;
+
+    const options = {
+        firstName: firstName === "" ? null : firstName,
+        lastName: lastName === "" ? null : lastName,
+        email: email === "" ? null : email
+    }
+
+    updateUserProfile(userId, options)
+        .then(() => {
+            res.redirect("/profile");
+        })
+        .catch(error => {
+            console.log(`Error updating user profile: ${error}`);
+            res.redirect("/error");
+        });
+});
+
+
+// Change Password Page
+app.get("/change-password", verifyLoggedIn, (req, res) => {
+    const user = req.user;
+    const failedAttempt = req.query.failedAttempt ?? false;
+    res.render("change_password.ejs", {user, failedAttempt});
+});
+
+app.post("/change-password", (req, res) => {
+    req.user.changePassword(req.body.oldPassword, req.body.newPassword, (error) => {
+        if (error) {
+            console.log(`Error changing password: ${error}`);
+            res.redirect("/change-password?failedAttempt=true");
+        }
+        else {
+            console.log("Password changed successfully");
+            res.redirect("/home");
+        }
+    });
+});
+
+
+// ERROR PAGE
+
+app.get("/error", (req, res) => {
+    res.render("error.ejs");
+});
+
+
 
 app.listen(port, () => {
     console.log(`Showrunner Server is running on http://localhost:${port}`)

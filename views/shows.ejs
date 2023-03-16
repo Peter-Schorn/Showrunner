@@ -1,28 +1,29 @@
-<body> <!-- Added open body tag to each View for custom body styling -->
     <%- include('./partials/header.ejs', {title: "Shows"}) %>
     <%- include('./partials/navbar.ejs', {username: locals.username}) %>
+    <body>
 
-
-    <div class="p-2">
-        <% userShows.forEach(element=> { %>
-        <div class="row align-items-center border border-white m-2 p-2">
-            <div class="col-1">
-            <form action="/getDetails" method="get">
-                <button name="showId" value="<%=element.showId%>" class="btn btn-light" type="submit">Get Details</button>
-            </form>
-            </div>                   
-            <div class="col-2">
-            <form action="/deleteUserShow" method="post">
-                <button name="showId" value="<%=element.showId%>" class="btn btn-light" type="submit">Delete User Show</button>
-            </form>
+        <div class="p-2">
+            <% shows.forEach(element=> { %>
+            <div class="row align-items-center border border-white m-2 p-2">
+                
+                <div class="col-9" name="showId" value="<%=element.showId%>">
+                    <h5><%= element.showName %></h5>
+                    <p><%= element.overview %></p>
+                </div>
+    
+                <div class="col-1">
+                    <form action="/show" method="get">
+                        <button name="showId" value="<%=element.showId%>" class="btn btn-light" type="submit">See More</button>
+                    </form>
+                </div>
+    
+                <div class="col-2">
+                    <form action="/deleteUserShow" method="post">
+                        <button name="showId" value="<%=element.showId%>" class="btn btn-light" type="submit">Remove Show</button>
+                    </form>
+                </div>
             </div>
-            <div class="col-9" name="_id" value="<%=element.showId%>">
-            <h5>showId: <%= element.showId %> (Database ID: <%= element._id%>)</h5>
-            </div>
+            <% }) %>
         </div>
-        <% }) %>
-    </div>
-
-
 
     <%- include('./partials/footer.ejs') %>
