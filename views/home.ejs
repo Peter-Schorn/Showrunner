@@ -1,25 +1,25 @@
 <body> <!-- Added open body tag to each View for custom body styling -->
-  <%- include('./partials/header.ejs', {title: 'Home'}) %>
-  <%- include('./partials/navbar.ejs', {username: locals.username}) %>
+    <%- include('./partials/header.ejs', {title: 'Home'}) %>
+    <%- include('./partials/navbar.ejs', {username: locals.username}) %>
 
-  <div class="container-fluid">
+    <div class="container-fluid">
 
-    <div class="row">
-      <% if (username) { %>
-        <p>Welcome, <%= username %></p>
-      <% } else { %>
-        <p>You are not logged in</p>
-      <% } %>
+        <div class="row">
+        <% if (username) { %>
+            <p>Welcome, <%= username %></p>
+        <% } else { %>
+            <p>You are not logged in</p>
+        <% } %>
+        </div>
+
+        <div class="row">
+        <div class="col-sm-2">
+            <%- include('./partials/sidebarleft.ejs') %>
+        </div>
+        <div class="col-sm-8">
+            <%- include('./partials/card.ejs') %>
+        </div>
+        </div>
     </div>
 
-    <div class="row">
-      <div class="col-sm-2">
-        <%- include('./partials/sidebarleft.ejs') %>
-      </div>
-      <div class="col-sm-8">
-        <%- include('./partials/card.ejs') %>
-      </div>
-    </div>
-  </div>
-
-  <%- include('./partials/footer.ejs') %>
+    <%- include('./partials/footer.ejs') %>
