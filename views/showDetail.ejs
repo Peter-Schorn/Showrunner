@@ -8,6 +8,7 @@
         <p>popularity: <%= show.popularity %></p>
         <p>favorite: <%= show.userShow?.favorite ?? false %></p>
         <p>watched: <%= show.userShow?.hasWatched ?? false %></p>
+        <img class="movie-poster" src="<%= fullPosterPath %>" alt="<%= show.showName %>">
         </div>
     </div>
 

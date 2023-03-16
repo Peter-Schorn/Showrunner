@@ -307,15 +307,22 @@ app.post("/addShow", verifyLoggedIn, (req, res)=>{
 
 app.get("/full-shows", verifyLoggedIn, (req, res) => {
     console.log(`req.user._id: "${req.user._id}"`);
-    userFullShows(req.user._id)
-        .then((shows) => {
-            console.log("\n\nFULL SHOWS:", shows);
-            res.send(shows);
-        })
-        .catch((error) => {
-            console.error(error);
-            res.sendStatus(500);
-        });
+
+    Promise.all([
+        TMDBConfiguration.findOne({}),
+        userFullShows(req.user._id)
+    ])
+    .then(([configuration, shows]) => {
+        const imagePosterBasePath = configuration.imagePosterBasePath("w92");
+        console.log(`imagePosterBasePath: ${imagePosterBasePath}`);
+        console.log("\n\nFULL SHOWS:", shows);
+        res.send(shows);
+    })
+    .catch((error) => {
+        console.error(error);
+        res.sendStatus(500);
+    });
+
 });
 
 app.get("/show", verifyLoggedIn, (req, res) => {
@@ -328,20 +335,26 @@ app.get("/show", verifyLoggedIn, (req, res) => {
         return;
     }
 
-    // retrieves a full show object with the user show object inside it
-    retrieveShow(req.user._id, showId)
-        .then((show) => {
-            console.log(show);
-            if (!show) {
-                // gets caught by the catch block directly below
-                throw new Error("could not find show in database or in TMDB api");
-            }
-            res.render("showDetail.ejs", {show, username});
-        })
-        .catch((error) => {
-            console.error(error);
-            res.sendStatus(400);
-        });
+    Promise.all([
+        TMDBConfiguration.findOne({}),
+        // retrieves a full show object with the user show object inside it
+        retrieveShow(req.user._id, showId)
+    ])
+    .then(([configuration, show]) => {
+        const imagePosterBasePath = configuration.imagePosterBasePath("w92");
+        console.log(`imagePosterBasePath: ${imagePosterBasePath}`);
+        const fullPosterPath = show.posterPath ? `${imagePosterBasePath}${show.posterPath}` : "movie_poster_placeholder.svg";
+        console.log(show);
+        if (!show) {
+            // gets caught by the catch block directly below
+            throw new Error("could not find show in database or in TMDB api");
+        }
+        res.render("showDetail.ejs", {fullPosterPath, show, username});
+    })
+    .catch((error) => {
+        console.error(error);
+        res.sendStatus(400);
+    });
 
 });
 
