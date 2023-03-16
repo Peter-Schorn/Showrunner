@@ -11,6 +11,16 @@ const userSchema = new mongoose.Schema({
         minLength: 4,
         required: [true, "missing username"]
     },
+    email: {
+        type: String,
+        minLength: 4
+    },
+    firstName: {
+        type: String
+    },
+    lastName: {
+        type: String
+    },
     // we don't need to define the password here because passport-local-mongoose will take care of it for us
     created: {
         type: Date,

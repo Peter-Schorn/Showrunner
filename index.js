@@ -32,6 +32,8 @@ const {
     deleteUserShow
 } = require("./models/updateShowModel");
 
+const { updateUserProfile } = require("./models/updateUserModel");
+
 // API DEPENDENCY
 const TMDB = require("./api").TMDB;
 
@@ -97,7 +99,10 @@ function performMaintenance() {
     updateTMDBConfiguration();
     refreshShowModel();
 }
-performMaintenance();
+// always set to "true" for `npm run watch`
+if (process.env.DISABLE_INITIAL_MAINTENANCE !== "true") {
+    performMaintenance();
+}
 setInterval(performMaintenance, 86_400_000);  // 24 hours
 
 
@@ -135,7 +140,7 @@ app.get("/search", verifyLoggedIn, (req, res) => {
     const username = req.user?.username;
     res.render("search.ejs", {username, shows: [], existingShows: []});
   })
-    
+
 // Shows Page
 app.get('/shows', verifyLoggedIn, (req, res) => {
     const username = req.user?.username;
@@ -151,14 +156,17 @@ app.get("/signup", (req, res) => {
 });
 
 // Profile page
-app.get("/profile", (req, res) => {
-    res.render("profile.ejs");
-});
-
-// Account Page
-app.get("/account", verifyLoggedIn, (req, res) => {
+app.get("/profile", verifyLoggedIn, (req, res) => {
     const user = req.user;
-    res.render("account.ejs", {user});
+    // for display purposes, we want to display an empty string for missing
+    // properties, not "undefined"
+    const keys = ["firstName", "lastName", "email"];
+    for (const key of keys) {
+        if (!user[key]) {
+            user[key] = "";
+        }
+    }
+    res.render("profile.ejs", {user});
 });
 
 // Change Password Page
@@ -166,6 +174,26 @@ app.get("/change-password", verifyLoggedIn, (req, res) => {
     const user = req.user;
     const failedAttempt = req.query.failedAttempt ?? false;
     res.render("change_password.ejs", {user, failedAttempt});
+});
+
+app.post("/update-profile", (req, res) => {
+    const userId = req.user._id;
+    const { firstName, lastName, email } = req.body;
+
+    const options = {
+        firstName: firstName === "" ? null : firstName,
+        lastName: lastName === "" ? null : lastName,
+        email: email === "" ? null : email
+    };
+
+    updateUserProfile(userId, options)
+        .then(() => {
+            res.redirect("/profile");
+        })
+        .catch(error => {
+            console.log(`Error updating user profile: ${error}`);
+            res.redirect("/error");
+        });
 });
 
 // Error page
