@@ -28,6 +28,7 @@ exports.addShowToDatabase = function (showId) {
                 showId: tvShowDetails.id,
                 showName: tvShowDetails.name,
                 backdropPath: tvShowDetails.backdrop_path,
+                posterPath: tvShowDetails.poster_path,
                 firstAirDate: tvShowDetails.first_air_date,
                 lastAirDate: tvShowDetails.last_air_date,
                 lastEpisodeToAir: toCamelCase(tvShowDetails.last_episode_to_air),
