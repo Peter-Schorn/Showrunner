@@ -26,6 +26,7 @@ const refreshShowModel = require("./models/refreshShowModel");
 
 const {
     addShowToDatabase,
+    addShowToUserList,
     retrieveShow,
     userFullShows,
     deleteUserShow
@@ -94,7 +95,7 @@ const tmdb = new TMDB(apiKey);
 
 function performMaintenance() {
     updateTMDBConfiguration();
-    refreshShowModel();    
+    refreshShowModel();
 }
 performMaintenance();
 setInterval(performMaintenance, 86_400_000);  // 24 hours
@@ -238,8 +239,8 @@ app.get("/searchShows", verifyLoggedIn, (req, res)=>{
     const {query} = req.query;
     const username = req.user.username;
     const existingShows = req.user.userShows.map( show => show.showId);
-        
-    // Execute the functions in parallel using "Promise.all" instead of chaining them 
+
+    // Execute the functions in parallel using "Promise.all" instead of chaining them
     Promise.all([
         TMDBConfiguration.findOne({}),
         tmdb.searchTVShows({query})
@@ -262,26 +263,18 @@ app.get("/searchShows", verifyLoggedIn, (req, res)=>{
 // Add a selected show from search results to the userShows object in the userModel
 app.post("/addShow", verifyLoggedIn, (req, res)=>{
     const username = req.user.username;
-    const showId = req.body.showId
-    let show = {showId}
+    const showId = req.body.showId;
 
-    addShowToDatabase(showId);
-    
-    // https://stackoverflow.com/a/14528282/12394554
-    User.updateOne(
-        {_id: req.user._id, "userShows.showId": {$ne: show.showId}},
-        {$push: {userShows: show}},
-        {runValidators: true}, 
-        (error, success) => {
-            if(error) {
-                console.log(error)
-            } else {
-                // console.log(success)
+    addShowToUserList(req.user._id, showId)
+        .then((result) => {
+            console.log(result);
+            res.redirect("/shows");
+        })
+        .catch((error) => {
+            console.error(error);
+            res.sendStatus(500);
+        });
 
-                res.redirect("/shows");
-            }
-        }
-    )
 })
 
 app.get("/full-shows", verifyLoggedIn, (req, res) => {
@@ -298,15 +291,15 @@ app.get("/full-shows", verifyLoggedIn, (req, res) => {
 });
 
 app.get("/show", verifyLoggedIn, (req, res) => {
-    
+
     const {showId} = req.query;
     const {username} = req.user;
-    
+
     if (!showId) {
         res.status(400).send("missing 'showId' query parameter");
         return;
     }
-    
+
     // retrieves a full show object with the user show object inside it
     retrieveShow(req.user._id, showId)
         .then((show) => {
@@ -321,18 +314,18 @@ app.get("/show", verifyLoggedIn, (req, res) => {
             console.error(error);
             res.sendStatus(400);
         });
-    
+
 });
 
 app.post("/deleteUserShow", verifyLoggedIn, (req, res) => {
-    
+
     const showId = req.body.showId;
     if (!showId) {
         res.sendStatus(400);
         return;
     }
     console.log(`delete showId: ${showId} for user ${req.user.username}`);
-    
+
     deleteUserShow(req.user._id, showId)
         .then((result) => {
             console.log("result from deleteUserShow:", result);
@@ -342,7 +335,7 @@ app.post("/deleteUserShow", verifyLoggedIn, (req, res) => {
             console.error("error deleteUserShow:", error);
             res.sendStatus(400);
         });
-    
+
 });
 
 app.listen(port, () => {

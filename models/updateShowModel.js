@@ -52,13 +52,39 @@ exports.addShowToDatabase = function (showId) {
                 returnDocument: "after"
 
             })
-                .lean();
+            .lean()
+            .exec();
 
         })
         .catch((error) => {
             console.error("addShowToDataBase:", error);
             throw error;
         });
+
+};
+
+/**
+ * Adds a show to a user's list. Also adds the full show object to the shows
+ * collection.
+ *
+ * @param {string} userId the user id
+ * @param {number} showId the show id
+ * @returns {Promise<any>} a promise that resolves to the result of adding
+ * the show to the user's list
+ */
+exports.addShowToUserList = function (userId, showId) {
+
+    exports.addShowToDatabase(showId);
+
+    const show = { showId };
+
+    // https://stackoverflow.com/a/14528282/12394554
+    return UserModel.updateOne(
+        { _id: userId, "userShows.showId": { $ne: showId } },
+        { $push: { userShows: show } },
+        { runValidators: true }
+    )
+    .exec();
 
 };
 
@@ -79,6 +105,7 @@ exports.retrieveShow = function (userId, showId) {
     // it from the TMDB api and add it back to the database
     const findShow = ShowModel.findOne({ showId })
         .lean()
+        .exec()
         .then((show) => {
             if (show) {
                 return show;
@@ -137,6 +164,7 @@ exports.userFullShows = function (userId) {
 
             return ShowModel.find({ "showId": { $in: showIds } })
                 .lean()
+                .exec()
                 .then((showObjects) => {
 
                     // the show ids for which the corresponding full show
@@ -243,6 +271,7 @@ exports.deleteUserShow = function (userId, showId) {
             // there are no other users with this show in their list, so delete it
             // from the shows collection
             ShowModel.deleteOne({ showId })
+                .exec()
                 .then((result) => {
                     console.log(`deleteUserShow Show.deleteOne result:`, result);
                 })
@@ -256,7 +285,8 @@ exports.deleteUserShow = function (userId, showId) {
     return UserModel.updateOne(
         { _id: userId },
         { $pull: { userShows: { showId: showId } } }
-    );
+    )
+    .exec();
 
 };
 
@@ -275,7 +305,8 @@ exports.setHasWatched = function (userId, showId, hasWatched) {
     return UserModel.updateOne(
         { _id: userId, "userShows.showId": showId },
         { $set: { "userShows.$.hasWatched": hasWatched } }
-    );
+    )
+    .exec();
 
 };
 
@@ -294,7 +325,8 @@ exports.setIsFavorite = function (userId, showId, isFavorite) {
     return UserModel.updateOne(
         { _id: userId, "userShows.showId": showId },
         { $set: { "userShows.$.favorite": isFavorite } }
-    );
+    )
+    .exec();
 
 };
 
@@ -310,8 +342,9 @@ exports.retrieveAllShowIds = function () {
         {},
         "showId"
     )
-        .then((showIds) => {
-            return new Set(showIds.map(showId => showId.showId));
-        });
+    .exec()
+    .then((showIds) => {
+        return new Set(showIds.map(showId => showId.showId));
+    });
 
 };
