@@ -36,7 +36,7 @@ const watchProviderSchema = new mongoose.Schema({
 const showSchema = new mongoose.Schema(
     {
         showId: { type: Number },
-        show_name: { type: String },
+        showName: { type: String },
         backdropPath: { type: String },
         firstAirDate: { type: Date },
         genres: [
