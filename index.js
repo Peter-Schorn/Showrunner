@@ -40,7 +40,7 @@ const TMDB = require("./api").TMDB;
 // DB CONNECTION
 
 // Get connection variables from .env file
-const {URI, DB, DB_USER, DB_PASS} = process.env;
+const {URI, DB, DB_USER, DB_PASS, EXPRESS_SESSION_SECRET} = process.env;
 
 // URL to connect to database
 const connectionURL = `${URI}/${DB}`;
@@ -66,7 +66,7 @@ mongoose.connect(connectionURL, connectionObject)
 // Create a session
 const mongoStoreURL = `mongodb+srv://${DB_USER}:${DB_PASS}@bootcamp.doe2g0y.mongodb.net`;
 app.use(expressSession({
-    secret: "CV9tHTeLGh-eGieT_csDd_-fHk!W-WJZFofjDJN-",
+    secret: EXPRESS_SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
     store: MongoStore.create({ mongoUrl: mongoStoreURL})
