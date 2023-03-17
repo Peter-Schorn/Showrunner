@@ -18,6 +18,12 @@ nav:has(*) {
   margin-left: 20px;
 }
 
+#titleAbout {
+    display: flexbox; 
+    text-align: center; 
+    justify-content: center;
+}
+
 .sidebar div {
     border: inherit
 }
@@ -41,4 +47,13 @@ nav:has(*) {
 
 .change-password-container {
     max-width: 600px;
+}
+
+#welcome01 {
+    font-family: 'Bungee Hairline', cursive;
+    white-space: pre;
+}
+
+#welcome02 {
+    font-family: 'Bungee Shade', cursive;
 }
