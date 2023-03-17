@@ -105,6 +105,15 @@ if (process.env.DISABLE_INITIAL_MAINTENANCE !== "true") {
 }
 setInterval(performMaintenance, 86_400_000);  // 24 hours
 
+// Add a new instance method to `Date` that returns a formatted date string,
+// e.g., "March 17, 2023"
+Date.prototype.formatted = function() {
+    return this.toLocaleString("default", {
+        month: "long",
+        day: "numeric",
+        year: "numeric"
+    });
+};
 
 // ROUTE HANDLERS
 
@@ -190,7 +199,8 @@ app.get("/shows", verifyLoggedIn, (req, res) => {
     ])
     .then(([configuration, shows]) => {
         const imagePosterBasePath = configuration.imagePosterBasePath("w92");
-        res.render('shows.ejs', {shows, imagePosterBasePath});
+        const username = req.user.username;
+        res.render('shows.ejs', {username, shows, imagePosterBasePath});
     })
     .catch((error) => {
         console.error(error);
