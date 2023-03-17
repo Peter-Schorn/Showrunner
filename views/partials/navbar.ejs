@@ -1,56 +1,48 @@
-<nav class="navbar navbar-expand-lg bg-body-tertiary">
-    <div class="container-fluid">
-        <a class="navbar-brand ms-auto" href="/home" style="font-family: 'Bungee Shade', cursive;">Showrunner</a> <!-- Goes to Home page -->
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item dropdown">
+    <nav class="navbar navbar-expand-lg top-0 bg-body-tertiary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/home" style="font-family: 'Bungee Shade', cursive;">Showrunner</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <% if (locals.username) { %>
+                    <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Account
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="/profile">Profile</a></li> <!-- For account settings page if we want to have one. -->
-                        <li><a class="dropdown-item" href="/shows">My Shows</a></li> <!-- To show user their shows. -->
-                        <li><a class="dropdown-item" href="/logout">Logout</a></li> <!-- Self explanatory -->
-                        <!-- <li><a class="dropdown-item" href="#">Action</a></li>--> <!-- commented code for copy/paste convenience -->
+                        <li><a class="dropdown-item" href="/profile">Details</a></li>
+                        <li><a class="dropdown-item" href="/shows">My Shows</a></li>
+                        <li><a class="dropdown-item" href="/logout">Logout</a></li>
                     </ul>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/about">About Showrunner</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/search">Search Shows</a>
-                </li>
-                <% if (locals.username) { %>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/logout">Logout</a>
                     </li>
                     <% } %>
                     <li class="nav-item">
-                        <a class="nav-link" href="/about">About Showrunner</a>
+                    <a class="nav-link" href="/about">About Showrunner</a>
                     </li>
                     <% if (locals.username) { %>
                     <li class="nav-item">
-                        <a class="nav-link" href="/search">Search Shows</a>
+                    <a class="nav-link" href="/search">Search Shows</a>
                     </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/logout">Logout</a>
-                        </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logout">Logout</a>
+                    </li>
                     <% } else { %>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/login">Login</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/signup">Sign up</a>
-                        </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/login">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/signup">Sign up</a>
+                    </li>
                     <% } %>
                 </ul>
-                <form class="d-flex" action="/searchShows" method="get" role="search">
-                    <input class="form-control me-2" type="search" name="query" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success" type="submit">Search</button>
-                </form>
+            <% if (locals.username) { %>
+            <form class="d-flex" action="/searchShows" method="get" role="search">
+                <input class="form-control me-2" type="search" name="query" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+            <% } %>
             </div>
         </div>
     </nav>
