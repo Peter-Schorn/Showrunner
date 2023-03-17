@@ -53,7 +53,11 @@ exports.addShowToDatabase = function (showId) {
                 returnDocument: "after"
 
             })
+            // returns a plain old javascript object instead of a mongoose
+            // document, which improves performance
             .lean()
+            // return a native javascript promise instead of a mongoose
+            // query
             .exec();
 
         })
@@ -85,6 +89,8 @@ exports.addShowToUserList = function (userId, showId) {
         { $push: { userShows: show } },
         { runValidators: true }
     )
+    // return a native javascript promise instead of a mongoose
+    // query
     .exec();
 
 };
@@ -105,7 +111,11 @@ exports.retrieveShow = function (userId, showId) {
     // search for the show in the database; if it is not found, then retrieve
     // it from the TMDB api and add it back to the database
     const findShow = ShowModel.findOne({ showId })
+        // returns a plain old javascript object instead of a mongoose
+        // document, which improves performance
         .lean()
+        // return a native javascript promise instead of a mongoose
+        // query
         .exec()
         .then((show) => {
             if (show) {
@@ -131,6 +141,7 @@ exports.retrieveShow = function (userId, showId) {
             );
         }
 
+        // find the user show object that corresponds to the full show object
         const userShow = user?.userShows.find((userShow) => {
             return userShow.showId.toString() === show.showId.toString();
         });
@@ -164,12 +175,17 @@ exports.userFullShows = function (userId) {
             const showIds = (user?.userShows ?? []).map((show) => `${show?.showId}`);
 
             return ShowModel.find({ "showId": { $in: showIds } })
+                // returns a plain old javascript object instead of a mongoose
+                // document, which improves performance
                 .lean()
+                // return a native javascript promise instead of a mongoose
+                // query
                 .exec()
                 .then((showObjects) => {
 
-                    // the show ids for which the corresponding full show
-                    // objects exist in the shows collection
+                    // The show ids for which the corresponding full show
+                    // objects exist in the shows collection. Use a set because
+                    // it is optimized for membership-testing
                     const foundIds = new Set(showObjects.map(show => `${show?.showId}`));
 
                     // The show ids for which the corresponding full show
@@ -221,6 +237,7 @@ exports.userFullShows = function (userId) {
 
                             }
 
+                            // sort the shows alphabetically by name
                             fullShowObjects.sort((lhs, rhs) => {
                                 if (lhs.showName < rhs.showName) {
                                     return -1;
@@ -255,6 +272,8 @@ exports.deleteUserShow = function (userId, showId) {
     // find all other users that have this show in their list
     UserModel.find(
         {
+            // exclude the provided user because we are removing the show from
+            // their list anyway
             _id: { $ne: userId },
             "userShows.showId": showId
         },
@@ -272,6 +291,8 @@ exports.deleteUserShow = function (userId, showId) {
             // there are no other users with this show in their list, so delete it
             // from the shows collection
             ShowModel.deleteOne({ showId })
+                // return a native javascript promise instead of a mongoose
+                // query
                 .exec()
                 .then((result) => {
                     console.log(`deleteUserShow Show.deleteOne result:`, result);
@@ -287,6 +308,7 @@ exports.deleteUserShow = function (userId, showId) {
         { _id: userId },
         { $pull: { userShows: { showId: showId } } }
     )
+    // return a native javascript promise instead of a mongoose query
     .exec();
 
 };
@@ -307,6 +329,7 @@ exports.setHasWatched = function (userId, showId, hasWatched) {
         { _id: userId, "userShows.showId": showId },
         { $set: { "userShows.$.hasWatched": hasWatched } }
     )
+    // return a native javascript promise instead of a mongoose query
     .exec();
 
 };
@@ -327,6 +350,7 @@ exports.setIsFavorite = function (userId, showId, isFavorite) {
         { _id: userId, "userShows.showId": showId },
         { $set: { "userShows.$.favorite": isFavorite } }
     )
+    // return a native javascript promise instead of a mongoose query
     .exec();
 
 };
@@ -343,8 +367,10 @@ exports.retrieveAllShowIds = function () {
         {},
         "showId"
     )
+    // return a native javascript promise instead of a mongoose query
     .exec()
     .then((showIds) => {
+        // use a set for more efficient membership-testing
         return new Set(showIds.map(showId => showId.showId));
     });
 

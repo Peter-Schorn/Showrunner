@@ -42,7 +42,10 @@ module.exports = function updateTMDBConfiguration() {
                     // conform to the schema
                     runValidators: true
                 }
-            );
+            )
+            // return a native javascript promise instead of a mongoose
+            // query
+            .exec();
         })
         .then((result) => {
             console.log(
