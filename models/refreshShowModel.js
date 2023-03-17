@@ -15,9 +15,12 @@ module.exports = function refreshShowModel() {
 
     console.log("refreshShowModel");
 
+    // retrieve all show ids from the shows collection
     retrieveAllShowIds()
         .then((showIds) => {
 
+            // the provided callback will be called once for each page of
+            // results
             tmdb.allTVShowChangesAllPages((page, error) => {
 
                 if (error) {
@@ -28,7 +31,7 @@ module.exports = function refreshShowModel() {
                     console.error("refreshShowModel: no page");
                     return;
                 }
-                
+
                 for (const changedShow of page.results) {
                     if (showIds.has(changedShow.id)) {
 
@@ -38,7 +41,7 @@ module.exports = function refreshShowModel() {
                         addShowToDatabase(changedShow.id)
                             .then((result) => {
                                 console.log(
-                                    `result of adding ${changedShow.id}:`, 
+                                    `result of adding ${changedShow.id}:`,
                                     result
                                 );
                             })

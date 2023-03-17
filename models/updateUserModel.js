@@ -11,8 +11,8 @@ const UserModel = require("./UserModel");
  * }} options the fields to update: `firstName`, `lastName`, and
  * `email`. For each present property that is not `undefined`, if the value is
  * non-`null`, then the corresponding field will be updated in the user's
- * profile, and if the value is `null`, then the corresponding field will be
- * removed from the user's profile.
+ * profile with the provided value, and if the value is `null`, then the
+ * corresponding field will be removed from the user's profile.
  *
  * @returns {PromiseLike<any>} a promise that resolves to the updated user
  * profile
@@ -41,7 +41,11 @@ exports.updateUserProfile = function(userId, options) {
         $set: optionsToSet,
         $unset: optionsToUnset
     }, {
+        // return the user document after it has been updated
         new: true
-    });
+    })
+    // return a native javascript promise instead of a mongoose
+    // query
+    .exec();
 
 };

@@ -93,6 +93,9 @@ const showSchema = new mongoose.Schema(
         voteAverage: { type: Number },
         voteCount: { type: Number },
         // https://mongoosejs.com/docs/schematypes.html#maps
+        // Each key in `watchProviders` is an ISO 3166-1 alpha-2 country code.
+        // The the keys in each show object are different, so we can't hardcode
+        // them into the schema.
         watchProviders: {
             type: Map,
             of: watchProviderSchema
