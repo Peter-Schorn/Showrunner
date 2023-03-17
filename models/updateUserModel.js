@@ -34,9 +34,6 @@ exports.updateUserProfile = function(userId, options) {
         }
     }
 
-    console.log("updateUserProfile: options:", options);
-    console.log("updateUserProfile: normalizedOptions:", optionsToSet);
-
     return UserModel.findByIdAndUpdate(userId, {
         $set: optionsToSet,
         $unset: optionsToUnset
