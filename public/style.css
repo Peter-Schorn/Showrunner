@@ -1,5 +1,7 @@
+/* START Master CSS file  */
+
 body { 
-    background-color: #666666; /* This is how it appears on the mockup */
+    background-color: #666666;
     color: white;
 }
 
@@ -107,9 +109,9 @@ nav:has(*) {
 }
 
 .sidebar {
-  background-color:black; 
-  border:red solid 2px;
-  margin-left: 20px;
+background-color:black; 
+border:red solid 2px;
+margin-left: 20px;
 }
 
 #titleAbout {
@@ -146,8 +148,31 @@ nav:has(*) {
 #welcome01 {
     font-family: 'Bungee Hairline', cursive;
     white-space: pre;
+    margin-top: 20px
 }
 
 #welcome02 {
     font-family: 'Bungee Shade', cursive;
+} 
+
+#btnLogin {
+    margin-right: 10px;
+    margin-top: 10px;
+}
+
+#btnSignUp {
+    margin-top: 10px;
+}
+
+.titleLanding {
+    display: flexbox; 
+    text-align: center; 
+}
+
+#background1 {
+    height: 100vh;
+    background: url("./stock-photo-multi-ethnic-group-friends-watching.jpeg") no-repeat;
+    background-size: cover;
+    background-position: center;
+    position:static;
 }
