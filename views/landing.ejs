@@ -1,18 +1,17 @@
 <%- include('./partials/header.ejs', {title: 'Home'}) %>
 
-<div class="container-fluid">
-
-    <div class="container-fluid d-flex-inline" style="position:absolute;">
-        <div class="container-fluid">
-            <h1 class="container-fluid d-flex justify-content-center" id="welcome01">Welcome to</h1>
-            <h1 class="container-fluid d-flex justify-content-center" id="welcome02">Showrunner!</h1>                    
+<div class="container-fluid d-block">
+    <div class="container-fluid position-absolute top-0 start-0">
+        <div>
+            <h1 class="d-flex justify-content-center mt-3" id="welcome01">Welcome to</h1>
+            <h1 class="d-flex justify-content-center" id="welcome02">Showrunner!</h1>                    
         </div>
-        <div class="d-flex justify-content-center">
-            <a class="btn btn-light" href="/login" role="button" id="btnLogin">Login</a>
-            <a class="btn btn-light" style="padding-bottom: 10px;" id="btnSignUp" href="/signup" role="button">Create an Account</a>
+        <div class="d-grid col-2 gap-2 mx-auto mt-4">
+            <a class="btn btn-block btn-primary" href="/login" role="button" id="btnLogin">Login</a>
+            <a class="btn btn-block btn-primary" href="/signup" role="button" id="btnSignUp">Create an Account</a>
+            <a class="btn btn-block btn-secondary mt-2" href="/about" role="button" id="btnAbout">About Showrunner</a>
         </div>
     </div>
-    <div class="container-fluid justify-content-center titleLanding" id="background1">
-    </div>
+    <div class="container-fluid justify-content-center titleLanding" id="background1"></div>
 </div>
 <%- include('./partials/footer.ejs') %>
