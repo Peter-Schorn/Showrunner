@@ -9,13 +9,18 @@ function validate(event) {
     // TODO: only call on error?
     event.preventDefault();
     
+    const errorElement = document.getElementById("change-password-error-message");
+    
     const password = document.getElementById("new-password").value;
     const confirmPassword = document.getElementById("confirm-password").value;
-    if (password === confirmPassword) {
+    
+    if (password.length < 4 || confirmPassword.length < 4) {
+        errorElement.innerHTML = "Password must be at least 4 characters";
+    }
+    else if (password === confirmPassword) {
         changePasswordForm.submit();
     }
     else {
-        const errorElement = document.getElementById("change-password-error-message");
         errorElement.innerHTML = "Passwords do not match.";
     }
 
