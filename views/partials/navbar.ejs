@@ -27,19 +27,30 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/logout">Logout</a>
                     </li>
-                <% } else { %>
+                    <% } %>
                     <li class="nav-item">
-                        <a class="nav-link" href="/login">Login</a>
+                        <a class="nav-link" href="/about">About Showrunner</a>
                     </li>
+                    <% if (locals.username) { %>
                     <li class="nav-item">
-                        <a class="nav-link" href="/signup">Sign up</a>
+                        <a class="nav-link" href="/search">Search Shows</a>
                     </li>
-                <% } %>
-            </ul>
-            <form class="d-flex" action="/searchShows" method="get" role="search">
-                <input class="form-control me-2" type="search" name="query" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success" type="submit">Search</button>
-            </form>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/logout">Logout</a>
+                        </li>
+                    <% } else { %>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/login">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/signup">Sign up</a>
+                        </li>
+                    <% } %>
+                </ul>
+                <form class="d-flex" action="/searchShows" method="get" role="search">
+                    <input class="form-control me-2" type="search" name="query" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                </form>
+            </div>
         </div>
-    </div>
-</nav>
+    </nav>
