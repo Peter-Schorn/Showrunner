@@ -187,7 +187,7 @@ app.get("/searchShows", verifyLoggedIn, (req, res)=>{
     })
     .catch((error) => {
         console.error("/searchShows: error:", error);
-        res.render("error.ejs")
+        res.redirect("/error");
     })
 });
 
@@ -203,7 +203,7 @@ app.post("/addShow", verifyLoggedIn, (req, res)=>{
         })
         .catch((error) => {
             console.error(error);
-            res.sendStatus(500);
+            res.redirect("/error");
         });
 });
 
@@ -221,7 +221,7 @@ app.get("/shows", verifyLoggedIn, (req, res) => {
     })
     .catch((error) => {
         console.error(error);
-        res.sendStatus(500);
+        res.redirect("/error");
     });
 });
 
@@ -254,7 +254,7 @@ app.get("/show", verifyLoggedIn, (req, res) => {
     })
     .catch((error) => {
         console.error(error);
-        res.sendStatus(400);
+        res.redirect("/error");
     });
 });
 
@@ -297,7 +297,7 @@ app.post("/deleteUserShow", verifyLoggedIn, (req, res) => {
 
     const showId = req.body.showId;
     if (!showId) {
-        res.sendStatus(400);
+        res.redirect("/error");
         return;
     }
     console.log(`delete showId: ${showId} for user ${req.user.username}`);
@@ -309,7 +309,7 @@ app.post("/deleteUserShow", verifyLoggedIn, (req, res) => {
         })
         .catch((error) => {
             console.error("error deleteUserShow:", error);
-            res.sendStatus(400);
+            res.redirect("/error");
         });
 });
 
@@ -378,6 +378,8 @@ app.post("/signup", (req, res) => {
 // Profile page
 app.get("/profile", verifyLoggedIn, (req, res) => {
     const user = req.user;
+    const { updated } = req.query ?? false;
+    
     // for display purposes, we want to display an empty string for missing
     // properties, not "undefined"
     const keys = ["firstName", "lastName", "email"];
@@ -386,7 +388,7 @@ app.get("/profile", verifyLoggedIn, (req, res) => {
             user[key] = "";
         }
     }
-    res.render("profile.ejs", {user});
+    res.render("profile.ejs", {user, updated});
 });
 
 // Update user info in the db
@@ -402,7 +404,7 @@ app.post("/update-profile", (req, res) => {
 
     updateUserProfile(userId, options)
         .then(() => {
-            res.redirect("/profile");
+            res.redirect("/profile?updated=true");
         })
         .catch(error => {
             console.log(`Error updating user profile: ${error}`);
@@ -442,7 +444,7 @@ app.put("/has-watched", (req, res) => {
         })
         .catch((error) => {
             console.error(error);
-            res.sendStatus(400);
+            res.redirect("/error");
         });
     
 });
@@ -458,7 +460,7 @@ app.put("/is-favorite", (req, res) => {
         })
         .catch((error) => {
             console.error(error);
-            res.sendStatus(400);
+            res.redirect("/error");
         });
     
 });

@@ -13,38 +13,34 @@
                 </div>
             </div>
 
-            <!-- <div class="col-md-9 d-flex align-items-center align-self-center p-3 flex-column"> -->
+            <form class="col-md-7 my-4" action="/update-profile" method="post">
+                <div class="flex-column">
+                    <label class="form-label" for="firstName">First Name</label>
+                    <input type="text" class="form-control" name="firstName" id="firstName" value="<%= user.firstName %>">
+                </div>
+                <div class="flex-column">
+                    <label class="form-label" for="lastName">Last Name</label>
+                    <input type="text" class="form-control" name="lastName" id="lastName" value="<%= user.lastName %>">
+                </div>
 
-                    <form class="col-md-7 my-auto" action="/update-profile" method="post">
-                        <div class="flex-column">
-                            <label class="form-label" for="firstName">First Name</label>
-                            <input type="text" class="form-control" name="firstName" id="firstName" value="<%= user.firstName %>">
-                        </div>
-                        <div class="flex-column">
-                            <label class="form-label" for="lastName">Last Name</label>
-                            <input type="text" class="form-control" name="lastName" id="lastName" value="<%= user.lastName %>">
-                        </div>
-
-                        <div class="flex-column mb-3">
-                            <label class="form-label" for="email">Email</label>
-                            <input type="text" class="form-control" name="email" id="email" minlength="4" value="<%= user.email %>">
-                        </div>
-                    </form>
-
-                    <div class="col-md-2 my-auto">
-                        <div class="text-center">
-                            <button class="btn btn-primary profile-button" type="submit">
-                                Save Profile
-                            </button>
-                        </div>
-
-                        <div class="text-center my-2">
-                            <a href="/change-password" class="btn btn-primary flex-column">Change Password</a>
-                        </div>
+                <div class="flex-column mb-3">
+                    <label class="form-label" for="email">Email</label>
+                    <input type="text" class="form-control" name="email" id="email" minlength="4" value="<%= user.email %>">
+                </div>
+                <div class="text-center">
+                    <button class="btn btn-primary profile-button" type="submit">
+                        Save Profile
+                    </button>
+                    <div class="text-center my-2">
+                        <a href="/change-password" class="btn btn-primary flex-column">Change Password</a>
                     </div>
-
-
-            <!-- </div> -->
+                </div>
+                <% if (locals.updated) { %>
+                    <p class="text-center mt-3 update-profile-text">
+                        Your profile has been updated.
+                    </p>
+                <% } %>
+            </form>
         </div>
     </div>
 

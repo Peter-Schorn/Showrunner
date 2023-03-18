@@ -511,7 +511,20 @@ exports.default = class TMDB {
      * that match the query
      */
     async searchTVShows(options) {
-        return await this._get("/3/search/tv", options);
+        const results = await this._get("/3/search/tv", options);
+        
+        for (const result of results.results) {
+            try {
+                result.first_air_date = new Date(result.first_air_date).formatted();
+            
+            } catch (error) {
+                console.error(
+                    `couldn't parse date: "${result.first_air_date}":`, error
+                );
+            }
+        }
+        
+        return results;
     }
 
         // MARK: Configuration
