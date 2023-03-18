@@ -141,9 +141,21 @@ app.get("/about", (req, res) => {
 // User Home (Show list)
 app.get("/home", (req, res) => {
     // `username` will be undefined if the user is not logged in
-    const username = req.user?.username;
-    res.render("home.ejs", {username, showId: []});
+    Promise.all([
+        TMDBConfiguration.findOne({}),
+        userFullShows(req.user._id)
+    ])
+    .then(([configuration, shows]) => {
+        const imagePosterBasePath = configuration.imagePosterBasePath("w92");
+        const username = req.user?.username;
+        res.render('home.ejs', {username, shows, imagePosterBasePath});
+    })
+    .catch((error) => {
+        console.error(error);
+        res.sendStatus(500);
+    });
 });
+
 
 
 // Search - initiate a search and view results
@@ -187,7 +199,7 @@ app.post("/addShow", verifyLoggedIn, (req, res)=>{
     addShowToUserList(req.user._id, showId)
         .then((result) => {
             console.log(result);
-            res.redirect("/shows");
+            res.redirect("/home");
         })
         .catch((error) => {
             console.error(error);
@@ -213,7 +225,7 @@ app.get("/shows", verifyLoggedIn, (req, res) => {
     });
 });
 
-// Show Detail Page
+// Show Details Page
 app.get("/show", verifyLoggedIn, (req, res) => {
 
     const {showId} = req.query;
@@ -246,6 +258,41 @@ app.get("/show", verifyLoggedIn, (req, res) => {
     });
 });
 
+// Toggle hasWatched in userShows object
+app.put("/has-watched", (req, res) => {
+    
+    const { showId, hasWatched } = req.body;
+    
+    setHasWatched(req.user._id, showId, hasWatched)
+        .then((result) => {
+            console.log(result);
+            res.sendStatus(200);
+        })
+        .catch((error) => {
+            console.error(error);
+            res.sendStatus(400);
+        });
+    
+});
+
+// Toggle isFavorite in userShows object
+app.put("/is-favorite", (req, res) => {
+    
+    const { showId, isFavorite }  = req.body;
+    
+    setIsFavorite(req.user._id, showId, isFavorite)
+        .then((result) => {
+            console.log(result);
+            res.sendStatus(200);
+        })
+        .catch((error) => {
+            console.error(error);
+            res.sendStatus(400);
+        });
+    
+});
+
+// Delete show from userShow object
 app.post("/deleteUserShow", verifyLoggedIn, (req, res) => {
 
     const showId = req.body.showId;
@@ -258,14 +305,13 @@ app.post("/deleteUserShow", verifyLoggedIn, (req, res) => {
     deleteUserShow(req.user._id, showId)
         .then((result) => {
             console.log("result from deleteUserShow:", result);
-            res.redirect("/shows");
+            res.redirect('/home')
         })
         .catch((error) => {
             console.error("error deleteUserShow:", error);
             res.redirect("/error");
         });
 });
-
 
 
 // USER ACCOUNT MANAGEMENT (LOGIN, LOGOUT, SIGNUP, PROFILE, CHANGE PASSWORD)

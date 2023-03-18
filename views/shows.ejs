@@ -1,8 +1,8 @@
-    <%- include('./partials/header.ejs', {title: "Shows"}) %>
-    <%- include('./partials/navbar.ejs', {username: locals.username}) %>
+<%- include('./partials/header.ejs', {title: "Shows"}) %>
+<%- include('./partials/navbar.ejs', {username: locals.username}) %>
 
-    <h1 class="text-center my-5"><strong>Track Your Shows</strong></h1>
-    <% shows.forEach(element=> { %>
+<h1 class="text-center my-5"><strong>Track Your Shows</strong></h1>
+<% shows.forEach(element=> { %>
     <% const hasWatched = element.userShow?.hasWatched ?? false %>
     <% const isFavorite = element.userShow?.favorite ?? false %>
     <div class="container my-3">
@@ -14,30 +14,39 @@
                         <img class="movie-poster" src="<%= posterPath %>" alt="<%= element.showName %>">
                     </div>
                     
-                    <div class="col-lg-8 col-m-6 col-sm-6 col-xs-6 flex-column align-self-center" name="showId" value="<%=element.showId%>">
-                        <h2><%= element.showName %></h2>
-                        <h4>First air date: <%= element.firstAirDate.formatted() %></h4>
+                <div class="col-lg-8 col-m-6 col-sm-6 col-xs-6 flex-column" name="showId" value="<%=element.showId%>">
+                    <h2><%= element.showName %></h2>
+
+                        <p class="cardText">
+                            Status: <%= element.status %></p>
+                            <% if (element.status == "Ended") { %>
+                                <p class="cardText">Aired: <%= element.firstAirDate.formatted() %> - <%= element.lastAirDate.formatted()%> (<%= element.seasonCount %> Seasons, <%= element.episodeCount %> Episodes)</p>
+                            <% } %>
+                            <% if (element.nextEpisodeToAir) { %>
+                                <p class="cardText">Season <%= element.nextEpisodeToAir.seasonNumber %>, Episode <%= element.nextEpisodeToAir.episodeNumber %> airs <%= element.nextEpisodeToAir.airDate.formatted() %></p>
+                            <% } %>
+                        
                         <p class="cardText"><%= element.overview %></p>
                     </div>
-        
+                    
                     <div class="col-lg-2 col-m-6 col-sm-6 col-xs-6 flex-column text-center align-items-center my-auto">
                         <form action="/show" method="get">
-                            <button name="showId" value="<%=element.showId%>" class="btn btn-secondary m-2" type="submit">See More</button>
+                            <button name="showId" value="<%=element.showId%>" class="btn btn-sm btn-secondary my-2" type="submit">View Details</button>
                         </form>
                         
-                        <button value="<%=element.showId%>" data-has-watched="<%=hasWatched%>" class="btn btn-secondary m-2 has-watched-button" type="submit">
+                        <button value="<%=element.showId%>" data-has-watched="<%=hasWatched%>" class="btn btn-sm btn-secondary m-2 has-watched-button" type="submit">
                             <%= hasWatched ? "Watched" : "Not Watched" %>
                         </button>
                         
-                        <button value="<%=element.showId%>" data-is-favorite="<%=isFavorite%>" class="btn btn-secondary m-2 is-favorite-button" type="submit">
+                        <button value="<%=element.showId%>" data-is-favorite="<%=isFavorite%>" class="btn btn-sm btn-secondary m-2 is-favorite-button" type="submit">
                             <%= isFavorite ? "Favorite" : "Not Favorite" %>
                         </button>
                         
                         <form action="/deleteUserShow" method="post">
-                            <button name="showId" value="<%=element.showId%>" class="btn btn-secondary m-2" type="submit">Remove Show</button>
+                            <button name="showId" value="<%=element.showId%>" class="btn btn-sm btn-secondary my-2" type="submit">Remove Show <span><i class="fa fa-trash"></i></span></button>
                         </form>
+
                     </div>
-        
                 </div>
             </div>
         </div>
