@@ -35,10 +35,7 @@ function validate(event) {
 }
 
 forms.forEach(function(form) {
-    
     form.addEventListener("submit", validate);
-    form.querySelector(`button[type="submit]"`)?.addEventListener("click", validate);
-    
 });
 
 document.getElementById("username")?.addEventListener("input", validate);

@@ -445,6 +445,38 @@ app.post("/change-password", (req, res) => {
     });
 });
 
+app.put("/has-watched", (req, res) => {
+    
+    const { showId, hasWatched } = req.body;
+    
+    setHasWatched(req.user._id, showId, hasWatched)
+        .then((result) => {
+            console.log(result);
+            res.sendStatus(200);
+        })
+        .catch((error) => {
+            console.error(error);
+            res.sendStatus(400);
+        });
+    
+});
+
+app.put("/is-favorite", (req, res) => {
+    
+    const { showId, isFavorite }  = req.body;
+    
+    setIsFavorite(req.user._id, showId, isFavorite)
+        .then((result) => {
+            console.log(result);
+            res.sendStatus(200);
+        })
+        .catch((error) => {
+            console.error(error);
+            res.sendStatus(400);
+        });
+    
+});
+
 
 // ERROR PAGE
 

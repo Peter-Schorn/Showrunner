@@ -1,18 +1,18 @@
 <%- include('./partials/header.ejs', {title: "Shows"}) %>
 <%- include('./partials/navbar.ejs', {username: locals.username}) %>
 
-<h1 class="text-center my-5"><strong>My Shows</strong></h1>
-<% shows.forEach(element=> { %>
-<% let hasWatched = element.userShow?.hasWatched ?? false %>
-<% let isFavorite = element.userShow?.favorite ?? false %>
-<div class="container my-3">
-    <div class="row">
-        <div class="card d-flex flex-column p-3 border border-light border-2 border-opacity-75" style="background: #434343; color: rgba(245, 245, 245, 0.90);">
-            <div class="row">
-                <div class="col-lg-2 col-m-6 col-sm-6 col-xs-6 flex-column align-self-center text-center">
-                    <% const posterPath = element.posterPath ? `${imagePosterBasePath}${element.posterPath}` : "movie_poster_placeholder.svg" %>
-                    <img class="movie-poster" src="<%= posterPath %>" alt="<%= element.showName %>">
-                </div>
+    <h1 class="text-center my-5"><strong>Track Your Shows</strong></h1>
+    <% shows.forEach(element=> { %>
+    <% const hasWatched = element.userShow?.hasWatched ?? false %>
+    <% const isFavorite = element.userShow?.favorite ?? false %>
+    <div class="container my-3">
+        <div class="row">
+            <div class="card d-flex flex-column p-3 border border-light border-2 border-opacity-75" style="background: #434343; color: rgba(245, 245, 245, 0.90);">
+                <div class="row">
+                    <div class="col-lg-2 col-m-6 col-sm-6 col-xs-6 flex-column align-self-center text-center">
+                        <% const posterPath = element.posterPath ? `${imagePosterBasePath}${element.posterPath}` : "movie_poster_placeholder.svg" %>
+                        <img class="movie-poster" src="<%= posterPath %>" alt="<%= element.showName %>">
+                    </div>
                     
                 <div class="col-lg-8 col-m-6 col-sm-6 col-xs-6 flex-column align-self-center" name="showId" value="<%=element.showId%>">
                     <h2><%= element.showName %></h2>
@@ -41,17 +41,16 @@
                         <button value="<%=element.showId%>" data-is-favorite="<%=isFavorite%>" class="btn btn-secondary m-2 is-favorite-button" type="submit">
                             <%= isFavorite ? "Favorite" : "Not Favorite" %>
                         </button>
-
+                        
                         <form action="/deleteUserShow" method="post">
                             <button name="showId" value="<%=element.showId%>" class="btn btn-secondary my-2" type="submit"><i class="fa fa-trash"></i></button>
                         </form>
 
                     </div>
-                    
-
                 </div>
             </div>
         </div>
     </div>
     <% }) %>
+    <script src="shows.js"></script>
     <%- include('./partials/footer.ejs') %>
