@@ -17,6 +17,14 @@ h4 {
     color: rgb(175, 175, 175);
 }
 
+#bgPhoto {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+#bgImage {
+    border: 2px solid rgb(248,249,250);
+}
+
 nav:has(*) {
     color: white;
     background-color:#1155CC;
@@ -75,6 +83,16 @@ margin-left: 20px;
 
 .movie-poster {
     width: 130px;
+}
+
+.details-poster {
+    width: 205px;
+}
+
+#detailShowName {
+    font-size: 45px;
+    margin-bottom: 20px;
+    z-index: 1;
 }
 
 .change-password {
