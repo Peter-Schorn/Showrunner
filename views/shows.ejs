@@ -1,7 +1,7 @@
     <%- include('./partials/header.ejs', {title: "Shows"}) %>
     <%- include('./partials/navbar.ejs', {username: locals.username}) %>
 
-    <h1 class="text-center my-5"><strong>Track Your Shows</strong></h1>
+    <h1 class="text-center my-5"><strong>My Shows</strong></h1>
     <% shows.forEach(element=> { %>
     <div class="container my-3">
         <div class="row">
@@ -13,17 +13,31 @@
                     </div>
                     
                     <div class="col-lg-8 col-m-6 col-sm-6 col-xs-6 flex-column align-self-center" name="showId" value="<%=element.showId%>">
-                        <h2><%= element.showName %></h2>
-                        <h4>First air date: <%= element.firstAirDate.formatted() %></h4>
+                        <h2>
+                            <form action="/favorite" method="post">
+                                <%= element.showName %> 
+                                <button name="showId" value="<%=element.showId%>" class="btn btn-lg my-2" type="submit"><i class="fa-solid fa-star"></i></button>
+                            </form>
+                        </h2>
+
+                        <p class="cardText">
+                            Status: <%= element.status %></p>
+                            <% if (element.status == "Ended") { %>
+                                <p class="cardText">(Aired: <%= element.firstAirDate.formatted() %> - <%= element.lastAirDate.formatted() %>)</p>
+                            <% } %>
+                            <% if (element.nextEpisodeToAir) { %>
+                                <p class="cardText">(Next episode airs: <%= element.nextEpisodeToAir.airDate.formatted() %>)</p>
+                            <% } %>
+                        
                         <p class="cardText"><%= element.overview %></p>
                     </div>
         
                     <div class="col-lg-2 col-m-6 col-sm-6 col-xs-6 flex-column text-center align-items-center my-auto">
                         <form action="/show" method="get">
-                            <button name="showId" value="<%=element.showId%>" class="btn btn-secondary my-2" type="submit">See More</button>
+                            <button name="showId" value="<%=element.showId%>" class="btn btn-sm btn-light my-2" type="submit">View Show Details</button>
                         </form>
                         <form action="/deleteUserShow" method="post">
-                            <button name="showId" value="<%=element.showId%>" class="btn btn-secondary my-2" type="submit">Remove Show</button>
+                            <button name="showId" value="<%=element.showId%>" class="btn my-2" type="submit"><i class="fa fa-trash"></i></button>
                         </form>
                     </div>
         
