@@ -208,32 +208,7 @@ app.get("/shows", verifyLoggedIn, (req, res) => {
     });
 });
 
-// app.get("/full-shows", verifyLoggedIn, (req, res) => {
-//     console.log(`req.user._id: "${req.user._id}"`);
-
-//     Promise.all([
-//         TMDBConfiguration.findOne({}),
-//         userFullShows(req.user._id)
-//     ])
-//     .then(([configuration, shows]) => {
-//         const imagePosterBasePath = configuration.imagePosterBasePath("w92");
-//         console.log(`imagePosterBasePath: ${imagePosterBasePath}`);
-//         console.log("\n\nFULL SHOWS:", shows);
-//         res.send(shows);
-//     })
-//     .catch((error) => {
-//         console.error(error);
-//         res.sendStatus(500);
-//     });
-// });
-
-
-// Show Detail Page
-app.get('/showDetail', verifyLoggedIn, (req, res) => {
-    const username = req.user?.username;
-    res.render('showDetail.ejs', {username});
-});
-
+// Show Details for a selected show
 app.get("/show", verifyLoggedIn, (req, res) => {
 
     const {showId} = req.query;
@@ -278,7 +253,7 @@ app.post("/deleteUserShow", verifyLoggedIn, (req, res) => {
     deleteUserShow(req.user._id, showId)
         .then((result) => {
             console.log("result from deleteUserShow:", result);
-            res.sendStatus(200);
+            res.redirect('/shows');
         })
         .catch((error) => {
             console.error("error deleteUserShow:", error);
