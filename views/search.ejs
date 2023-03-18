@@ -5,15 +5,16 @@
         <form action="/searchShows" method="get">
         <div class="input-group m-2">
             <input type="text" name="query" class="form-control" minLength="3" required placeholder="Enter the name of a show">
-            <button class="btn btn-secondary" type="submit">Search</button>
+            <button class="btn btn-primary" type="submit">Search</button>
         </div>
         </form>
     </div>
 
-    <div class="p-2">
+    <div class="container p-2">
 
         <% shows.forEach(element=> { %>
-        <div class="row align-items-center border border-white m-2 p-2">
+        <div class="row align-items-center border border-white m-2 p-2" style="background-color: rgb(131, 131, 131)
+        ;">
             <% if (existingShows.includes(element.id.toString())) { %>
             <div class="col-4 col-sm-4 col-md-4 col-lg-2">
                 <h5>Added to List</h1>
@@ -26,7 +27,7 @@
             </div>
             <% } %>
 
-            <div class="col-4 col-sm-4 col-md-4 col-lg-1">
+            <div class="col-4 col-sm-4 col-md-4 col-lg-1 my-2">
                 <% const poster_path = element.poster_path ? `${imagePosterBasePath}${element.poster_path}` : "movie_poster_placeholder.svg" %>
                 <img class="movie-poster" src="<%= poster_path %>" alt="<%= element.name %>">
             </div>
@@ -39,8 +40,7 @@
         </div>
         <% }) %>
 
-        <div class="container-fluid justify-content-center titleLanding" id="background1">
-        </div>
+
     </div>
 
     <%- include('./partials/footer.ejs') %>

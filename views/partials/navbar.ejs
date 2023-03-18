@@ -1,6 +1,6 @@
     <nav class="navbar navbar-expand-lg top-0 bg-body-tertiary">
         <div class="container-fluid">
-            <a class="navbar-brand" href="/home" style="font-family: 'Bungee Shade', cursive;">Showrunner</a>
+            <a class="navbar-brand" href="/" style="font-family: 'Bungee Shade', cursive;">Showrunner</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
             </button>
@@ -39,7 +39,7 @@
                 </ul>
             <% if (locals.username) { %>
             <form class="d-flex" action="/searchShows" method="get" role="search">
-                <input class="form-control me-2" type="text" minLength="3" name="query" required placeholder="Enter the name of a show" aria-label="Search">
+                <input class="form-control me-2" type="text" minLength="3" name="query" required placeholder="Enter a Show Name" aria-label="Search">
                 <button class="btn btn-outline-light" type="submit">Search</button>
             </form>
             <% } %>
