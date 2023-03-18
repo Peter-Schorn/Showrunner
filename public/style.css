@@ -117,3 +117,11 @@ margin-left: 20px;
 .update-profile-text {
     color: lightgreen;
 }
+
+.error-message {
+    font-size: xx-large;
+    display: flex;
+    height: 50vh;
+    align-items: center;
+    justify-content: center;
+}

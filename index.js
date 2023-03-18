@@ -175,7 +175,7 @@ app.get("/searchShows", verifyLoggedIn, (req, res)=>{
     })
     .catch((error) => {
         console.error("/searchShows: error:", error);
-        res.render("error.ejs")
+        res.redirect("/error");
     })
 });
 
@@ -191,7 +191,7 @@ app.post("/addShow", verifyLoggedIn, (req, res)=>{
         })
         .catch((error) => {
             console.error(error);
-            res.sendStatus(500);
+            res.redirect("/error");
         });
 });
 
@@ -209,36 +209,11 @@ app.get("/shows", verifyLoggedIn, (req, res) => {
     })
     .catch((error) => {
         console.error(error);
-        res.sendStatus(500);
+        res.redirect("/error");
     });
 });
 
-// app.get("/full-shows", verifyLoggedIn, (req, res) => {
-//     console.log(`req.user._id: "${req.user._id}"`);
-
-//     Promise.all([
-//         TMDBConfiguration.findOne({}),
-//         userFullShows(req.user._id)
-//     ])
-//     .then(([configuration, shows]) => {
-//         const imagePosterBasePath = configuration.imagePosterBasePath("w92");
-//         console.log(`imagePosterBasePath: ${imagePosterBasePath}`);
-//         console.log("\n\nFULL SHOWS:", shows);
-//         res.send(shows);
-//     })
-//     .catch((error) => {
-//         console.error(error);
-//         res.sendStatus(500);
-//     });
-// });
-
-
 // Show Detail Page
-app.get('/showDetail', verifyLoggedIn, (req, res) => {
-    const username = req.user?.username;
-    res.render('showDetail.ejs', {username});
-});
-
 app.get("/show", verifyLoggedIn, (req, res) => {
 
     const {showId} = req.query;
@@ -267,7 +242,7 @@ app.get("/show", verifyLoggedIn, (req, res) => {
     })
     .catch((error) => {
         console.error(error);
-        res.sendStatus(400);
+        res.redirect("/error");
     });
 });
 
@@ -275,7 +250,7 @@ app.post("/deleteUserShow", verifyLoggedIn, (req, res) => {
 
     const showId = req.body.showId;
     if (!showId) {
-        res.sendStatus(400);
+        res.redirect("/error");
         return;
     }
     console.log(`delete showId: ${showId} for user ${req.user.username}`);
@@ -283,11 +258,11 @@ app.post("/deleteUserShow", verifyLoggedIn, (req, res) => {
     deleteUserShow(req.user._id, showId)
         .then((result) => {
             console.log("result from deleteUserShow:", result);
-            res.sendStatus(200);
+            res.redirect("/shows");
         })
         .catch((error) => {
             console.error("error deleteUserShow:", error);
-            res.sendStatus(400);
+            res.redirect("/error");
         });
 });
 
@@ -423,7 +398,7 @@ app.put("/has-watched", (req, res) => {
         })
         .catch((error) => {
             console.error(error);
-            res.sendStatus(400);
+            res.redirect("/error");
         });
     
 });
@@ -439,7 +414,7 @@ app.put("/is-favorite", (req, res) => {
         })
         .catch((error) => {
             console.error(error);
-            res.sendStatus(400);
+            res.redirect("/error");
         });
     
 });
