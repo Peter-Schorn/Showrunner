@@ -1,8 +1,8 @@
 <%- include('./partials/header.ejs', {title: "Shows"}) %>
 <%- include('./partials/navbar.ejs', {username: locals.username}) %>
 
-    <h1 class="text-center my-5"><strong>Track Your Shows</strong></h1>
-    <% shows.forEach(element=> { %>
+<h1 class="text-center my-5"><strong>Track Your Shows</strong></h1>
+<% shows.forEach(element=> { %>
     <% const hasWatched = element.userShow?.hasWatched ?? false %>
     <% const isFavorite = element.userShow?.favorite ?? false %>
     <div class="container my-3">
@@ -31,7 +31,7 @@
                     
                     <div class="col-lg-2 col-m-6 col-sm-6 col-xs-6 flex-column text-center align-items-center my-auto">
                         <form action="/show" method="get">
-                            <button name="showId" value="<%=element.showId%>" class="btn btn-sm btn-secondary my-2" type="submit">View Show Details</button>
+                            <button name="showId" value="<%=element.showId%>" class="btn btn-sm btn-secondary my-2" type="submit">View Details</button>
                         </form>
                         
                         <button value="<%=element.showId%>" data-has-watched="<%=hasWatched%>" class="btn btn-sm btn-secondary m-2 has-watched-button" type="submit">
