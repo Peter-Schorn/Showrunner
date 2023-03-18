@@ -4,10 +4,13 @@ const mongoose = require("mongoose");
 const logger = require("morgan");
 const port = process.env.PORT ?? 3000;
 const app = express();
+
 app.use(express.static("public"));
 app.use(express.urlencoded({ extended: false }));
-app.set("view engine", "ejs");
+app.use(express.json());
 app.use(logger("dev"));
+
+app.set("view engine", "ejs");
 mongoose.set("strictQuery", false);
 
 // PASSPORT DEPENDENCIES
@@ -29,7 +32,9 @@ const {
     addShowToUserList,
     retrieveShow,
     userFullShows,
-    deleteUserShow
+    deleteUserShow,
+    setHasWatched,
+    setIsFavorite
 } = require("./models/updateShowModel");
 
 const {updateUserProfile} = require("./models/updateUserModel");
@@ -403,6 +408,38 @@ app.post("/change-password", (req, res) => {
             res.redirect("/home");
         }
     });
+});
+
+app.put("/has-watched", (req, res) => {
+    
+    const { showId, hasWatched } = req.body;
+    
+    setHasWatched(req.user._id, showId, hasWatched)
+        .then((result) => {
+            console.log(result);
+            res.sendStatus(200);
+        })
+        .catch((error) => {
+            console.error(error);
+            res.sendStatus(400);
+        });
+    
+});
+
+app.put("/is-favorite", (req, res) => {
+    
+    const { showId, isFavorite }  = req.body;
+    
+    setIsFavorite(req.user._id, showId, isFavorite)
+        .then((result) => {
+            console.log(result);
+            res.sendStatus(200);
+        })
+        .catch((error) => {
+            console.error(error);
+            res.sendStatus(400);
+        });
+    
 });
 
 
