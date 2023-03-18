@@ -1,34 +1,38 @@
     <%- include('./partials/header.ejs', {title: "Shows"}) %>
     <%- include('./partials/navbar.ejs', {username: locals.username}) %>
 
-        <div class="p-2">
-            <% shows.forEach(element=> { %>
-            <div class="row align-items-center border border-white m-2 p-2">
-
-                <div class="col-1">
-                    <% const posterPath = element.posterPath ? `${imagePosterBasePath}${element.posterPath}` : "movie_poster_placeholder.svg" %>
-                    <img class="movie-poster" src="<%= posterPath %>" alt="<%= element.showName %>">
-                </div>
-                
-                <div class="col-9" name="showId" value="<%=element.showId%>">
-                    <h5><%= element.showName %></h5>
-                    <p>first air date: <%= element.firstAirDate.formatted() %></p>
-                    <p><%= element.overview %></p>
-                </div>
-    
-                <div class="col-1">
-                    <form action="/show" method="get">
-                        <button name="showId" value="<%=element.showId%>" class="btn btn-light" type="submit">See More</button>
-                    </form>
-                </div>
-    
-                <div class="col-1">
-                    <form action="/deleteUserShow" method="post">
-                        <button name="showId" value="<%=element.showId%>" class="btn btn-light" type="submit">Remove Show</button>
-                    </form>
+    <h1 class="text-center my-5"><strong>Track Your Shows</strong></h1>
+    <% shows.forEach(element=> { %>
+    <div class="container my-3">
+        <div class="row">
+            <div class="card d-flex flex-column p-3 border border-light border-2 border-opacity-75" style="background: #434343;">
+                <div class="row">
+                    <div class="col-lg-2 col-m-6 col-sm-6 col-xs-6 flex-column align-self-center text-center">
+                        <% const posterPath = element.posterPath ? `${imagePosterBasePath}${element.posterPath}` : "movie_poster_placeholder.svg" %>
+                        <img class="movie-poster" src="<%= posterPath %>" alt="<%= element.showName %>">
+                    </div>
+                    
+                    <div class="col-lg-8 col-m-6 col-sm-6 col-xs-6 flex-column align-self-center" name="showId" value="<%=element.showId%>">
+                        <h2><%= element.showName %></h2>
+                        <h4>First air date: <%= element.firstAirDate.formatted() %></h4>
+                        <p class="cardText"><%= element.overview %></p>
+                    </div>
+        
+                    <div class="col-lg-2 col-m-6 col-sm-6 col-xs-6 flex-column text-center align-items-center my-auto">
+                        <form action="/show" method="get">
+                            <button name="showId" value="<%=element.showId%>" class="btn btn-secondary my-2" type="submit">See More</button>
+                            <button name="showId" value="<%=element.showId%>" class="btn btn-secondary my-2" type="submit">Remove Show</button>
+                        </form>
+                    </div>
+        
+                    <!-- <div class="col-1 d-flex flex-column align-self-center">
+                        <form action="/deleteUserShow" method="post">
+                            <button name="showId" value="<%#=element.showId%>" class="btn btn-secondary" type="submit">Remove Show</button>
+                        </form>
+                    </div> -->
                 </div>
             </div>
-            <% }) %>
         </div>
-
+    </div>
+    <% }) %>
     <%- include('./partials/footer.ejs') %>

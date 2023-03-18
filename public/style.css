@@ -6,7 +6,15 @@ body {
 }
 
 .card {
-    color:black;
+    color: rgba(245, 245, 245, 0.90);
+}
+
+.cardText {
+    color: white;
+}
+
+h4 {
+    color: rgb(175, 175, 175);
 }
 
 nav:has(*) {
@@ -51,11 +59,11 @@ border:red solid 2px;
 margin-left: 20px;
 }
 
-#titleAbout {
+/* #titleAbout {
     display: flexbox; 
     text-align: center; 
     justify-content: center;
-}
+} */
 
 .sidebar div {
     border: inherit
@@ -66,7 +74,7 @@ margin-left: 20px;
 }
 
 .movie-poster {
-    width: 92px;
+    width: 130px;
 }
 
 .change-password {
@@ -84,8 +92,7 @@ margin-left: 20px;
 
 #welcome01 {
     font-family: 'Bungee Hairline', cursive;
-    white-space: pre;
-    margin-top: 20px
+    /* margin-top: 20px */
 }
 
 #welcome02 {
@@ -93,12 +100,11 @@ margin-left: 20px;
 } 
 
 #btnLogin {
-    margin-right: 10px;
-    margin-top: 10px;
+    
 }
 
 #btnSignUp {
-    margin-top: 10px;
+    
 }
 
 .titleLanding {
@@ -111,6 +117,6 @@ margin-left: 20px;
     background: url("./stock-photo-multi-ethnic-group-friends-watching.jpeg") no-repeat;
     background-size: cover;
     background-position: center;
-    position:static;
-    
+    position:static;   
 }
+
