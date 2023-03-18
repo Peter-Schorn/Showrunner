@@ -39,7 +39,7 @@
                 </ul>
             <% if (locals.username) { %>
             <form class="d-flex" action="/searchShows" method="get" role="search">
-                <input class="form-control me-2" type="search" name="query" placeholder="Search" aria-label="Search">
+                <input class="form-control me-2" type="text" minLength="3" name="query" required placeholder="Search" aria-label="Search">
                 <button class="btn btn-outline-light" type="submit">Search</button>
             </form>
             <% } %>
