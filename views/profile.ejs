@@ -13,7 +13,7 @@
                 </div>
             </div>
 
-            <form class="col-md-7 my-auto" action="/update-profile" method="post">
+            <form class="col-md-7 my-4" action="/update-profile" method="post">
                 <div class="flex-column">
                     <label class="form-label" for="firstName">First Name</label>
                     <input type="text" class="form-control" name="firstName" id="firstName" value="<%= user.firstName %>">
@@ -35,6 +35,11 @@
                         <a href="/change-password" class="btn btn-primary flex-column">Change Password</a>
                     </div>
                 </div>
+                <% if (locals.updated) { %>
+                    <p class="text-center mt-3 update-profile-text">
+                        Your profile has been updated.
+                    </p>
+                <% } %>
             </form>
         </div>
     </div>

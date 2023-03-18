@@ -357,6 +357,8 @@ app.post("/signup", (req, res) => {
 // Profile page
 app.get("/profile", verifyLoggedIn, (req, res) => {
     const user = req.user;
+    const { updated } = req.query ?? false;
+    
     // for display purposes, we want to display an empty string for missing
     // properties, not "undefined"
     const keys = ["firstName", "lastName", "email"];
@@ -365,7 +367,7 @@ app.get("/profile", verifyLoggedIn, (req, res) => {
             user[key] = "";
         }
     }
-    res.render("profile.ejs", {user});
+    res.render("profile.ejs", {user, updated});
 });
 
 // Update user info in the db
@@ -381,7 +383,7 @@ app.post("/update-profile", (req, res) => {
 
     updateUserProfile(userId, options)
         .then(() => {
-            res.redirect("/profile");
+            res.redirect("/profile?updated=true");
         })
         .catch(error => {
             console.log(`Error updating user profile: ${error}`);
