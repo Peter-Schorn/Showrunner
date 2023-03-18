@@ -1,6 +1,7 @@
     <%- include('./partials/header.ejs', {title: 'Showrunner Search'}) %>
     <%- include('./partials/navbar.ejs', {username: locals.username}) %>
 
+    <div class="position-absolute" style="top: 0px; right: 0px; left: 0px; bottom: 0px; background: black; z-index: -1;"></div>
     <div class="container p-2">
         <form action="/searchShows" method="get">
         <div class="input-group m-2">

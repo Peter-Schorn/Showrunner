@@ -6,7 +6,7 @@ body {
 }
 
 .card {
-    color: rgba(245, 245, 245, 0.90);
+    color: black;
 }
 
 .cardText {
@@ -92,11 +92,13 @@ margin-left: 20px;
 
 #welcome01 {
     font-family: 'Bungee Hairline', cursive;
+    text-align: center;
     /* margin-top: 20px */
 }
 
 #welcome02 {
     font-family: 'Bungee Shade', cursive;
+    text-align: center;
 } 
 
 .titleLanding {
