@@ -99,14 +99,6 @@ margin-left: 20px;
     font-family: 'Bungee Shade', cursive;
 } 
 
-#btnLogin {
-    
-}
-
-#btnSignUp {
-    
-}
-
 .titleLanding {
     display: flexbox; 
     text-align: center; 
@@ -119,4 +111,3 @@ margin-left: 20px;
     background-position: center;
     position:static;   
 }
-
