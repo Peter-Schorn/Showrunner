@@ -4,29 +4,63 @@
     <% const hasWatched = show.userShow?.hasWatched ?? false %>
     <% const isFavorite = show.userShow?.favorite ?? false %>
     
-    <div class="container">
+    <div class="container mt-5">
         <div class="row">
-        <h2><%= show.showName %></h2>
-        <p>popularity: <%= show.popularity %></p>
-        <p>first air date: <%= show.firstAirDate.formatted() %></p>
-        <p>last episode aired on <%= show.lastEpisodeToAir.airDate.formatted() %></p>
+            <div class="col flex-column d-flex flex-column p-3 border border-light border-2 border-opacity-75" style="background: #434343; color: rgba(245, 245, 245, 0.90);">
+                <div class="row">
+                    <div class="col-lg-3 col-sm-5 col-xs-5 flex-column align-self-center text-center">
+                        <img class="details-poster" src="<%= fullimageShowDetailsPath %>" alt="<%= show.showName %>">
+                    </div>
+                    <div class="col-lg-9 col-sm-7 col-xs-6" name="showId" value="<%=show.showId%>">
+                        <div class="row">
+                            <h2><%= show.showName %></h2>
+                            <div class="col-lg-4 col-sm-4 col-xs-4 mt-3" name="showId" value="<%=show.showId%>">
+                                <div class="row d-flex flex-column h-100 border-start border-light border-2 border-opacity-75 ms-1">
+                                    <p class="lh-sm mb-0"><strong>Popularity: </strong></p>
+                                    <p class="lh-sm mb-3"><%= show.popularity %></p>
+                                    <p class="lh-sm mb-0"><strong>Network: </strong></p> 
+                                    <p class="lh-sm mb-3"><%= show.networks[0].name %></p>
+                                    <p class="lh-sm mb-0"><strong>Seasons: </strong></p>
+                                    <p class="lh-sm mb-3"><%= show.seasonCount %></p>
+                                    <p class="lh-sm mb-0"><strong>first air date: </strong></p> 
+                                    <p class="lh-sm"><%= show.firstAirDate.formatted() %></p>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-sm-4 col-xs-4 mt-3" name="showId" value="<%=show.showId%>">
+                                <div class="row d-flex flex-column h-100 border-start border-light border-2 border-opacity-75 ms-1">
+                                    <p class="lh-sm mb-0"><strong>last episode aired: </strong></p> 
+                                    <p class="lh-sm mb-3"><%= show.lastEpisodeToAir.airDate.formatted() %></p>
+                                    <p class="lh-sm mb-0"><strong>Status: </strong></p>
+                                    <p class="lh-sm mb-3"><%= show.status %></p>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-sm-4 col-xs-4 mt-3">
+                                <div class="row d-flex flex-column h-100 border-start border-light border-2 border-opacity-75 ms-1">
+                                    <p class="lh-sm mb-0"><strong>User Rating:</strong></p>
+                                    <p class="lh-sm mb-3"><%= show.voteAverage %></p>
+                                    <p class="lh-sm mb-0"><strong>Overview: </strong></p>
+                                    <p class="lh-sm mb-3"><%= show.overview %></p>
+                                    <div class="row">
+                                        <div class="col-lg-9 col-m-6 col-sm-6 col-xs-3">
+                                    <button value="<%=show.showId%>" data-has-watched="<%=hasWatched%>" class="btn btn-secondary mb-1 has-watched-button btn-sm">
+                                        <%= hasWatched ? "Watched" : "Un-Watched" %>
+                                    </button>
+                                    <button value="<%=show.showId%>" data-is-favorite="<%=isFavorite%>" class="btn btn-secondary is-favorite-button btn-sm">
+                                        <%= isFavorite ? "Favorite" : "Not Favorite" %>
+                                    </button>
+                                </div>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid text-center mt-3 d-flex flex-column border border-light border-2 border-opacity-75" style="background: #434343; color: rgba(245, 245, 245, 0.90);">
+                <h2 id="bgPhoto">Desktop Background Photo:</h2>
+                <img src="<%=fullBackdropPath%>" alt="<%= show.showName %>" id="bgImage">
+            </div>
         
-        <div class="col">
-            <button value="<%=show.showId%>" data-has-watched="<%=hasWatched%>" class="btn btn-secondary m-2 has-watched-button">
-                <%= hasWatched ? "Watched" : "Not Watched" %>
-            </button>
-        </div>
-        
-        <div class="col">
-            <button value="<%=show.showId%>" data-is-favorite="<%=isFavorite%>" class="btn btn-secondary m-2 is-favorite-button">
-                <%= isFavorite ? "Favorite" : "Not Favorite" %>
-            </button>
-        </div>
-        
-        <img class="movie-poster" src="<%= fullPosterPath %>" alt="<%= show.showName %>">
-        </div>
-    </div>
-
     <script src="shows.js"></script>
     
     <%- include('./partials/footer.ejs') %>

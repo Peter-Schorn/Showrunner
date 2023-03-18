@@ -246,11 +246,17 @@ app.get("/show", verifyLoggedIn, (req, res) => {
         console.log(`imagePosterBasePath: ${imagePosterBasePath}`);
         const fullPosterPath = show.posterPath ? `${imagePosterBasePath}${show.posterPath}` : "movie_poster_placeholder.svg";
         console.log(show);
+        const imageShowDetailsPath = configuration.imageBackdropBasePath("w185");
+        console.log(`imageShowDetailsPath: ${imageShowDetailsPath}`);
+        const fullimageShowDetailsPath = show.posterPath ? `${imageShowDetailsPath}${show.posterPath}` : "movie_poster_placeholder.svg";
+        const imageBackdropBasePath = configuration.imageBackdropBasePath("w780");
+        const fullBackdropPath = show.backdropPath ? `${imageBackdropBasePath}${show.backdropPath}`: null;
+        console.log(`This is the backdrop path ${fullBackdropPath}`);
         if (!show) {
             // gets caught by the catch block directly below
             throw new Error("could not find show in database or in TMDB api");
         }
-        res.render("showDetail.ejs", {fullPosterPath, show, username});
+        res.render("showDetail.ejs", {fullPosterPath, fullBackdropPath, fullimageShowDetailsPath, show, username});
     })
     .catch((error) => {
         console.error(error);
