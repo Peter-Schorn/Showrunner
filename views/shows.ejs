@@ -1,24 +1,21 @@
-    <%- include('./partials/header.ejs', {title: "Shows"}) %>
-    <%- include('./partials/navbar.ejs', {username: locals.username}) %>
+<%- include('./partials/header.ejs', {title: "Shows"}) %>
+<%- include('./partials/navbar.ejs', {username: locals.username}) %>
 
-    <h1 class="text-center my-5"><strong>My Shows</strong></h1>
-    <% shows.forEach(element=> { %>
-    <div class="container my-3">
-        <div class="row">
-            <div class="card d-flex flex-column p-3 border border-light border-2 border-opacity-75" style="background: #434343; color: rgba(245, 245, 245, 0.90);">
-                <div class="row">
-                    <div class="col-lg-2 col-m-6 col-sm-6 col-xs-6 flex-column align-self-center text-center">
-                        <% const posterPath = element.posterPath ? `${imagePosterBasePath}${element.posterPath}` : "movie_poster_placeholder.svg" %>
-                        <img class="movie-poster" src="<%= posterPath %>" alt="<%= element.showName %>">
-                    </div>
+<h1 class="text-center my-5"><strong>My Shows</strong></h1>
+<% shows.forEach(element=> { %>
+<% let hasWatched = element.userShow?.hasWatched ?? false %>
+<% let isFavorite = element.userShow?.favorite ?? false %>
+<div class="container my-3">
+    <div class="row">
+        <div class="card d-flex flex-column p-3 border border-light border-2 border-opacity-75" style="background: #434343; color: rgba(245, 245, 245, 0.90);">
+            <div class="row">
+                <div class="col-lg-2 col-m-6 col-sm-6 col-xs-6 flex-column align-self-center text-center">
+                    <% const posterPath = element.posterPath ? `${imagePosterBasePath}${element.posterPath}` : "movie_poster_placeholder.svg" %>
+                    <img class="movie-poster" src="<%= posterPath %>" alt="<%= element.showName %>">
+                </div>
                     
-                    <div class="col-lg-8 col-m-6 col-sm-6 col-xs-6 flex-column align-self-center" name="showId" value="<%=element.showId%>">
-                        <h2>
-                            <form action="/favorite" method="post">
-                                <%= element.showName %> 
-                                <button name="showId" value="<%=element.showId%>" class="btn btn-lg my-2" type="submit"><i class="fa-solid fa-star"></i></button>
-                            </form>
-                        </h2>
+                <div class="col-lg-8 col-m-6 col-sm-6 col-xs-6 flex-column align-self-center" name="showId" value="<%=element.showId%>">
+                    <h2><%= element.showName %></h2>
 
                         <p class="cardText">
                             Status: <%= element.status %></p>
@@ -31,16 +28,26 @@
                         
                         <p class="cardText"><%= element.overview %></p>
                     </div>
-        
+                    
                     <div class="col-lg-2 col-m-6 col-sm-6 col-xs-6 flex-column text-center align-items-center my-auto">
                         <form action="/show" method="get">
-                            <button name="showId" value="<%=element.showId%>" class="btn btn-sm btn-light my-2" type="submit">View Show Details</button>
+                            <button name="showId" value="<%=element.showId%>" class="btn btn-sm btn-secondary my-2" type="submit">View Show Details</button>
                         </form>
+                        
+                        <button value="<%=element.showId%>" data-has-watched="<%=hasWatched%>" class="btn btn-secondary m-2 has-watched-button" type="submit">
+                            <%= hasWatched ? "Watched" : "Not Watched" %>
+                        </button>
+                        
+                        <button value="<%=element.showId%>" data-is-favorite="<%=isFavorite%>" class="btn btn-secondary m-2 is-favorite-button" type="submit">
+                            <%= isFavorite ? "Favorite" : "Not Favorite" %>
+                        </button>
+
                         <form action="/deleteUserShow" method="post">
-                            <button name="showId" value="<%=element.showId%>" class="btn my-2" type="submit"><i class="fa fa-trash"></i></button>
+                            <button name="showId" value="<%=element.showId%>" class="btn btn-secondary my-2" type="submit"><i class="fa fa-trash"></i></button>
                         </form>
+
                     </div>
-        
+                    
 
                 </div>
             </div>
